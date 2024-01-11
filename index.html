@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="description" content="Dividni. Individualized Questions. Assessment Design.">
+   <title>Dividni Question Banks</title>
+   <!-- Tiny MCE -->
+   <script src="tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+   <!-- Bootstrap core CSS -->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+   <!-- Favicons -->
+   <meta name="apple-mobile-web-app-capable" content="yes" />
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+   <link rel="apple-touch-icon-precomposed" href="https://dividni.com/images/logo-192x192.png" />
+   <link rel="icon" type="image/png" href="https://dividni.com/images/logo-192x192.png" />
+   <meta name="theme-color" content="#7952b3">
+
+   <style>
+      .btn-secondary,
+      .btn-secondary:hover,
+      .btn-secondary:focus { color: #333; text-shadow: none; /* Prevent inheritance from `body` */ }
+
+      body { text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5); box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5); }
+
+      .cover-container { max-width: 90%; }
+
+      .nav-masthead .nav-link { padding: .25rem 0; font-weight: 700; color: rgba(255, 255, 255, .5); background-color: transparent; border-bottom: .25rem solid transparent; }
+
+         .nav-masthead .nav-link:hover,
+         .nav-masthead .nav-link:focus { border-bottom-color: rgba(255, 255, 255, .25); }
+
+         .nav-masthead .nav-link + .nav-link { margin-left: 1rem; }
+
+      .nav-masthead .active { color: #fff; border-bottom-color: #fff; }
+   </style>
+   <script defer src="DividniUI.js"></script>
+
+</head>
+
+<body class="d-flex h-100 text-center text-white bg-dark">
+   <!-- Icon chest -->
+   <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+      <symbol id="home" viewBox="0 0 16 16">
+         <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z" />
+      </symbol>
+      <symbol id="dividni-icon" viewBox="0 0 160 160">
+         <defs>
+            <clipPath id="dee-cut">
+               <polyline points="70 60 70 105 80 105 80 60 90 60 90 16 118 16 118 120 100 140 75 148 50 140 33 120 33 80 70 60" fill="none" stroke-width="0.1" stroke="black" />
+            </clipPath>
+         </defs>
+         <g id="dee" clip-path="url(#dee-cut)" stroke="#eeeeee" stroke-width="20">
+            <line x1="105" y1="105" x2="105" y2="20" />
+            <circle cx="75" cy="105" r="30" fill="none" />
+         </g>
+         <circle id="dot" cx="75" cy="40" r="10" fill="#eeeeee" />
+      </symbol>
+   </svg>
+
+   <div class="cover-container d-flex w-100 h-75 p-3 mx-auto flex-column">
+      <header class="mb-auto">
+         <div>
+            <img src="https://dividni.com/images/Dividni-Logo-White.svg" alt="logo" style="width: 40px;" />
+            <h3 class="float-md-start mb-0">Dividni</h3>
+            <nav class="nav nav-masthead justify-content-center float-md-end">
+               <a class="nav-link" onclick="ShowStandardSection()">Home</a>
+               <a class="nav-link" onclick="ShowMCQSection()">MCQ</a>
+               <a class="nav-link" onclick="ShowAdvancedSection()">Advanced</a>
+            </nav>
+         </div>
+         <h1></h1>
+         <h1>Question Banks for Individualized Assessment</h1>
+         <hr />
+      </header>
+
+      <main class="mw-100">
+         <p class="lead">
+            This is an online application for creating question banks
+            using <a href="https://dividni.com/" class="link-light">Dividni</a>. The question banks can be
+            imported into learning management systems such as Canvas and Moodle,  digital assessment platforms such as
+            Inspera, and other QTI-compatible education applications.
+            See the <strong><a href="userguide/" target="_blank" class="link-light">user guide</a></strong> 
+            for instructions on using this online application.
+         </p>
+         <p class="lead"></p>
+         <div id="advancedSection">
+            <div>
+               <fieldset class="mb-3">
+                  <legend>Pick a question template (if you want) ...</legend>
+                  <select id="questionTypeSelector" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" onchange="ChooseQuestionType()">
+                     <option value="Numerical">Numerical</option>
+                     <option value="Short Text">Short Text</option>
+                     <option value="Single-response MCQ">Single-response MCQ</option>
+                     <option value="Multiple-response MCQ (XYZ)">Multiple-response MCQ (XYZ)</option>
+                  </select>
+               </fieldset>
+            </div>
+            <hr />
+            <div>
+               <fieldset class="mb-3">
+                  <legend>Author your question ...</legend>
+                  <div class="input-group">
+                     <span class="input-group-text">🖊</span>
+                     <textarea id="qTextArea" rows="24" spellcheck="false" class="form-control" aria-label="With textarea"></textarea>
+                  </div>
+                  <br />
+                  <p class="lead">
+                     <button id="previewBtn" class="btn btn-light mb-2" onclick="Preview()">
+                        <span class="fw-bold h5">Preview</span>
+                     </button>
+                  </p>
+               </fieldset>
+            </div>
+         </div>
+         <div id="standardSection">
+            <fieldset class="mb-3">
+               <legend>Author your question ...<span onclick="CopyCodeToAdvanced()">▽</span></legend>
+               <p></p>
+               <textarea id="qText">Author your question here.</textarea>
+               <p></p>
+               <div>
+                  <p>
+                     Clicking on the icon 
+                     <img src="https://dividni.com/images/Dividni-Logo-White.svg" alt="logo" style="width: 20px;" />
+                     in the menu bar above allows you to add variations to the question.
+                     This is done by building one or more of these three handles:
+                     <code>Random</code>, <code>Choice</code>, and <code>Expression</code>. 
+                     <code>Random</code> generates a random value within a range (which can optionally 
+                     be multiplied by a number); 
+                     <code>Choice</code> randomly selects one item from a specified list of items (items are separated by |). 
+                     Items are either numbers or strings.
+                     <code>Expression</code> is built from previously-defined 
+                     Random, Choice or Expression handles.
+                     <code>Answer</code> simply points to one of the previously-defined 
+                     handles (i.e., Random, Choice or an Expression). There should only be one Answer.
+                     <code>Reference</code> is a sequence number of a previously-defined 
+                     handle (i.e., Random, Choice or an Expression), 
+                     and is used (only) within a question stem (i.e., question text).
+                     Refer to a handle by its sequence number preceded by @.
+                  </p>
+                  <p></p>
+               </div>
+               <p class="lead">
+                  <button id="previewMarkupBtn" class="btn btn-light mb-2" onclick="PreviewMarkup()">
+                     <span class="fw-bold h5">Preview</span>
+                  </button>
+               </p>
+            </fieldset>
+         </div>
+         <div id="mcqSection">
+            <fieldset class="mb-3">
+               <legend>Author your question ...<span onclick="CopyMcqCodeToAdvanced()">▽</span></legend>
+               <p></p>
+               <textarea id="mcqText">To Do.</textarea>
+               <p></p>
+               <div>
+                  <input class="form-check-input" type="checkbox" value="" id="mrMcqCheckbox">
+                  <label class="form-check-label" for="flexCheckDefault">
+                     Tick for multiple-response
+                  </label>
+                  <p>
+                     Clicking on the icon 
+                     <img src="https://dividni.com/images/Dividni-Logo-White.svg" alt="logo" style="width: 20px;" />
+                     in the menu bar above allows you to enter correct and incorrect answer options, one at a time.
+                     Provide as many correct and incorrect options as possible. 
+                     For a single-response MCQ, a minimum of one correct option and four incorrect options are required. 
+                     For a multiple-response MCQ, a minimum of three correct options and three incorrect options are required.
+                  </p>
+                  <p></p>
+               </div>
+               <p class="lead">
+                  <button id="previewMcqBtn" class="btn btn-light mb-2" onclick="PreviewMcqMarkup()">
+                     <span class="fw-bold h5">Preview</span>
+                  </button>
+               </p>
+            </fieldset>
+         </div>
+         <div>
+            <br />
+            <br />
+            <fieldset class="mb-3">
+               <div class="embed-responsive embed-responsive-21by9">
+                  <iframe id="resultsIFrame" height="320" class="w-100 embed-responsive-item"></iframe>
+               </div>
+            </fieldset>
+         </div>
+         <hr />
+         <div>
+            <fieldset class="mb-3">
+               <legend>Type in a name for your question ...</legend>
+               <input type="text" class="form-control" id="questionName" placeholder="Name your question">
+            </fieldset>
+         </div>
+         <hr />
+         <div>
+            <fieldset class="mb-3">
+               <legend>Choose the number of question variants ...</legend>
+               <select id="variantCountSelector" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" onchange="ChooseVariantCount()">
+                  <option value="25">25</option>
+                  <option value="100">100</option>
+                  <option value="200">200</option>
+                  <option value="400">400</option>
+                  <option value="800">800</option>
+                  <option value="1600">1600</option>
+               </select>
+            </fieldset>
+         </div>
+         <hr />
+         <div>
+            <fieldset class="mb-3">
+               <legend>Choose where you want to export the question bank to ...</legend>
+               <select id="targetPlatformSelector" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" onchange="ChooseTargetPlatform()">
+                  <option value="Canvas">QTI 1.2 (e.g., Canvas)</option>
+                  <option value="Inspera">QTI 2.1 (e.g., Inspera)</option>
+                  <option value="Moodle">Moodle</option>
+               </select>
+            </fieldset>
+         </div>
+         <hr />
+
+         <div id="standardDownload" style="display: none;">
+            <p class="lead">
+               <button id="downloadMarkupBtn" class="btn btn-light mb-2" onclick="DownloadQuestionbankMarkup()">
+                  <span class="fw-bold h5">Download Question Bank</span>
+               </button>
+            </p>
+         </div>
+         <div id="mcqDownload" style="display: none;">
+            <p class="lead">
+               <button id="downloadMcqBtn" class="btn btn-light mb-2" onclick="DownloadQuestionbankMcqMarkup()">
+                  <span class="fw-bold h5">Download Question Bank</span>
+               </button>
+            </p>
+         </div>
+         <div id="advancedDownload" style="display: none;">
+            <p class="lead">
+               <button id="downloadBtn" class="btn btn-light mb-2" onclick="DownloadQuestionbank()">
+                  <span class="fw-bold h5">Download Question Bank</span>
+               </button>
+            </p>
+         </div>
+      </main>
+
+      <footer class="mt-auto text-white-50">
+         <p id="version" class="text-sm-center">version</p>
+      </footer>
+   </div>
+
+   <script src="DividniTinyMCEplugin.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
