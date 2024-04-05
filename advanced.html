@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="common.js"></script>
+
+    <script src="advanced.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.3/dist/purify.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="tokens.css" />
+    <link rel="stylesheet" type="text/css" href="main.css" />
+
+    <title>Dividni | Author Your Question</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header__logo">
+        <img
+          src="https://dividni.com/images/Dividni-Logo-White.svg"
+          alt="Dividni"
+          class="header__logo__image"
+        /><span>Dividni</span>
+      </div>
+      <input
+        class="nav__toggle"
+        type="checkbox"
+        id="toggle"
+        aria-hidden="true"
+      />
+      <label for="toggle" class="nav__icon" aria-hidden="true">
+        Expand menu
+        <span class="nav__icon-line"></span>
+        <span class="nav__icon-line"></span>
+        <span class="nav__icon-line"></span>
+      </label>
+      <nav class="nav">
+        <ul class="header__links-list">
+          <li class="header__link">
+            <a href="./index.html#CreateQuestion">Create Question</a>
+          </li>
+          <li class="header__link">
+            <a href="/">User Guide</a>
+          </li>
+          <li class="header__link">
+            <a href="./advanced.html">Advanced</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <section id="Advanced" class="create">
+      <div class="" id="status-banner" role="region" aria-live="polite">
+        <i class="status-banner__icon"></i>
+        <span id="status-banner__content"></span>
+      </div>
+      <h2 class="create__title">Create Question Bank (Advanced)</h2>
+      <div class="create__wrapper">
+        <div class="create__form__wrapper">
+          <form id="dividni-form" class="create__form">
+            <label
+              class="create__heading create__form__label"
+              for="questionType"
+              >Select Question Type:</label
+            >
+            <select
+              id="questionType"
+              class="create__form__select"
+              onchange="changeQuestionType()"
+            >
+              <option value="Numerical">Numerical</option>
+              <option value="ShortText">Short Text</option>
+              <option value="MCQ">Single-response Multiple Choice</option>
+              <option value="MCQMulti">Multi-response Multiple Choice</option>
+            </select>
+
+            <div id="ckeditorquestion">
+              <label class="create__heading create__form__label" for="question"
+                >Author your question</label
+              >
+              <label>
+                <textarea
+                  id="advanced-editor"
+                  class="create__textarea"
+                ></textarea>
+                <span class="errorMsg" id="advanced-editorError"></span>
+              </label>
+            </div>
+
+            <button id="preview" class="pill-button pill-button-inverted">
+              Preview<span
+                id="preview-loading"
+                class="spinner"
+                aria-live="polite"
+              ></span>
+            </button>
+            <iframe
+              id="resultsIFrame"
+              class="create__form__preview"
+              height="320"
+            ></iframe>
+
+            <label class="create__form__label"
+              >Question name (used in error-reporting - please ensure this is
+              meaningful & unique)</label
+            >
+            <input
+              type="text"
+              name="questionName"
+              id="questionName"
+              class="create__form__input"
+              placeholder="e.g. QuadraticAnswerQ"
+            /><span class="errorMsg" id="questionNameError"></span>
+            <label class="create__form__label"
+              >Number of question variants</label
+            >
+            <select
+              id="variantCountSelector"
+              class="create__form__select"
+              aria-label=".form-select-lg example"
+              onchange="ChooseVariantCount()"
+            >
+              <option value="25">25</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
+              <option value="400">400</option>
+              <option value="800">800</option>
+              <option value="1600">1600</option></select
+            ><span class="errorMsg" id="variantCountSelectorError"></span>
+            <label class="create__form__label"
+              >Choose where you want to export the question bank to</label
+            >
+            <select
+              id="targetPlatformSelector"
+              class="create__form__select"
+              aria-label=".form-select-lg example"
+              onchange="ChooseTargetPlatform()"
+            >
+              <option value="Canvas">QTI 1.2 (e.g., Canvas)</option>
+              <option value="Inspera">QTI 2.1 (e.g., Inspera)</option>
+              <option value="Moodle">Moodle</option></select
+            ><span class="errorMsg" id="targetPlatformSelectorError"></span>
+            <button id="download" type="submit" class="pill-button">
+              Download question bank<span
+                id="download-loading"
+                class="spinner"
+                aria-live="polite"
+              ></span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+    <footer id="dividni-version" class="footer"></footer>
+  </body>
+</html>
