@@ -204,7 +204,7 @@ function activateEditors() {
     // See the "Installation" section.
     // plugins: [Mention /* ... */],
     toolbar: {
-      items: toolbarItems,
+      // items: toolbarItems,
     },
     mention: {
       feeds: [
