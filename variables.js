@@ -270,7 +270,7 @@ function addExpression(closeButton) {
     .trim();
 
   replacedExpression = DOMPurify.sanitize(replacedExpression, {
-    ALLOWED_TAGS: [],
+    ALLOWED_TAGS: ["sup", "sub"],
   });
 
   if (failedMentions.length) {

@@ -203,7 +203,7 @@ function processAdvancedFormData() {
 
   const value = document.getElementById("advanced-editor").value;
 
-  const csFile = value; // DOMPurify.sanitize(value, { ALLOWED_TAGS: ["string", "int", "double"], });
+  const csFile = DOMPurify.sanitize(value, { ALLOWED_TAGS: ["string", "int", "double", "sup", "sub"], });
 
   if (!csFile || csFile?.length === 0) {
     applyError("advanced-editor", "This field should not be blank.");

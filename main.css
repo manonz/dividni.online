@@ -604,7 +604,7 @@ textarea {
   /* font-size: 0; */
 }
 
-.dialog_form_item .dialog__input {
+.dialog_form_item .dialog__input, #expression-editor {
   background-color: var(--form-input-bg-color);
   box-sizing: border-box;
   width: 100%;
