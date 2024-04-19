@@ -199,12 +199,12 @@ function activateEditors() {
     .then((res) => (answerEditor = res))
     .catch((err) => console.error(err));
 
-  CKEDITOR.BalloonEditor.create(document.getElementById("expression-editor"), {
+  CKEDITOR.ClassicEditor.create(document.getElementById("expression-editor"), {
     // This feature is available in the superbuild only.
     // See the "Installation" section.
     // plugins: [Mention /* ... */],
     toolbar: {
-      items: toolbarItems,
+      // items: toolbarItems,
     },
     mention: {
       feeds: [
@@ -218,15 +218,7 @@ function activateEditors() {
     // Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
     removePlugins: pluginsToRemove,
   })
-    .then((res) => {
-      // Make the div "input" focusable so modal doesn't keep sending focus to the undo button
-      const dialog = document.getElementById("dialog4");
-
-      dialog
-        .querySelector("div[contenteditable='true']")
-        .setAttribute("tab-index", "0");
-      expressionEditor = res;
-    })
+    .then((res) => (expressionEditor = res))
     .catch((err) => {
       console.error(err);
     });
