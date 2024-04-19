@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -132,7 +132,7 @@
                   <button
                     type="button"
                     class="simple-button"
-                    onclick="replaceDialog('dialog3', undefined, 'choice-var-name')"
+                    onclick="replaceDialog('dialog3', undefined, 'dialog3_close_btn')"
                   >
                     Choice
                   </button>
@@ -322,8 +322,8 @@
                   <div class="dialog_form_item">
                     <label>
                       <span class="label_text">
-                        Expression: <br/><i>(Press `@` to reference another random,
-                        expression, or choice variable. To apply formatting, highlight text to display the editor toolbar.)</i></span
+                        Expression: (Press `@` to reference another random,
+                        expression, or choice variable)</span
                       >
                       <div id="expression-editor"></div>
                       <span class="errorMsg" id="expression-editorError"></span>
@@ -553,7 +553,6 @@
               class="create__form__preview"
               height="320"
             ></iframe>
-
             <label class="create__form__label"
               >Question name (used in error-reporting - please ensure this is
               meaningful & unique)</label
@@ -605,7 +604,7 @@
         </div>
       </div>
     </section>
-    <footer id="dividni-version" class="footer"></footer>
+    <footer id="dividni-version" class="footer" onclick="copyCode()"></footer>
     <div id="modal" class="modal hidden"></div>
     <div id="overlay" class="overlay hidden"></div>
 

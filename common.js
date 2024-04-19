@@ -1,7 +1,8 @@
 let questionType = "Numerical";
 let completeFormValid = 1;
 
-const apiUrl = "https://academicintegrity.cs.auckland.ac.nz/duc/Converter";
+//const apiUrl = "https://academicintegrity.cs.auckland.ac.nz/duc/Converter";
+const apiUrl = "http://localhost:7074/Converter";
 
 const getSanitisedValue = (field) => {
   if (!field || !field?.value) {
@@ -27,6 +28,47 @@ function showVersion() {
 function setSelectedQuestionType(type) {
   questionType = type;
 }
+
+function copyCodeBase(data, endpoint) {
+  if (completeFormValid !== 1) {
+    updateStatus(false, "Form errors. Please correct errors and try again.");
+    return;
+  }
+
+  const ccElement = document.getElementById("dividni-version");
+  ccElement.style.textDecoration = "underline";
+  const controller = new AbortController();
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 5000);
+
+  fetch(`${apiUrl}/${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((res) => {
+      const contentType = res.headers.get("Content-Type");
+      if (contentType.startsWith("application/json")) {
+        return res.json();
+      }
+
+      return res.text();
+    })
+    .then((data) => navigator.clipboard.writeText(data))
+    .catch((error) => {
+      console.error(error);
+      updateStatus(false, `Error copying code: ${error}`);
+    })
+    .finally(() => {
+      clearTimeout(timeout);
+      ccElement.style.textDecoration = "none";
+    });
+}
+
+
 
 function previewBase(data, endpoint) {
   if (completeFormValid !== 1) {

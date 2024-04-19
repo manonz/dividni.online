@@ -28,6 +28,23 @@ document.addEventListener("DOMContentLoaded", () => {
   showVersion();
 });
 
+function copyCode() {
+  completeFormValid = 1;
+  clearStatus();
+
+  switch (questionType) {
+    case "Numerical":
+      copyCodeNumericalMarkup();
+      break;
+    case "ShortText":
+      copyCodeShortTextMarkup();
+      break;
+    case "MCQ":
+      copyCodeMcqMarkup();
+      break;
+  }
+}
+
 function previewResults(e) {
   e.preventDefault();
 
@@ -178,6 +195,26 @@ function previewNumericalMarkup() {
 
 function previewShortTextMarkup() {
   previewBase(getShortTextFormData(), "PreviewShortTextMarkup");
+}
+
+function copyCodeMcqMarkup() {
+  const multiChoice = document.getElementById("multipleChoiceCheckbox").checked;
+
+  const formData = getMcqFormData();
+
+  if (multiChoice) {
+    copyCodeBase(formData, "CodeFromMcqXyzMarkup");
+  } else {
+    copyCodeBase(formData, "CodeFromMcqTruthMarkup");
+  }
+}
+
+function copyCodeNumericalMarkup() {
+  copyCodeBase(getNumericalFormData(), "CodeFromNumericalMarkup");
+}
+
+function copyCodeShortTextMarkup() {
+  copyCodeBase(getShortTextFormData(), "CodeFromShortTextMarkup");
 }
 
 function downloadQuestionBank(e) {
