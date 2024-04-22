@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="common.js"></script>
+
+    <script src="advanced.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.3/dist/purify.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="tokens.css" />
+    <link rel="stylesheet" type="text/css" href="main.css" />
+    <link rel="icon" type="image/svg+xml" href="https://dividni.com/images/Dividni-Logo.svg" />
+    <link rel="mask-icon" href="https://dividni.com/images/Dividni-Logo-Black.svg" color="red">
+
+    <title>Dividni | Author Your Question</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header__logo">
+        <img
+          src="https://dividni.com/images/Dividni-Logo-White.svg"
+          alt="Dividni"
+          class="header__logo__image"
+        /><span>Dividni</span>
+      </div>
+      <input
+        class="nav__toggle"
+        type="checkbox"
+        id="toggle"
+        aria-hidden="true"
+      />
+      <label for="toggle" class="nav__icon" aria-hidden="true">
+        Expand menu
+        <span class="nav__icon-line"></span>
+        <span class="nav__icon-line"></span>
+        <span class="nav__icon-line"></span>
+      </label>
+      <nav class="nav">
+        <ul class="header__links-list">
+          <li class="header__link">
+            <a href="./index.html#CreateQuestion">Create Question</a>
+          </li>
+          <li class="header__link">
+            <a href="./guide.html">User Guide</a>
+          </li>
+          <li class="header__link">
+            <a href="./advanced.html">Advanced</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <section id="Lost" class="lost">
+      <h2 class="create__title">404</h2>
+         <div style="width: 90%; display: block; margin: auto; text-align: center;">
+            <p>
+               Looks like you got lost in the Mirkwood. <br />
+               <a href="https://dividni.online">dividni.online</a>
+            </p>
+            <img style="width: 30%;" alt="pic" src="https://dividni.com/images/Dividni-Logo-Gray.svg" />
+         </div>
+    </section>
+    <footer id="dividni-version" class="footer"></footer>
+  </body>
+</html>
