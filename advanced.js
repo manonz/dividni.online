@@ -132,12 +132,12 @@ namespace Utilities.Courses
         q.Marks = 2;
         q.Stem = "Which of the following cities are national capitals?";
         q.AddCorrects(
-            "London",
-            "Paris",
-            "Madrid",
-            "Beijing",
+            "Zagreb",
+            "Amsterdam",
+            "Skopje",
+            "Ljubljana",
             "Brussels",
-            "Moscow"
+            "Podgorica"
         );
         q.AddIncorrects(
             "Istanbul",
@@ -145,7 +145,11 @@ namespace Utilities.Courses
             "Sydney",
             "Mumbai (Bombay)",
             "Toronto", 
-            "Lublin" 
+            "Lublin",
+            "Geneva",
+            "Rio de Janeiro",
+            "Johannesburg",
+            "New York"            
         );
         return q;
     } // NationalCapitalsMCQ
