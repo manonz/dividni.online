@@ -35,7 +35,7 @@ function copyCodeBase(data, endpoint) {
     return;
   }
 
-  const ccElement = document.getElementById("dividni-version");
+  const ccElement = document.getElementById("copyCode");
   ccElement.style.textDecoration = "underline";
   const controller = new AbortController();
   const timeout = setTimeout(() => {
