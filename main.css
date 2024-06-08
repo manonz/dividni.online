@@ -376,6 +376,11 @@ textarea {
   text-align: center;
   width: fit-content;
   border-radius: 5px;
+  cursor: pointer;
+
+  &:hover, &:focus {
+    background-color: var(--color-gray-3);
+  }
 }
 
 @media screen and (max-width: 992px) {

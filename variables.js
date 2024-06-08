@@ -329,7 +329,7 @@ function displayVariables() {
     const deleteButton = document.createElement("delete");
     deleteButton.classList.add("delete-variable");
     deleteButton.innerText = "Delete";
-    li.setAttribute("onclick", `removeVariable("${variable.id}");`);
+    deleteButton.setAttribute("onclick", `removeVariable("${variable.id}");`);
 
     switch (variable.type) {
       case "random":

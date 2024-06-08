@@ -115,6 +115,7 @@ function previewBase(data, endpoint) {
 }
 
 function showPreview(data) {
+  console.log(data);
   const iframe = document.getElementById("resultsIFrame");
   const htmlSrc = encodeURI(data);
   iframe.src = "data:text/html;charset=utf-8," + htmlSrc;
