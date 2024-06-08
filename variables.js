@@ -326,10 +326,21 @@ function displayVariables() {
     let value = document.createElement("p");
     value.classList.add("variables-list__item__content");
 
+    let actions = document.createElement("div");
+    actions.classList.add("variables-list__actions")
+
     const deleteButton = document.createElement("delete");
     deleteButton.classList.add("delete-variable");
     deleteButton.innerText = "Delete";
     deleteButton.setAttribute("onclick", `removeVariable("${variable.id}");`);
+
+    const editButton = document.createElement("edit");
+    editButton.classList.add("delete-variable");
+    editButton.innerText = "Edit";
+    editButton.setAttribute("onclick", `openEditorModal(this, "${variable.id}");`);
+
+    actions.appendChild(editButton);
+    actions.appendChild(deleteButton);
 
     switch (variable.type) {
       case "random":
@@ -350,7 +361,7 @@ function displayVariables() {
     li.appendChild(name);
     li.appendChild(type);
     li.appendChild(value);
-    li.appendChild(deleteButton);
+    li.appendChild(actions);
     list.appendChild(li);
   });
 }
@@ -374,4 +385,47 @@ function removeVariable(idToRemove) {
   } else {
     updateStatus(false, `Variable ${idToRemove} could not be found.`);
   }
+}
+
+function openEditorModal(element, variableId) {
+  const variableToEdit = variables.find(v => v.id === variableId);
+
+  openModal(element);
+
+  switch (variableToEdit.type) {
+    case "random":
+        replaceDialog('dialog2', undefined, 'random-var-name');
+
+        const randomName = document.getElementById("random-var-name");
+        const minField = document.getElementById("random-min");
+        const maxField = document.getElementById("random-max");
+        const multiplierField = document.getElementById("random-multiplier");
+
+        randomName.value = `${variableToEdit.id.substring(1)}`;
+        minField.value = variableToEdit.min;
+        maxField.value = variableToEdit.max;
+        multiplierField.value = variableToEdit.multiplier;
+
+        break;
+
+      case "choice":
+        replaceDialog('dialog3', undefined, 'dialog3_close_btn');
+
+        const choiceName = document.getElementById("choice-var-name");
+        const optionsField = document.getElementById("choiceOptions");
+
+        choiceName.value = `${variableToEdit.id.substring(1)}`;
+        optionsField.value = variableToEdit.choices.join("|");
+        
+        break;
+      case "expression":
+        replaceDialog('dialog4', undefined, 'expression-name');
+        break;
+      case "lambda":
+        replaceDialog('dialog5', undefined, 'lambda-name');
+        break;
+    
+  }
+
+  
 }
