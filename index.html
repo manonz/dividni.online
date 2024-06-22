@@ -223,6 +223,7 @@
                   </div>
                   <div class="dialog_form_actions">
                     <button
+                      id="process-random"
                       type="button"
                       class="pill-button"
                       onclick="addRandomVariable(this)"
@@ -280,6 +281,7 @@
                   </div>
                   <div class="dialog_form_actions">
                     <button
+                      id="process-choice"
                       type="button"
                       class="pill-button"
                       onclick="addChoiceVariable(this)"
@@ -323,7 +325,7 @@
                   </div>
                   <div class="dialog_form_item">
                     <label>
-                      <span class="label_text">
+                      <span id="expression_desc" class="label_text">
                         Expression: (Press `@` to reference another random,
                         expression, or choice variable)</span
                       >
@@ -332,6 +334,7 @@
                     </label>
                     <div class="dialog_form_actions">
                       <button
+                        id="process-expression"
                         type="button"
                         class="pill-button"
                         onclick="addExpression(this)"
@@ -427,6 +430,7 @@
                     </label>
                     <div class="dialog_form_actions">
                       <button
+                        id="process-lambda"
                         type="button"
                         class="pill-button"
                         onclick="addLambda(this)"
