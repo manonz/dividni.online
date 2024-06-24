@@ -98,7 +98,7 @@ public partial class QHelper : IQHelper
         int totalPrice1 = appleCnt1 * applePrice + orangeCnt1 * orangePrice;
         int totalPrice2 = appleCnt2 * applePrice + orangeCnt2 * orangePrice;
 
-        q.Stem = $"At Prancing Pony, you can buy {appleCnt1} apples and {orangeCnt1} oranges for {totalPrice1} Castars; you can also buy {appleCnt2} apples and {orangeCnt2} oranges for {totalPrice2} Castars. What is the price of a single apple, expressed in Castars? &lt;img style=\"float: right; margin: 10;\" width=\"150\" src=\"https://dividni.com/images/PrancingPony.svg\" alt=\"\"/gt; ";
+        q.Stem = $"At Prancing Pony, you can buy {appleCnt1} apples and {orangeCnt1} oranges for {totalPrice1} Castars; you can also buy {appleCnt2} apples and {orangeCnt2} oranges for {totalPrice2} Castars. What is the price of a single apple, expressed in Castars? &lt;img style=\\\"float: right; margin: 10;\\\" width=\\\"150\\\" src=\\\"https://dividni.com/images/PrancingPony.svg\\\" alt=\\\"\\\"/gt; ";
         q.AddCorrects(
             applePrice.ToString()
         );
