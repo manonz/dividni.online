@@ -41,7 +41,7 @@ namespace Utilities.Courses
         int b = random.Next(6, 10);
         int x = random.Next(2, 10);
         int c = a*x*x + b*x;
-        q.Stem = $"What is the positive x value that satisfies the equation {a}x<sup>2</sup> + {b}x - {c}? <br/>Note: when \\(a \\ne 0\\), there are two solutions to \\(ax^2 + bx + c = 0\\) and they are $$x = \\frac{{-b \\pm \\sqrt{{b^2-4ac}}}}{{2a}}$$.";
+        q.Stem = $"What is the positive x value that satisfies the equation {a}x<sup>2</sup> + {b}x - {c}? <br/>Note: when \\\\(a \\\\ne 0\\\\), there are two solutions to \\\\(ax^2 + bx + c = 0\\\\) and they are $$x = \\\\frac{{-b \\\\pm \\\\sqrt{{b^2-4ac}}}}{{2a}}$$.";
         q.AnsGTE = q.AnsLTE = x.ToString();
         return q;
     } // QuadraticAnswerQ
@@ -80,10 +80,10 @@ namespace Utilities.Courses
 {
 public partial class QHelper : IQHelper
 {
-    public static QuestionBase ApplesAndOrangesQ(Random random, bool isProof)
+    public static QuestionBase ApplesAndOrangesQWithEyeCandy(Random random, bool isProof)
     {
         var q = new TruthQuestion(random, isProof);
-        q.Id = "ApplesAndOrangesQ"; // The Id is used in error-reporting. Please let it be meaningful and unique.
+        q.Id = "ApplesAndOrangesQWithEyeCandy"; // The Id is used in error-reporting. Please let it be meaningful and unique.
         q.Marks = 2;
         int appleCnt1 = 1, orangeCnt1 = 1,  appleCnt2 = 1, orangeCnt2 = 1;
         while (appleCnt1*orangeCnt2 == appleCnt2*orangeCnt1)
@@ -98,7 +98,7 @@ public partial class QHelper : IQHelper
         int totalPrice1 = appleCnt1 * applePrice + orangeCnt1 * orangePrice;
         int totalPrice2 = appleCnt2 * applePrice + orangeCnt2 * orangePrice;
 
-        q.Stem = $"At Prancing Pony, you can buy {appleCnt1} apples and {orangeCnt1} oranges for {totalPrice1} Castars; you can also buy {appleCnt2} apples and {orangeCnt2} oranges for {totalPrice2} Castars. What is the price of a single apple, expressed in Castars? <img style=\"float: right; margin: 10;\" width=\"150\" alt=\"\" src=\"https://dividni.com/images/PrancingPony.svg\" />";
+        q.Stem = $"At Prancing Pony, you can buy {appleCnt1} apples and {orangeCnt1} oranges for {totalPrice1} Castars; you can also buy {appleCnt2} apples and {orangeCnt2} oranges for {totalPrice2} Castars. What is the price of a single apple, expressed in Castars? <img style=\\\"float: right; margin: 10;\\\" width=\\\"150\\\" alt=\\\"\\\" src=\\\"https://dividni.com/images/PrancingPony.svg\\\" />";
         q.AddCorrects(
             applePrice.ToString()
         );
@@ -114,7 +114,7 @@ public partial class QHelper : IQHelper
             (applePrice - 2).ToString()
         );
         return q;
-    } // ApplesAndOrangesQ
+    } // ApplesAndOrangesQWithEyeCandy
 } // class
 } // namespace`;
       break;
