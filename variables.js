@@ -670,6 +670,6 @@ function openEditorModal(element, variableId) {
     
   }
   nameField.value = `${variableToEdit.id.substring(1)}`;
-  button.innerText = "Edit";
+  button.innerText = "OK";
   
 }
