@@ -14,6 +14,7 @@ function openModal(element) {
   openDialog("dialog1", element);
 }
 
+
 // Dialog.js
 /*
  *   This content is licensed according to the W3C Software License at

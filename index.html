@@ -223,11 +223,12 @@
                   </div>
                   <div class="dialog_form_actions">
                     <button
+                      id="process-random"
                       type="button"
                       class="pill-button"
                       onclick="addRandomVariable(this)"
                     >
-                      Add
+                      OK
                     </button>
                     <button
                       type="button"
@@ -280,11 +281,12 @@
                   </div>
                   <div class="dialog_form_actions">
                     <button
+                      id="process-choice"
                       type="button"
                       class="pill-button"
                       onclick="addChoiceVariable(this)"
                     >
-                      Add
+                      OK
                     </button>
                     <button
                       type="button"
@@ -323,7 +325,7 @@
                   </div>
                   <div class="dialog_form_item">
                     <label>
-                      <span class="label_text">
+                      <span id="expression_desc" class="label_text">
                         Expression: (Press `@` to reference another random,
                         expression, or choice variable)</span
                       >
@@ -332,11 +334,12 @@
                     </label>
                     <div class="dialog_form_actions">
                       <button
+                        id="process-expression"
                         type="button"
                         class="pill-button"
                         onclick="addExpression(this)"
                       >
-                        Add
+                        OK
                       </button>
                       <button
                         type="button"
@@ -427,11 +430,12 @@
                     </label>
                     <div class="dialog_form_actions">
                       <button
+                        id="process-lambda"
                         type="button"
                         class="pill-button"
                         onclick="addLambda(this)"
                       >
-                        Add
+                        OK
                       </button>
                       <button
                         type="button"
