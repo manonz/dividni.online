@@ -608,7 +608,7 @@ function openEditorModal(element, variableId) {
   let title;
   let button;
   let nameField;
-  const savedHandler = button.onclick;;
+  let savedHandler;
 
   switch (variableToEdit.type) {
     case "random":
@@ -624,7 +624,8 @@ function openEditorModal(element, variableId) {
         minField.value = variableToEdit.min;
         maxField.value = variableToEdit.max;
         multiplierField.value = variableToEdit.multiplier;
-        title.innerText = "Edit Random Variable"
+        title.innerText = "Edit Random Variable";
+        savedHandler = button.onclick;
         button.onclick = () => { editRandomVariable(variableToEdit, button); button.onclick = savedHandler; };
 
         break;
@@ -638,7 +639,8 @@ function openEditorModal(element, variableId) {
         button = document.getElementById("process-choice");
 
         optionsField.value = variableToEdit.choices.join("|");
-        title.innerText = "Edit Choice Variable"
+        title.innerText = "Edit Choice Variable";
+        savedHandler = button.onclick;
         button.onclick = () => { editChoiceVariable(variableToEdit, button); button.onclick = savedHandler; };
         
         break;
@@ -652,6 +654,7 @@ function openEditorModal(element, variableId) {
         expressionEditor.setData(getContentWithMentionsProcessed(variableToEdit.expression));
 
         title.innerText = "Edit Mathematical Expression";
+        savedHandler = button.onclick;
         button.onclick = () => { editExpression(variableToEdit, button); button.onclick = savedHandler; };
         break;
       case "lambda":
@@ -666,6 +669,7 @@ function openEditorModal(element, variableId) {
         title.innerText = "Edit Lambda Variable";
 
         lambdaEditor.session.setValue(variableToEdit.lambdaCode);
+        savedHandler = button.onclick;
         button.onclick = () => { editLambda(variableToEdit, button); button.onclick = savedHandler; };
         break;
     
