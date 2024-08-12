@@ -108,9 +108,9 @@ function validateRandomVariable(isEditing = false) {
   });
 
   const nameVal = getSanitisedValue(nameField);
-  const min = getSanitisedValue(minField);
-  const max = getSanitisedValue(maxField);
-  const multiplierVal = getSanitisedValue(multiplierField);
+  const min = Number(getSanitisedValue(minField));
+  const max = Number(getSanitisedValue(maxField));
+  const multiplierVal = Number(getSanitisedValue(multiplierField));
 
   [nameField, minField, maxField].forEach((field) => {
     const val = getSanitisedValue(field);
@@ -624,7 +624,8 @@ function openEditorModal(element, variableId) {
         maxField.value = variableToEdit.max;
         multiplierField.value = variableToEdit.multiplier;
         title.innerText = "Edit Random Variable"
-        button.onclick = () => { editRandomVariable(variableToEdit, button)};
+        const savedHandler = button.onclick;
+        button.onclick = () => { editRandomVariable(variableToEdit, button); button.onclick = savedHandler; };
 
         break;
 
@@ -638,7 +639,8 @@ function openEditorModal(element, variableId) {
 
         optionsField.value = variableToEdit.choices.join("|");
         title.innerText = "Edit Choice Variable"
-        button.onclick = () => { editChoiceVariable(variableToEdit, button)};
+        const savedHandler = button.onclick;
+        button.onclick = () => { editChoiceVariable(variableToEdit, button); button.onclick = savedHandler; };
         
         break;
       case "expression":
@@ -651,7 +653,8 @@ function openEditorModal(element, variableId) {
         expressionEditor.setData(getContentWithMentionsProcessed(variableToEdit.expression));
 
         title.innerText = "Edit Mathematical Expression";
-        button.onclick = () => { editExpression(variableToEdit, button)};
+        const savedHandler = button.onclick;
+        button.onclick = () => { editExpression(variableToEdit, button); button.onclick = savedHandler; };
         break;
       case "lambda":
         replaceDialog('dialog5', undefined, 'lambda-name');
@@ -665,7 +668,8 @@ function openEditorModal(element, variableId) {
         title.innerText = "Edit Lambda Variable";
 
         lambdaEditor.session.setValue(variableToEdit.lambdaCode);
-        button.onclick = () => { editLambda(variableToEdit, button)};
+        const savedHandler = button.onclick;
+        button.onclick = () => { editLambda(variableToEdit, button); button.onclick = savedHandler; };
         break;
     
   }
