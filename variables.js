@@ -608,6 +608,7 @@ function openEditorModal(element, variableId) {
   let title;
   let button;
   let nameField;
+  const savedHandler = button.onclick;;
 
   switch (variableToEdit.type) {
     case "random":
@@ -624,7 +625,6 @@ function openEditorModal(element, variableId) {
         maxField.value = variableToEdit.max;
         multiplierField.value = variableToEdit.multiplier;
         title.innerText = "Edit Random Variable"
-        const savedHandler = button.onclick;
         button.onclick = () => { editRandomVariable(variableToEdit, button); button.onclick = savedHandler; };
 
         break;
@@ -639,7 +639,6 @@ function openEditorModal(element, variableId) {
 
         optionsField.value = variableToEdit.choices.join("|");
         title.innerText = "Edit Choice Variable"
-        const savedHandler = button.onclick;
         button.onclick = () => { editChoiceVariable(variableToEdit, button); button.onclick = savedHandler; };
         
         break;
@@ -653,7 +652,6 @@ function openEditorModal(element, variableId) {
         expressionEditor.setData(getContentWithMentionsProcessed(variableToEdit.expression));
 
         title.innerText = "Edit Mathematical Expression";
-        const savedHandler = button.onclick;
         button.onclick = () => { editExpression(variableToEdit, button); button.onclick = savedHandler; };
         break;
       case "lambda":
@@ -668,7 +666,6 @@ function openEditorModal(element, variableId) {
         title.innerText = "Edit Lambda Variable";
 
         lambdaEditor.session.setValue(variableToEdit.lambdaCode);
-        const savedHandler = button.onclick;
         button.onclick = () => { editLambda(variableToEdit, button); button.onclick = savedHandler; };
         break;
     
