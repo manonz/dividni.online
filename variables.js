@@ -110,7 +110,7 @@ function validateRandomVariable(isEditing = false) {
   const nameVal = getSanitisedValue(nameField);
   const min = Number(getSanitisedValue(minField));
   const max = Number(getSanitisedValue(maxField));
-  const multiplierVal = Number(getSanitisedValue(multiplierField));
+  const multiplierVal = getSanitisedValue(multiplierField);
 
   [nameField, minField, maxField].forEach((field) => {
     const val = getSanitisedValue(field);
