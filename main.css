@@ -408,18 +408,27 @@ textarea {
   padding: var(--space-24) var(--space-16);
 }
 
+.variables > div:not(.variables-heading) {
+  background-color: var(--accent-background-light);
+}
+
+.variables-wrapper {
+  flex: 1;
+}
+
 .variables-list {
   list-style-type: none;
   padding: 0;
   margin: 0;
+  cursor: pointer;
 }
 
 .variables-list__item {
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
   padding: var(--space-16) var(--space-8);
-}
-
-.variables-list__item:nth-child(even) {
-  background-color: var(--accent-background-light);
+  margin: var(--space-24);
 }
 
 .variables-list__item__heading {
@@ -437,7 +446,15 @@ textarea {
 }
 
 .variables .pill-button {
-  align-self: center;
+  margin: 0 auto;
+}
+
+.draggable-container--is-dragging {
+  border: 1px dashed black;
+}
+
+.draggable-source--is-dragging {
+  background-color: var(--color-gray-3);
 }
 
 .create__form__wrapper {
