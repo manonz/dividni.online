@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>OMR Scanning Results Verifier</title>
+   <link rel="stylesheet" href="style.css">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+</head>
+
+<body>
+   <div class="container">
+      <h1>OMR Scanning Results Verifier</h1>
+
+      <div class="upload-section">
+         <div class="files">
+            <label>
+               Upload ZIP file
+               <input type="file" id="zipInput" accept=".zip">
+            </label>
+
+            <label>
+               Upload TXT file
+               <input type="file" id="txtInput" accept=".txt">
+            </label>
+         </div>
+         <button id="process" class="processButton">1) Process</button>
+
+         <button id="download" class="downloadButton">2) Download the updated TXT</button>
+      </div>
+
+      <div class="view-container">
+         <div id="image">
+            <img id="resultImage" />
+            <canvas id="markerCanvas"></canvas>
+            <div id="image-loading-message" style="display: none;">Loading images...</div>
+         </div>
+      </div>
+
+      <div class="image-navigation">
+         <div class="nav-wrapper">
+            <button id="prev" class="nav-button left-nav">Previous</button>
+            <button id="next" class="nav-button right-nav">Next</button>
+         </div>
+      </div>
+   </div>
+   <script src="app.js"></script>
+</body>
+
+</html>
