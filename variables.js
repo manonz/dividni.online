@@ -72,6 +72,10 @@ let variables = [
   ),
 ];
 
+const draggable = new Draggable.Sortable(document.getElementById('variables-list'), {
+  draggable: 'li',
+});
+
 function isValidName(n) {
   const validVariableNameRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 
