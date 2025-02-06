@@ -43,7 +43,7 @@ dom.processButton.addEventListener('click', async () => {
 
 
       if (missingIndices.length > 0) {
-         alert(`Missing images：${missingIndices.join(", ")}, you may need to check the files.`);
+         alert(`Missing pages：${missingIndices.join(", ")}, you may need to check the files.`);
       }
 
       currentIndex = 0;
@@ -325,12 +325,12 @@ function handleNavigation(direction) {
    let newIndex = currentIndex + direction;
    if (newIndex < 0) {
       newIndex = 0;
-      alert("There are no more valid images before this.");
+      alert("There are no more valid pages before this.");
 
    }
    if (newIndex > items.length - 1) {
       newIndex = items.length - 1;
-      alert("There are no more valid images remaining.")
+      alert("There are no more valid pages remaining.")
    }
    currentIndex = newIndex;
 
