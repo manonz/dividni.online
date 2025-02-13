@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8" />
+   <meta name="apple-mobile-web-app-capable" content="yes" />
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+   <link rel="apple-touch-icon-precomposed" href="/logo/logo-192x192.png" />
+   <link rel="icon" type="image/png" href="/logo/logo-192x192.png" />
+   <title>OMR Response Reader</title>
+   <style>
+      body { font-family: Arial, sans-serif; margin: 40px auto; max-width: 600px; }
+
+      #loader { display: none; text-align: center; width: 50px; height: 50px; }
+
+      button { padding: 5px 10px; background: #007bff; color: #fff; border: none; cursor: pointer; }
+
+      #dlink { display: none; margin-top: 1em; color: #007bff; font-weight: bold; text-decoration: underline; }
+   </style>
+
+</head>
+<body>
+   <script type="text/javascript">
+      function uploadPdf() {
+         dlink.style.display = 'none';
+         const input = document.getElementById("fid");
+         const filename = getFilename(input.value);
+         if (input.files && input.files[0]) {
+            document.getElementById("loader").style.display = "block";
+            const formData = new FormData();
+            formData.append("PdFfile", input.files[0]);
+            const postUrl = "https://academicintegrity.cs.auckland.ac.nz/omr/api/ResponseReader/upload"
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", postUrl);
+            xhr.responseType = "blob";
+            xhr.onreadystatechange = function () {
+               if (xhr.readyState === XMLHttpRequest.DONE) {
+                  document.getElementById("loader").style.display = "none";
+                  const res_url = URL.createObjectURL(xhr.response);
+                  const lnk = document.getElementById("dlink");
+                  lnk.href = res_url;
+                  lnk.download = filename + "_results.zip";
+                  lnk.style.display = "block";
+                  document.getElementById("fid").value = "";
+               }
+            }
+            xhr.send(formData);
+
+         }
+      }
+
+      function getFilename(input) {
+         let filename = "File";
+         if (input) {
+            const startIndex = (input.indexOf('\\') >= 0 ? input.lastIndexOf('\\') : input.lastIndexOf('/'));
+            filename = input.substring(startIndex);
+            if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+               filename = filename.substring(1);
+            }
+         }
+         filename = filename.substring(0, filename.length - 4);
+         return filename;
+      }
+   </script>
+   <h1>OMR Response Reader</h1>
+   <p>
+      Upload the pdf here:
+   </p>
+   <input id="fid" name="fid" type="file" accept=".pdf" />
+   <p />
+   <button type="submit" onclick="uploadPdf()">Upload</button>
+   <p />
+   <hr />
+   <div id="loader">
+      <img src="Loader.svg" alt="Loading..." />
+   </div>
+   <p />
+   <p>
+      <a id="dlink" href="#" download="result.zip" style="display: none;">Download processed ZIP</a>
+   </p>
+</body>
+</html>
