@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="utf-8" />
+   <meta name="mobile-web-app-capable" content="yes" />
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+   <link rel="icon" type="image/svg+xml" href="https://dividni.com/images/Dividni-Logo.svg" />
+   <link rel="mask-icon" href="https://dividni.com/images/Dividni-Logo-Black.svg" color="red">
+   <title>McqGrader</title>
+   <style>
+      body { font-family: Arial, sans-serif; margin: 40px auto; max-width: 600px; }
+
+      #loader { display: none; text-align: center; width: 50px; height: 50px; }
+
+      button { padding: 5px 10px; background: #007bff; color: #fff; border: none; cursor: pointer; }
+
+      #dlink { display: none; margin-top: 1em; color: #007bff; font-weight: bold; text-decoration: underline; }
+   </style>
+
+</head>
+<body>
+   <script type="text/javascript">
+      window.onload = function(){
+         const feedback = document.getElementById("feedback");
+         const withAnswer = document.getElementById("withAnswer");
+
+         withAnswer.addEventListener("change", function(){
+            if (this.checked){
+               feedback.checked = true;
+            }
+         });
+
+         feedback.addEventListener("change", function(){
+            if (!this.checked){
+               withAnswer.checked = false;
+            }
+         });
+      }
+
+      function upload() {
+         dlink.style.display = 'none';
+         const answerInput = document.getElementById("fid");
+         const resultInput = document.getElementById("resultFile");
+         const filename = getFilename(resultInput.value);
+
+         if (!(answerInput.files && answerInput.files[0])) {
+            alert("Please choose an answer file.");
+            return;
+         }
+         if (!(resultInput.files && resultInput.files[0])) {
+            alert("Please choose a result txt file.");
+            return;
+         }
+
+         document.getElementById("loader").style.display = "block";
+         const formData = new FormData();
+         formData.append("answerFile", answerInput.files[0]);
+         formData.append("resultFile", resultInput.files[0]);
+         const feedback = document.getElementById("feedback").checked;
+         const withAnswer = document.getElementById("withAnswer").checked;
+         formData.append("feedback", feedback);
+         formData.append("withAnswer", withAnswer);
+         const postUrl = "http://localhost:8080/api/Upload";
+         const xhr = new XMLHttpRequest();
+         xhr.open("POST", postUrl);
+         xhr.responseType = "blob";
+         xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+               document.getElementById("loader").style.display = "none";
+               const res_url = URL.createObjectURL(xhr.response);
+               const lnk = document.getElementById("dlink");
+               lnk.href = res_url;
+               lnk.download = filename + "_GRADED.zip";
+               lnk.style.display = "block";
+               document.getElementById("fid").value = "";
+			   document.getElementById("resultFile").value = "";
+            }
+         }
+         xhr.send(formData);
+
+
+      }
+
+      function getFilename(input) {
+         let filename = "File";
+         if (input) {
+            const startIndex = (input.indexOf('\\') >= 0 ? input.lastIndexOf('\\') : input.lastIndexOf('/'));
+            filename = input.substring(startIndex);
+            if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+               filename = filename.substring(1);
+            }
+         }
+         filename = filename.substring(0, filename.length - 4);
+         return filename;
+      }
+   </script>
+   <h1>MCQ Grader</h1>
+
+   <p>Upload the answer zip file here (a 500MB limit applies):</p>
+   <input id="fid" name="fid" type="file" accept=".zip" />
+
+   <p>Upload a result txt file here (a 500MB limit applies):</p>
+   <input id="resultFile" name="resultFile" type="file" accept=".txt" />
+
+   <p>
+      <input type="checkbox" id="feedback" name="feedback" value="true" />
+      <label for="feedback">Include feedback in results</label>
+   </p>
+   <p>
+      <input type="checkbox" id="withAnswer" name="withAnswer" value="true" />
+      <label for="withAnswer">Include correct answer in feedback</label>
+   </p>
+   <button type="submit" onclick="upload()">Upload</button>
+   <p />
+   <hr />
+   <div id="loader">
+      <img src="Loader.svg" alt="Loading..." />
+   </div>
+   <p />
+   <p>
+      <a id="dlink" href="#" download="result.zip" style="display: none;">Download processed ZIP</a>
+   </p>
+</body>
+</html>
