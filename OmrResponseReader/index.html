@@ -20,6 +20,13 @@
 </head>
 <body>
    <script type="text/javascript">
+      fetch("https://academicintegrity.cs.auckland.ac.nz/omr/api/version").then(response=> response.text()).then(
+         version => {
+            document.getElementById("version").textContent = "v" + version;
+         }
+      );
+
+
       function uploadPdf() {
          dlink.style.display = 'none';
          const input = document.getElementById("fid");
@@ -77,5 +84,6 @@
    <p>
       <a id="dlink" href="#" download="result.zip" style="display: none;">Download processed ZIP</a>
    </p>
+   <footer id="version" class="footer">v25.01.18</footer>
 </body>
 </html>
