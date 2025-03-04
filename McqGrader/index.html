@@ -61,7 +61,7 @@
          const withAnswer = document.getElementById("withAnswer").checked;
          formData.append("feedback", feedback);
          formData.append("withAnswer", withAnswer);
-         const postUrl = "http://localhost:8080/api/Upload";
+         const postUrl = "https://academicintegrity.cs.auckland.ac.nz/mcqg/api/Upload";
          const xhr = new XMLHttpRequest();
          xhr.open("POST", postUrl);
          xhr.responseType = "blob";
