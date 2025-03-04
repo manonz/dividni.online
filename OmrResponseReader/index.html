@@ -20,7 +20,7 @@
 </head>
 <body>
    <script type="text/javascript">
-      fetch("https://academicintegrity.cs.auckland.ac.nz/omr/api/version").then(response=> response.text()).then(
+      fetch("https://academicintegrity.cs.auckland.ac.nz/omr/api/Version").then(response=> response.text()).then(
          version => {
             document.getElementById("version").textContent = "v" + version;
          }
@@ -35,7 +35,7 @@
             document.getElementById("loader").style.display = "block";
             const formData = new FormData();
             formData.append("PdFfile", input.files[0]);
-            const postUrl = "https://academicintegrity.cs.auckland.ac.nz/omr/api/ResponseReader/upload"
+            const postUrl = "https://academicintegrity.cs.auckland.ac.nz/omr/api/Upload"
             const xhr = new XMLHttpRequest();
             xhr.open("POST", postUrl);
             xhr.responseType = "blob";
