@@ -27,7 +27,7 @@
          border: 1px solid black;
       }
 
-      #logo {
+      .center {
          border: 1px solid #ccc;
          padding: 5px;
          max-width: 600px;
@@ -51,10 +51,13 @@
 
    <h1>OmrSheet Editor</h1>
 
-   <div id="logo">
-      <h3>Upload or remove logo</h3>
+   <div class="center">
+      <p><b>Upload or remove logo</b></p>
       <input type="file" id="uploadLogo" accept=".svg" />
       <button id="removeLogo">Remove Current Logo</button>
+   </div>
+   <div class="center">
+      To update any text, please double-click on the text.
    </div>
 
    <button id="downloadSvg">Download OmrSheet</button>
