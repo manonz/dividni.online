@@ -1959,8 +1959,8 @@
                const currentText = this.textContent;
                const inputText = prompt('Please edit text here', currentText);
 
-               if (inputText !== null) {
-                  this.textContent = currentText;
+               if (inputText !== null && inputText.trim() !== "") {
+                  this.textContent = inputText;
                }
             });
          });
