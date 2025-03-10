@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="icon" type="image/svg+xml" href="https://dividni.com/images/Dividni-Logo.svg" />
+   <link rel="mask-icon" href="https://dividni.com/images/Dividni-Logo-Black.svg" color="red">
+   <title>OmrSheet Editor</title>
+</head>
+<body>
+   <style>
+      button {
+         padding: 5px 10px;
+         background-color: #007bff;
+         color: #fff;
+         border: none;
+         cursor: pointer;
+      }
+
+      h1 {
+         text-align: center;
+      }
+
+      svg {
+         display: block;
+         margin: 0 auto;
+         border: 1px solid black;
+      }
+
+      #logo {
+         border: 1px solid #ccc;
+         padding: 5px;
+         max-width: 600px;
+         margin: auto;
+         background-color: #f9f9f9;
+         text-align: center;
+      }
+
+      #downloadSvg {
+         display: block;
+         margin: 20px auto;
+      }
+
+      #captionTexts text,
+      #instructions text {
+         cursor: pointer;
+      }
+
+
+   </style>
+
+   <h1>OmrSheet Editor</h1>
+
+   <div id="logo">
+      <h3>Upload or remove logo</h3>
+      <input type="file" id="uploadLogo" accept=".svg" />
+      <button id="removeLogo">Remove Current Logo</button>
+   </div>
+
+   <button id="downloadSvg">Download OmrSheet</button>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2100 2970" width="210mm" height="297mm">
+   <defs>
+      <rect id="textBox" height="65" width="55" fill="lightgray" stroke-width="2" />
+      <circle id="textCircle" r="18" stroke-width="2" />
+
+      <text id="textA" text-anchor="middle" stroke-width="0" font-size="20px">A</text>
+      <text id="textB" text-anchor="middle" stroke-width="0" font-size="20px">B</text>
+      <text id="textC" text-anchor="middle" stroke-width="0" font-size="20px">C</text>
+      <text id="textD" text-anchor="middle" stroke-width="0" font-size="20px">D</text>
+      <text id="textE" text-anchor="middle" stroke-width="0" font-size="20px">E</text>
+      <text id="textF" text-anchor="middle" stroke-width="0" font-size="20px">F</text>
+      <text id="textG" text-anchor="middle" stroke-width="0" font-size="20px">G</text>
+      <text id="textH" text-anchor="middle" stroke-width="0" font-size="20px">H</text>
+      <text id="textI" text-anchor="middle" stroke-width="0" font-size="20px">I</text>
+      <text id="textJ" text-anchor="middle" stroke-width="0" font-size="20px">J</text>
+      <text id="textK" text-anchor="middle" stroke-width="0" font-size="20px">K</text>
+      <text id="textL" text-anchor="middle" stroke-width="0" font-size="20px">L</text>
+      <text id="textM" text-anchor="middle" stroke-width="0" font-size="20px">M</text>
+      <text id="textN" text-anchor="middle" stroke-width="0" font-size="20px">N</text>
+      <text id="textO" text-anchor="middle" stroke-width="0" font-size="20px">O</text>
+      <text id="textP" text-anchor="middle" stroke-width="0" font-size="20px">P</text>
+      <text id="textQ" text-anchor="middle" stroke-width="0" font-size="20px">Q</text>
+      <text id="textR" text-anchor="middle" stroke-width="0" font-size="20px">R</text>
+      <text id="textS" text-anchor="middle" stroke-width="0" font-size="20px">S</text>
+      <text id="textT" text-anchor="middle" stroke-width="0" font-size="20px">T</text>
+      <text id="textU" text-anchor="middle" stroke-width="0" font-size="20px">U</text>
+      <text id="textV" text-anchor="middle" stroke-width="0" font-size="20px">V</text>
+      <text id="textW" text-anchor="middle" stroke-width="0" font-size="20px">W</text>
+      <text id="textX" text-anchor="middle" stroke-width="0" font-size="20px">X</text>
+      <text id="textY" text-anchor="middle" stroke-width="0" font-size="20px">Y</text>
+      <text id="textZ" text-anchor="middle" stroke-width="0" font-size="20px">Z</text>
+
+      <text id="text0" text-anchor="middle" stroke-width="0" font-size="20px">0</text>
+      <text id="text1" text-anchor="middle" stroke-width="0" font-size="20px">1</text>
+      <text id="text2" text-anchor="middle" stroke-width="0" font-size="20px">2</text>
+      <text id="text3" text-anchor="middle" stroke-width="0" font-size="20px">3</text>
+      <text id="text4" text-anchor="middle" stroke-width="0" font-size="20px">4</text>
+      <text id="text5" text-anchor="middle" stroke-width="0" font-size="20px">5</text>
+      <text id="text6" text-anchor="middle" stroke-width="0" font-size="20px">6</text>
+      <text id="text7" text-anchor="middle" stroke-width="0" font-size="20px">7</text>
+      <text id="text8" text-anchor="middle" stroke-width="0" font-size="20px">8</text>
+      <text id="text9" text-anchor="middle" stroke-width="0" font-size="20px">9</text>
+   </defs>
+   <rect id="background" width="2100" height="2970" fill="none" />
+   <g id="registrationMarks" fill="black" stroke="black">
+      <rect id="regMarkBL" x="20" y="2900" height="50" width="50" />
+      <rect id="regMarkBR" x="2030" y="2900" height="50" width="50" />
+      <rect id="regMarkTR" x="2030" y="400" height="50" width="50" />
+      <polyline id="regMarkTL" points="20,400 120,400 120,450 70,450 70,500 20,500" />
+   </g>
+   <g font-family="Arial" stroke="black">
+      <g id="captionTexts" font-size="40px" stroke-width="0">
+         <text id="courseInfoText" x="100" y="140">COURSE INFO: ____________________________________</text>
+         <text id="dateInfoText" x="1300" y="140">DATE: _______________________</text>
+         <text id="studentNameText" x="100" y="240">STUDENT NAME: ____________________________________________________________________</text>
+         <text id="studentIdText" x="100" y="540">STUDENT ID</text>
+         <text id="scriptVersionText" x="1250" y="540">SCRIPT VERSION</text>
+         <text id="responsesTitle" x="1000" y="2000" text-anchor="middle" transform="translate(-740) rotate(270,1000,2200) ">RESPONSES</text>
+      </g>
+      <g id="instructions">
+         <rect id="instructionBox" x="1050" y="1300" height="300" width="900" fill="none" stroke-width="2" />
+         <g stroke-width="0" font-size="28px">
+            <text id="instructionTitle" x="1500" y="1350" font-weight="bold" text-anchor="middle">INSTRUCTIONS</text>
+            <text id="instruction01" x="1100" y="1400">Use an erasable soft pencil.</text>
+            <text id="instruction02" x="1100" y="1440">Fill the bubbles completely.</text>
+            <text id="instruction03" x="1100" y="1480">Erase completely to change.</text>
+            <text id="instruction04" x="1100" y="1520">Do not fold this form.</text>
+            <text id="instruction05" x="1100" y="1560">Do not write on the back of this form.</text>
+         </g>
+      </g>
+      <g id="studentIdTextbox">
+         <use href="#textBox" x="100" y="550" />
+         <use href="#textBox" x="160" y="550" />
+         <use href="#textBox" x="220" y="550" />
+         <use href="#textBox" x="280" y="550" />
+         <use href="#textBox" x="340" y="550" />
+         <use href="#textBox" x="400" y="550" />
+         <use href="#textBox" x="460" y="550" />
+         <use href="#textBox" x="520" y="550" />
+         <use href="#textBox" x="580" y="550" />
+         <use href="#textBox" x="640" y="550" />
+         <use href="#textBox" x="700" y="550" />
+         <use href="#textBox" x="760" y="550" />
+         <use href="#textBox" x="820" y="550" />
+         <use href="#textBox" x="880" y="550" />
+         <use href="#textBox" x="940" y="550" />
+         <use href="#textBox" x="1000" y="550" />
+         <use href="#textBox" x="1060" y="550" />
+         <use href="#textBox" x="1120" y="550" />
+      </g>
+      <g id="scriptVersionTextbox">
+         <use href="#textBox" x="1250" y="550" />
+         <use href="#textBox" x="1310" y="550" />
+         <use href="#textBox" x="1370" y="550" />
+         <use href="#textBox" x="1430" y="550" />
+         <use href="#textBox" x="1490" y="550" />
+         <use href="#textBox" x="1550" y="550" />
+         <use href="#textBox" x="1610" y="550" />
+         <use href="#textBox" x="1670" y="550" />
+         <use href="#textBox" x="1730" y="550" />
+         <use href="#textBox" x="1790" y="550" />
+         <use href="#textBox" x="1850" y="550" />
+         <use href="#textBox" x="1910" y="550" />
+      </g>
+
+
+      <g id="studentIdBubbles">
+         <g id="row00studentId">
+            <use href="#textCircle" fill="none" x="125" y="660" />
+            <use href="#text0" x="125" y="665" />
+            <use href="#textCircle" fill="none" x="185" y="660" />
+            <use href="#text0" x="185" y="665" />
+            <use href="#textCircle" fill="none" x="245" y="660" />
+            <use href="#text0" x="245" y="665" />
+            <use href="#textCircle" fill="none" x="305" y="660" />
+            <use href="#text0" x="305" y="665" />
+            <use href="#textCircle" fill="none" x="365" y="660" />
+            <use href="#text0" x="365" y="665" />
+            <use href="#textCircle" fill="none" x="425" y="660" />
+            <use href="#text0" x="425" y="665" />
+            <use href="#textCircle" fill="none" x="485" y="660" />
+            <use href="#text0" x="485" y="665" />
+            <use href="#textCircle" fill="none" x="545" y="660" />
+            <use href="#text0" x="545" y="665" />
+            <use href="#textCircle" fill="none" x="605" y="660" />
+            <use href="#text0" x="605" y="665" />
+            <use href="#textCircle" fill="none" x="665" y="660" />
+            <use href="#text0" x="665" y="665" />
+            <use href="#textCircle" fill="none" x="725" y="660" />
+            <use href="#text0" x="725" y="665" />
+            <use href="#textCircle" fill="none" x="785" y="660" />
+            <use href="#text0" x="785" y="665" />
+            <use href="#textCircle" fill="none" x="845" y="660" />
+            <use href="#text0" x="845" y="665" />
+            <use href="#textCircle" fill="none" x="905" y="660" />
+            <use href="#text0" x="905" y="665" />
+            <use href="#textCircle" fill="none" x="965" y="660" />
+            <use href="#text0" x="965" y="665" />
+            <use href="#textCircle" fill="none" x="1025" y="660" />
+            <use href="#text0" x="1025" y="665" />
+            <use href="#textCircle" fill="none" x="1085" y="660" />
+            <use href="#text0" x="1085" y="665" />
+            <use href="#textCircle" fill="none" x="1145" y="660" />
+            <use href="#text0" x="1145" y="665" />
+         </g>
+         <g id="row01studentId">
+            <use href="#textCircle" fill="none" x="125" y="720" />
+            <use href="#text1" x="125" y="725" />
+            <use href="#textCircle" fill="none" x="185" y="720" />
+            <use href="#text1" x="185" y="725" />
+            <use href="#textCircle" fill="none" x="245" y="720" />
+            <use href="#text1" x="245" y="725" />
+            <use href="#textCircle" fill="none" x="305" y="720" />
+            <use href="#text1" x="305" y="725" />
+            <use href="#textCircle" fill="none" x="365" y="720" />
+            <use href="#text1" x="365" y="725" />
+            <use href="#textCircle" fill="none" x="425" y="720" />
+            <use href="#text1" x="425" y="725" />
+            <use href="#textCircle" fill="none" x="485" y="720" />
+            <use href="#text1" x="485" y="725" />
+            <use href="#textCircle" fill="none" x="545" y="720" />
+            <use href="#text1" x="545" y="725" />
+            <use href="#textCircle" fill="none" x="605" y="720" />
+            <use href="#text1" x="605" y="725" />
+            <use href="#textCircle" fill="none" x="665" y="720" />
+            <use href="#text1" x="665" y="725" />
+            <use href="#textCircle" fill="none" x="725" y="720" />
+            <use href="#text1" x="725" y="725" />
+            <use href="#textCircle" fill="none" x="785" y="720" />
+            <use href="#text1" x="785" y="725" />
+            <use href="#textCircle" fill="none" x="845" y="720" />
+            <use href="#text1" x="845" y="725" />
+            <use href="#textCircle" fill="none" x="905" y="720" />
+            <use href="#text1" x="905" y="725" />
+            <use href="#textCircle" fill="none" x="965" y="720" />
+            <use href="#text1" x="965" y="725" />
+            <use href="#textCircle" fill="none" x="1025" y="720" />
+            <use href="#text1" x="1025" y="725" />
+            <use href="#textCircle" fill="none" x="1085" y="720" />
+            <use href="#text1" x="1085" y="725" />
+            <use href="#textCircle" fill="none" x="1145" y="720" />
+            <use href="#text1" x="1145" y="725" />
+         </g>
+         <g id="row02studentId">
+            <use href="#textCircle" fill="none" x="125" y="780" />
+            <use href="#text2" x="125" y="785" />
+            <use href="#textCircle" fill="none" x="185" y="780" />
+            <use href="#text2" x="185" y="785" />
+            <use href="#textCircle" fill="none" x="245" y="780" />
+            <use href="#text2" x="245" y="785" />
+            <use href="#textCircle" fill="none" x="305" y="780" />
+            <use href="#text2" x="305" y="785" />
+            <use href="#textCircle" fill="none" x="365" y="780" />
+            <use href="#text2" x="365" y="785" />
+            <use href="#textCircle" fill="none" x="425" y="780" />
+            <use href="#text2" x="425" y="785" />
+            <use href="#textCircle" fill="none" x="485" y="780" />
+            <use href="#text2" x="485" y="785" />
+            <use href="#textCircle" fill="none" x="545" y="780" />
+            <use href="#text2" x="545" y="785" />
+            <use href="#textCircle" fill="none" x="605" y="780" />
+            <use href="#text2" x="605" y="785" />
+            <use href="#textCircle" fill="none" x="665" y="780" />
+            <use href="#text2" x="665" y="785" />
+            <use href="#textCircle" fill="none" x="725" y="780" />
+            <use href="#text2" x="725" y="785" />
+            <use href="#textCircle" fill="none" x="785" y="780" />
+            <use href="#text2" x="785" y="785" />
+            <use href="#textCircle" fill="none" x="845" y="780" />
+            <use href="#text2" x="845" y="785" />
+            <use href="#textCircle" fill="none" x="905" y="780" />
+            <use href="#text2" x="905" y="785" />
+            <use href="#textCircle" fill="none" x="965" y="780" />
+            <use href="#text2" x="965" y="785" />
+            <use href="#textCircle" fill="none" x="1025" y="780" />
+            <use href="#text2" x="1025" y="785" />
+            <use href="#textCircle" fill="none" x="1085" y="780" />
+            <use href="#text2" x="1085" y="785" />
+            <use href="#textCircle" fill="none" x="1145" y="780" />
+            <use href="#text2" x="1145" y="785" />
+         </g>
+         <g id="row03studentId">
+            <use href="#textCircle" fill="none" x="125" y="840" />
+            <use href="#text3" x="125" y="845" />
+            <use href="#textCircle" fill="none" x="185" y="840" />
+            <use href="#text3" x="185" y="845" />
+            <use href="#textCircle" fill="none" x="245" y="840" />
+            <use href="#text3" x="245" y="845" />
+            <use href="#textCircle" fill="none" x="305" y="840" />
+            <use href="#text3" x="305" y="845" />
+            <use href="#textCircle" fill="none" x="365" y="840" />
+            <use href="#text3" x="365" y="845" />
+            <use href="#textCircle" fill="none" x="425" y="840" />
+            <use href="#text3" x="425" y="845" />
+            <use href="#textCircle" fill="none" x="485" y="840" />
+            <use href="#text3" x="485" y="845" />
+            <use href="#textCircle" fill="none" x="545" y="840" />
+            <use href="#text3" x="545" y="845" />
+            <use href="#textCircle" fill="none" x="605" y="840" />
+            <use href="#text3" x="605" y="845" />
+            <use href="#textCircle" fill="none" x="665" y="840" />
+            <use href="#text3" x="665" y="845" />
+            <use href="#textCircle" fill="none" x="725" y="840" />
+            <use href="#text3" x="725" y="845" />
+            <use href="#textCircle" fill="none" x="785" y="840" />
+            <use href="#text3" x="785" y="845" />
+            <use href="#textCircle" fill="none" x="845" y="840" />
+            <use href="#text3" x="845" y="845" />
+            <use href="#textCircle" fill="none" x="905" y="840" />
+            <use href="#text3" x="905" y="845" />
+            <use href="#textCircle" fill="none" x="965" y="840" />
+            <use href="#text3" x="965" y="845" />
+            <use href="#textCircle" fill="none" x="1025" y="840" />
+            <use href="#text3" x="1025" y="845" />
+            <use href="#textCircle" fill="none" x="1085" y="840" />
+            <use href="#text3" x="1085" y="845" />
+            <use href="#textCircle" fill="none" x="1145" y="840" />
+            <use href="#text3" x="1145" y="845" />
+         </g>
+         <g id="row04studentId">
+            <use href="#textCircle" fill="none" x="125" y="900" />
+            <use href="#text4" x="125" y="905" />
+            <use href="#textCircle" fill="none" x="185" y="900" />
+            <use href="#text4" x="185" y="905" />
+            <use href="#textCircle" fill="none" x="245" y="900" />
+            <use href="#text4" x="245" y="905" />
+            <use href="#textCircle" fill="none" x="305" y="900" />
+            <use href="#text4" x="305" y="905" />
+            <use href="#textCircle" fill="none" x="365" y="900" />
+            <use href="#text4" x="365" y="905" />
+            <use href="#textCircle" fill="none" x="425" y="900" />
+            <use href="#text4" x="425" y="905" />
+            <use href="#textCircle" fill="none" x="485" y="900" />
+            <use href="#text4" x="485" y="905" />
+            <use href="#textCircle" fill="none" x="545" y="900" />
+            <use href="#text4" x="545" y="905" />
+            <use href="#textCircle" fill="none" x="605" y="900" />
+            <use href="#text4" x="605" y="905" />
+            <use href="#textCircle" fill="none" x="665" y="900" />
+            <use href="#text4" x="665" y="905" />
+            <use href="#textCircle" fill="none" x="725" y="900" />
+            <use href="#text4" x="725" y="905" />
+            <use href="#textCircle" fill="none" x="785" y="900" />
+            <use href="#text4" x="785" y="905" />
+            <use href="#textCircle" fill="none" x="845" y="900" />
+            <use href="#text4" x="845" y="905" />
+            <use href="#textCircle" fill="none" x="905" y="900" />
+            <use href="#text4" x="905" y="905" />
+            <use href="#textCircle" fill="none" x="965" y="900" />
+            <use href="#text4" x="965" y="905" />
+            <use href="#textCircle" fill="none" x="1025" y="900" />
+            <use href="#text4" x="1025" y="905" />
+            <use href="#textCircle" fill="none" x="1085" y="900" />
+            <use href="#text4" x="1085" y="905" />
+            <use href="#textCircle" fill="none" x="1145" y="900" />
+            <use href="#text4" x="1145" y="905" />
+         </g>
+         <g id="row05studentId">
+            <use href="#textCircle" fill="none" x="125" y="960" />
+            <use href="#text5" x="125" y="965" />
+            <use href="#textCircle" fill="none" x="185" y="960" />
+            <use href="#text5" x="185" y="965" />
+            <use href="#textCircle" fill="none" x="245" y="960" />
+            <use href="#text5" x="245" y="965" />
+            <use href="#textCircle" fill="none" x="305" y="960" />
+            <use href="#text5" x="305" y="965" />
+            <use href="#textCircle" fill="none" x="365" y="960" />
+            <use href="#text5" x="365" y="965" />
+            <use href="#textCircle" fill="none" x="425" y="960" />
+            <use href="#text5" x="425" y="965" />
+            <use href="#textCircle" fill="none" x="485" y="960" />
+            <use href="#text5" x="485" y="965" />
+            <use href="#textCircle" fill="none" x="545" y="960" />
+            <use href="#text5" x="545" y="965" />
+            <use href="#textCircle" fill="none" x="605" y="960" />
+            <use href="#text5" x="605" y="965" />
+            <use href="#textCircle" fill="none" x="665" y="960" />
+            <use href="#text5" x="665" y="965" />
+            <use href="#textCircle" fill="none" x="725" y="960" />
+            <use href="#text5" x="725" y="965" />
+            <use href="#textCircle" fill="none" x="785" y="960" />
+            <use href="#text5" x="785" y="965" />
+            <use href="#textCircle" fill="none" x="845" y="960" />
+            <use href="#text5" x="845" y="965" />
+            <use href="#textCircle" fill="none" x="905" y="960" />
+            <use href="#text5" x="905" y="965" />
+            <use href="#textCircle" fill="none" x="965" y="960" />
+            <use href="#text5" x="965" y="965" />
+            <use href="#textCircle" fill="none" x="1025" y="960" />
+            <use href="#text5" x="1025" y="965" />
+            <use href="#textCircle" fill="none" x="1085" y="960" />
+            <use href="#text5" x="1085" y="965" />
+            <use href="#textCircle" fill="none" x="1145" y="960" />
+            <use href="#text5" x="1145" y="965" />
+         </g>
+         <g id="row06studentId">
+            <use href="#textCircle" fill="none" x="125" y="1020" />
+            <use href="#text6" x="125" y="1025" />
+            <use href="#textCircle" fill="none" x="185" y="1020" />
+            <use href="#text6" x="185" y="1025" />
+            <use href="#textCircle" fill="none" x="245" y="1020" />
+            <use href="#text6" x="245" y="1025" />
+            <use href="#textCircle" fill="none" x="305" y="1020" />
+            <use href="#text6" x="305" y="1025" />
+            <use href="#textCircle" fill="none" x="365" y="1020" />
+            <use href="#text6" x="365" y="1025" />
+            <use href="#textCircle" fill="none" x="425" y="1020" />
+            <use href="#text6" x="425" y="1025" />
+            <use href="#textCircle" fill="none" x="485" y="1020" />
+            <use href="#text6" x="485" y="1025" />
+            <use href="#textCircle" fill="none" x="545" y="1020" />
+            <use href="#text6" x="545" y="1025" />
+            <use href="#textCircle" fill="none" x="605" y="1020" />
+            <use href="#text6" x="605" y="1025" />
+            <use href="#textCircle" fill="none" x="665" y="1020" />
+            <use href="#text6" x="665" y="1025" />
+            <use href="#textCircle" fill="none" x="725" y="1020" />
+            <use href="#text6" x="725" y="1025" />
+            <use href="#textCircle" fill="none" x="785" y="1020" />
+            <use href="#text6" x="785" y="1025" />
+            <use href="#textCircle" fill="none" x="845" y="1020" />
+            <use href="#text6" x="845" y="1025" />
+            <use href="#textCircle" fill="none" x="905" y="1020" />
+            <use href="#text6" x="905" y="1025" />
+            <use href="#textCircle" fill="none" x="965" y="1020" />
+            <use href="#text6" x="965" y="1025" />
+            <use href="#textCircle" fill="none" x="1025" y="1020" />
+            <use href="#text6" x="1025" y="1025" />
+            <use href="#textCircle" fill="none" x="1085" y="1020" />
+            <use href="#text6" x="1085" y="1025" />
+            <use href="#textCircle" fill="none" x="1145" y="1020" />
+            <use href="#text6" x="1145" y="1025" />
+         </g>
+         <g id="row07studentId">
+            <use href="#textCircle" fill="none" x="125" y="1080" />
+            <use href="#text7" x="125" y="1085" />
+            <use href="#textCircle" fill="none" x="185" y="1080" />
+            <use href="#text7" x="185" y="1085" />
+            <use href="#textCircle" fill="none" x="245" y="1080" />
+            <use href="#text7" x="245" y="1085" />
+            <use href="#textCircle" fill="none" x="305" y="1080" />
+            <use href="#text7" x="305" y="1085" />
+            <use href="#textCircle" fill="none" x="365" y="1080" />
+            <use href="#text7" x="365" y="1085" />
+            <use href="#textCircle" fill="none" x="425" y="1080" />
+            <use href="#text7" x="425" y="1085" />
+            <use href="#textCircle" fill="none" x="485" y="1080" />
+            <use href="#text7" x="485" y="1085" />
+            <use href="#textCircle" fill="none" x="545" y="1080" />
+            <use href="#text7" x="545" y="1085" />
+            <use href="#textCircle" fill="none" x="605" y="1080" />
+            <use href="#text7" x="605" y="1085" />
+            <use href="#textCircle" fill="none" x="665" y="1080" />
+            <use href="#text7" x="665" y="1085" />
+            <use href="#textCircle" fill="none" x="725" y="1080" />
+            <use href="#text7" x="725" y="1085" />
+            <use href="#textCircle" fill="none" x="785" y="1080" />
+            <use href="#text7" x="785" y="1085" />
+            <use href="#textCircle" fill="none" x="845" y="1080" />
+            <use href="#text7" x="845" y="1085" />
+            <use href="#textCircle" fill="none" x="905" y="1080" />
+            <use href="#text7" x="905" y="1085" />
+            <use href="#textCircle" fill="none" x="965" y="1080" />
+            <use href="#text7" x="965" y="1085" />
+            <use href="#textCircle" fill="none" x="1025" y="1080" />
+            <use href="#text7" x="1025" y="1085" />
+            <use href="#textCircle" fill="none" x="1085" y="1080" />
+            <use href="#text7" x="1085" y="1085" />
+            <use href="#textCircle" fill="none" x="1145" y="1080" />
+            <use href="#text7" x="1145" y="1085" />
+         </g>
+         <g id="row08studentId">
+            <use href="#textCircle" fill="none" x="125" y="1140" />
+            <use href="#text8" x="125" y="1145" />
+            <use href="#textCircle" fill="none" x="185" y="1140" />
+            <use href="#text8" x="185" y="1145" />
+            <use href="#textCircle" fill="none" x="245" y="1140" />
+            <use href="#text8" x="245" y="1145" />
+            <use href="#textCircle" fill="none" x="305" y="1140" />
+            <use href="#text8" x="305" y="1145" />
+            <use href="#textCircle" fill="none" x="365" y="1140" />
+            <use href="#text8" x="365" y="1145" />
+            <use href="#textCircle" fill="none" x="425" y="1140" />
+            <use href="#text8" x="425" y="1145" />
+            <use href="#textCircle" fill="none" x="485" y="1140" />
+            <use href="#text8" x="485" y="1145" />
+            <use href="#textCircle" fill="none" x="545" y="1140" />
+            <use href="#text8" x="545" y="1145" />
+            <use href="#textCircle" fill="none" x="605" y="1140" />
+            <use href="#text8" x="605" y="1145" />
+            <use href="#textCircle" fill="none" x="665" y="1140" />
+            <use href="#text8" x="665" y="1145" />
+            <use href="#textCircle" fill="none" x="725" y="1140" />
+            <use href="#text8" x="725" y="1145" />
+            <use href="#textCircle" fill="none" x="785" y="1140" />
+            <use href="#text8" x="785" y="1145" />
+            <use href="#textCircle" fill="none" x="845" y="1140" />
+            <use href="#text8" x="845" y="1145" />
+            <use href="#textCircle" fill="none" x="905" y="1140" />
+            <use href="#text8" x="905" y="1145" />
+            <use href="#textCircle" fill="none" x="965" y="1140" />
+            <use href="#text8" x="965" y="1145" />
+            <use href="#textCircle" fill="none" x="1025" y="1140" />
+            <use href="#text8" x="1025" y="1145" />
+            <use href="#textCircle" fill="none" x="1085" y="1140" />
+            <use href="#text8" x="1085" y="1145" />
+            <use href="#textCircle" fill="none" x="1145" y="1140" />
+            <use href="#text8" x="1145" y="1145" />
+         </g>
+         <g id="row09studentId">
+            <use href="#textCircle" fill="none" x="125" y="1200" />
+            <use href="#text9" x="125" y="1205" />
+            <use href="#textCircle" fill="none" x="185" y="1200" />
+            <use href="#text9" x="185" y="1205" />
+            <use href="#textCircle" fill="none" x="245" y="1200" />
+            <use href="#text9" x="245" y="1205" />
+            <use href="#textCircle" fill="none" x="305" y="1200" />
+            <use href="#text9" x="305" y="1205" />
+            <use href="#textCircle" fill="none" x="365" y="1200" />
+            <use href="#text9" x="365" y="1205" />
+            <use href="#textCircle" fill="none" x="425" y="1200" />
+            <use href="#text9" x="425" y="1205" />
+            <use href="#textCircle" fill="none" x="485" y="1200" />
+            <use href="#text9" x="485" y="1205" />
+            <use href="#textCircle" fill="none" x="545" y="1200" />
+            <use href="#text9" x="545" y="1205" />
+            <use href="#textCircle" fill="none" x="605" y="1200" />
+            <use href="#text9" x="605" y="1205" />
+            <use href="#textCircle" fill="none" x="665" y="1200" />
+            <use href="#text9" x="665" y="1205" />
+            <use href="#textCircle" fill="none" x="725" y="1200" />
+            <use href="#text9" x="725" y="1205" />
+            <use href="#textCircle" fill="none" x="785" y="1200" />
+            <use href="#text9" x="785" y="1205" />
+            <use href="#textCircle" fill="none" x="845" y="1200" />
+            <use href="#text9" x="845" y="1205" />
+            <use href="#textCircle" fill="none" x="905" y="1200" />
+            <use href="#text9" x="905" y="1205" />
+            <use href="#textCircle" fill="none" x="965" y="1200" />
+            <use href="#text9" x="965" y="1205" />
+            <use href="#textCircle" fill="none" x="1025" y="1200" />
+            <use href="#text9" x="1025" y="1205" />
+            <use href="#textCircle" fill="none" x="1085" y="1200" />
+            <use href="#text9" x="1085" y="1205" />
+            <use href="#textCircle" fill="none" x="1145" y="1200" />
+            <use href="#text9" x="1145" y="1205" />
+         </g>
+      </g>
+      <g id="scriptVersionBubbles">
+         <g id="row00scriptVersion">
+            <use id="d00c11" href="#textCircle" fill="none" x="1275" y="660" />
+            <use href="#text0" x="1275" y="665" />
+            <use id="d00c10" href="#textCircle" fill="none" x="1335" y="660" />
+            <use href="#text0" x="1335" y="665" />
+            <use id="d00c09" href="#textCircle" fill="none" x="1395" y="660" />
+            <use href="#text0" x="1395" y="665" />
+            <use id="d00c08" href="#textCircle" fill="none" x="1455" y="660" />
+            <use href="#text0" x="1455" y="665" />
+            <use id="d00c07" href="#textCircle" fill="none" x="1515" y="660" />
+            <use href="#text0" x="1515" y="665" />
+            <use id="d00c06" href="#textCircle" fill="none" x="1575" y="660" />
+            <use href="#text0" x="1575" y="665" />
+            <use id="d00c05" href="#textCircle" fill="none" x="1635" y="660" />
+            <use href="#text0" x="1635" y="665" />
+            <use id="d00c04" href="#textCircle" fill="none" x="1695" y="660" />
+            <use href="#text0" x="1695" y="665" />
+            <use id="d00c03" href="#textCircle" fill="none" x="1755" y="660" />
+            <use href="#text0" x="1755" y="665" />
+            <use id="d00c02" href="#textCircle" fill="none" x="1815" y="660" />
+            <use href="#text0" x="1815" y="665" />
+            <use id="d00c01" href="#textCircle" fill="none" x="1875" y="660" />
+            <use href="#text0" x="1875" y="665" />
+            <use id="d00c00" href="#textCircle" fill="none" x="1935" y="660" />
+            <use href="#text0" x="1935" y="665" />
+         </g>
+         <g id="row01scriptVersion">
+            <use id="d01c11" href="#textCircle" fill="none" x="1275" y="720" />
+            <use href="#text1" x="1275" y="725" />
+            <use id="d01c10" href="#textCircle" fill="none" x="1335" y="720" />
+            <use href="#text1" x="1335" y="725" />
+            <use id="d01c09" href="#textCircle" fill="none" x="1395" y="720" />
+            <use href="#text1" x="1395" y="725" />
+            <use id="d01c08" href="#textCircle" fill="none" x="1455" y="720" />
+            <use href="#text1" x="1455" y="725" />
+            <use id="d01c07" href="#textCircle" fill="none" x="1515" y="720" />
+            <use href="#text1" x="1515" y="725" />
+            <use id="d01c06" href="#textCircle" fill="none" x="1575" y="720" />
+            <use href="#text1" x="1575" y="725" />
+            <use id="d01c05" href="#textCircle" fill="none" x="1635" y="720" />
+            <use href="#text1" x="1635" y="725" />
+            <use id="d01c04" href="#textCircle" fill="none" x="1695" y="720" />
+            <use href="#text1" x="1695" y="725" />
+            <use id="d01c03" href="#textCircle" fill="none" x="1755" y="720" />
+            <use href="#text1" x="1755" y="725" />
+            <use id="d01c02" href="#textCircle" fill="none" x="1815" y="720" />
+            <use href="#text1" x="1815" y="725" />
+            <use id="d01c01" href="#textCircle" fill="none" x="1875" y="720" />
+            <use href="#text1" x="1875" y="725" />
+            <use id="d01c00" href="#textCircle" fill="none" x="1935" y="720" />
+            <use href="#text1" x="1935" y="725" />
+         </g>
+         <g id="row02scriptVersion">
+            <use id="d02c11" href="#textCircle" fill="none" x="1275" y="780" />
+            <use href="#text2" x="1275" y="785" />
+            <use id="d02c10" href="#textCircle" fill="none" x="1335" y="780" />
+            <use href="#text2" x="1335" y="785" />
+            <use id="d02c09" href="#textCircle" fill="none" x="1395" y="780" />
+            <use href="#text2" x="1395" y="785" />
+            <use id="d02c08" href="#textCircle" fill="none" x="1455" y="780" />
+            <use href="#text2" x="1455" y="785" />
+            <use id="d02c07" href="#textCircle" fill="none" x="1515" y="780" />
+            <use href="#text2" x="1515" y="785" />
+            <use id="d02c06" href="#textCircle" fill="none" x="1575" y="780" />
+            <use href="#text2" x="1575" y="785" />
+            <use id="d02c05" href="#textCircle" fill="none" x="1635" y="780" />
+            <use href="#text2" x="1635" y="785" />
+            <use id="d02c04" href="#textCircle" fill="none" x="1695" y="780" />
+            <use href="#text2" x="1695" y="785" />
+            <use id="d02c03" href="#textCircle" fill="none" x="1755" y="780" />
+            <use href="#text2" x="1755" y="785" />
+            <use id="d02c02" href="#textCircle" fill="none" x="1815" y="780" />
+            <use href="#text2" x="1815" y="785" />
+            <use id="d02c01" href="#textCircle" fill="none" x="1875" y="780" />
+            <use href="#text2" x="1875" y="785" />
+            <use id="d02c00" href="#textCircle" fill="none" x="1935" y="780" />
+            <use href="#text2" x="1935" y="785" />
+         </g>
+         <g id="row03scriptVersion">
+            <use id="d03c11" href="#textCircle" fill="none" x="1275" y="840" />
+            <use href="#text3" x="1275" y="845" />
+            <use id="d03c10" href="#textCircle" fill="none" x="1335" y="840" />
+            <use href="#text3" x="1335" y="845" />
+            <use id="d03c09" href="#textCircle" fill="none" x="1395" y="840" />
+            <use href="#text3" x="1395" y="845" />
+            <use id="d03c08" href="#textCircle" fill="none" x="1455" y="840" />
+            <use href="#text3" x="1455" y="845" />
+            <use id="d03c07" href="#textCircle" fill="none" x="1515" y="840" />
+            <use href="#text3" x="1515" y="845" />
+            <use id="d03c06" href="#textCircle" fill="none" x="1575" y="840" />
+            <use href="#text3" x="1575" y="845" />
+            <use id="d03c05" href="#textCircle" fill="none" x="1635" y="840" />
+            <use href="#text3" x="1635" y="845" />
+            <use id="d03c04" href="#textCircle" fill="none" x="1695" y="840" />
+            <use href="#text3" x="1695" y="845" />
+            <use id="d03c03" href="#textCircle" fill="none" x="1755" y="840" />
+            <use href="#text3" x="1755" y="845" />
+            <use id="d03c02" href="#textCircle" fill="none" x="1815" y="840" />
+            <use href="#text3" x="1815" y="845" />
+            <use id="d03c01" href="#textCircle" fill="none" x="1875" y="840" />
+            <use href="#text3" x="1875" y="845" />
+            <use id="d03c00" href="#textCircle" fill="none" x="1935" y="840" />
+            <use href="#text3" x="1935" y="845" />
+         </g>
+         <g id="row04scriptVersion">
+            <use id="d04c11" href="#textCircle" fill="none" x="1275" y="900" />
+            <use href="#text4" x="1275" y="905" />
+            <use id="d04c10" href="#textCircle" fill="none" x="1335" y="900" />
+            <use href="#text4" x="1335" y="905" />
+            <use id="d04c09" href="#textCircle" fill="none" x="1395" y="900" />
+            <use href="#text4" x="1395" y="905" />
+            <use id="d04c08" href="#textCircle" fill="none" x="1455" y="900" />
+            <use href="#text4" x="1455" y="905" />
+            <use id="d04c07" href="#textCircle" fill="none" x="1515" y="900" />
+            <use href="#text4" x="1515" y="905" />
+            <use id="d04c06" href="#textCircle" fill="none" x="1575" y="900" />
+            <use href="#text4" x="1575" y="905" />
+            <use id="d04c05" href="#textCircle" fill="none" x="1635" y="900" />
+            <use href="#text4" x="1635" y="905" />
+            <use id="d04c04" href="#textCircle" fill="none" x="1695" y="900" />
+            <use href="#text4" x="1695" y="905" />
+            <use id="d04c03" href="#textCircle" fill="none" x="1755" y="900" />
+            <use href="#text4" x="1755" y="905" />
+            <use id="d04c02" href="#textCircle" fill="none" x="1815" y="900" />
+            <use href="#text4" x="1815" y="905" />
+            <use id="d04c01" href="#textCircle" fill="none" x="1875" y="900" />
+            <use href="#text4" x="1875" y="905" />
+            <use id="d04c00" href="#textCircle" fill="none" x="1935" y="900" />
+            <use href="#text4" x="1935" y="905" />
+         </g>
+         <g id="row05scriptVersion">
+            <use id="d05c11" href="#textCircle" fill="none" x="1275" y="960" />
+            <use href="#text5" x="1275" y="965" />
+            <use id="d05c10" href="#textCircle" fill="none" x="1335" y="960" />
+            <use href="#text5" x="1335" y="965" />
+            <use id="d05c09" href="#textCircle" fill="none" x="1395" y="960" />
+            <use href="#text5" x="1395" y="965" />
+            <use id="d05c08" href="#textCircle" fill="none" x="1455" y="960" />
+            <use href="#text5" x="1455" y="965" />
+            <use id="d05c07" href="#textCircle" fill="none" x="1515" y="960" />
+            <use href="#text5" x="1515" y="965" />
+            <use id="d05c06" href="#textCircle" fill="none" x="1575" y="960" />
+            <use href="#text5" x="1575" y="965" />
+            <use id="d05c05" href="#textCircle" fill="none" x="1635" y="960" />
+            <use href="#text5" x="1635" y="965" />
+            <use id="d05c04" href="#textCircle" fill="none" x="1695" y="960" />
+            <use href="#text5" x="1695" y="965" />
+            <use id="d05c03" href="#textCircle" fill="none" x="1755" y="960" />
+            <use href="#text5" x="1755" y="965" />
+            <use id="d05c02" href="#textCircle" fill="none" x="1815" y="960" />
+            <use href="#text5" x="1815" y="965" />
+            <use id="d05c01" href="#textCircle" fill="none" x="1875" y="960" />
+            <use href="#text5" x="1875" y="965" />
+            <use id="d05c00" href="#textCircle" fill="none" x="1935" y="960" />
+            <use href="#text5" x="1935" y="965" />
+         </g>
+         <g id="row06scriptVersion">
+            <use id="d06c11" href="#textCircle" fill="none" x="1275" y="1020" />
+            <use href="#text6" x="1275" y="1025" />
+            <use id="d06c10" href="#textCircle" fill="none" x="1335" y="1020" />
+            <use href="#text6" x="1335" y="1025" />
+            <use id="d06c09" href="#textCircle" fill="none" x="1395" y="1020" />
+            <use href="#text6" x="1395" y="1025" />
+            <use id="d06c08" href="#textCircle" fill="none" x="1455" y="1020" />
+            <use href="#text6" x="1455" y="1025" />
+            <use id="d06c07" href="#textCircle" fill="none" x="1515" y="1020" />
+            <use href="#text6" x="1515" y="1025" />
+            <use id="d06c06" href="#textCircle" fill="none" x="1575" y="1020" />
+            <use href="#text6" x="1575" y="1025" />
+            <use id="d06c05" href="#textCircle" fill="none" x="1635" y="1020" />
+            <use href="#text6" x="1635" y="1025" />
+            <use id="d06c04" href="#textCircle" fill="none" x="1695" y="1020" />
+            <use href="#text6" x="1695" y="1025" />
+            <use id="d06c03" href="#textCircle" fill="none" x="1755" y="1020" />
+            <use href="#text6" x="1755" y="1025" />
+            <use id="d06c02" href="#textCircle" fill="none" x="1815" y="1020" />
+            <use href="#text6" x="1815" y="1025" />
+            <use id="d06c01" href="#textCircle" fill="none" x="1875" y="1020" />
+            <use href="#text6" x="1875" y="1025" />
+            <use id="d06c00" href="#textCircle" fill="none" x="1935" y="1020" />
+            <use href="#text6" x="1935" y="1025" />
+         </g>
+         <g id="row07scriptVersion">
+            <use id="d07c11" href="#textCircle" fill="none" x="1275" y="1080" />
+            <use href="#text7" x="1275" y="1085" />
+            <use id="d07c10" href="#textCircle" fill="none" x="1335" y="1080" />
+            <use href="#text7" x="1335" y="1085" />
+            <use id="d07c09" href="#textCircle" fill="none" x="1395" y="1080" />
+            <use href="#text7" x="1395" y="1085" />
+            <use id="d07c08" href="#textCircle" fill="none" x="1455" y="1080" />
+            <use href="#text7" x="1455" y="1085" />
+            <use id="d07c07" href="#textCircle" fill="none" x="1515" y="1080" />
+            <use href="#text7" x="1515" y="1085" />
+            <use id="d07c06" href="#textCircle" fill="none" x="1575" y="1080" />
+            <use href="#text7" x="1575" y="1085" />
+            <use id="d07c05" href="#textCircle" fill="none" x="1635" y="1080" />
+            <use href="#text7" x="1635" y="1085" />
+            <use id="d07c04" href="#textCircle" fill="none" x="1695" y="1080" />
+            <use href="#text7" x="1695" y="1085" />
+            <use id="d07c03" href="#textCircle" fill="none" x="1755" y="1080" />
+            <use href="#text7" x="1755" y="1085" />
+            <use id="d07c02" href="#textCircle" fill="none" x="1815" y="1080" />
+            <use href="#text7" x="1815" y="1085" />
+            <use id="d07c01" href="#textCircle" fill="none" x="1875" y="1080" />
+            <use href="#text7" x="1875" y="1085" />
+            <use id="d07c00" href="#textCircle" fill="none" x="1935" y="1080" />
+            <use href="#text7" x="1935" y="1085" />
+         </g>
+         <g id="row08scriptVersion">
+            <use id="d08c11" href="#textCircle" fill="none" x="1275" y="1140" />
+            <use href="#text8" x="1275" y="1145" />
+            <use id="d08c10" href="#textCircle" fill="none" x="1335" y="1140" />
+            <use href="#text8" x="1335" y="1145" />
+            <use id="d08c09" href="#textCircle" fill="none" x="1395" y="1140" />
+            <use href="#text8" x="1395" y="1145" />
+            <use id="d08c08" href="#textCircle" fill="none" x="1455" y="1140" />
+            <use href="#text8" x="1455" y="1145" />
+            <use id="d08c07" href="#textCircle" fill="none" x="1515" y="1140" />
+            <use href="#text8" x="1515" y="1145" />
+            <use id="d08c06" href="#textCircle" fill="none" x="1575" y="1140" />
+            <use href="#text8" x="1575" y="1145" />
+            <use id="d08c05" href="#textCircle" fill="none" x="1635" y="1140" />
+            <use href="#text8" x="1635" y="1145" />
+            <use id="d08c04" href="#textCircle" fill="none" x="1695" y="1140" />
+            <use href="#text8" x="1695" y="1145" />
+            <use id="d08c03" href="#textCircle" fill="none" x="1755" y="1140" />
+            <use href="#text8" x="1755" y="1145" />
+            <use id="d08c02" href="#textCircle" fill="none" x="1815" y="1140" />
+            <use href="#text8" x="1815" y="1145" />
+            <use id="d08c01" href="#textCircle" fill="none" x="1875" y="1140" />
+            <use href="#text8" x="1875" y="1145" />
+            <use id="d08c00" href="#textCircle" fill="none" x="1935" y="1140" />
+            <use href="#text8" x="1935" y="1145" />
+         </g>
+         <g id="row09scriptVersion">
+            <use id="d09c11" href="#textCircle" fill="none" x="1275" y="1200" />
+            <use href="#text9" x="1275" y="1205" />
+            <use id="d09c10" href="#textCircle" fill="none" x="1335" y="1200" />
+            <use href="#text9" x="1335" y="1205" />
+            <use id="d09c09" href="#textCircle" fill="none" x="1395" y="1200" />
+            <use href="#text9" x="1395" y="1205" />
+            <use id="d09c08" href="#textCircle" fill="none" x="1455" y="1200" />
+            <use href="#text9" x="1455" y="1205" />
+            <use id="d09c07" href="#textCircle" fill="none" x="1515" y="1200" />
+            <use href="#text9" x="1515" y="1205" />
+            <use id="d09c06" href="#textCircle" fill="none" x="1575" y="1200" />
+            <use href="#text9" x="1575" y="1205" />
+            <use id="d09c05" href="#textCircle" fill="none" x="1635" y="1200" />
+            <use href="#text9" x="1635" y="1205" />
+            <use id="d09c04" href="#textCircle" fill="none" x="1695" y="1200" />
+            <use href="#text9" x="1695" y="1205" />
+            <use id="d09c03" href="#textCircle" fill="none" x="1755" y="1200" />
+            <use href="#text9" x="1755" y="1205" />
+            <use id="d09c02" href="#textCircle" fill="none" x="1815" y="1200" />
+            <use href="#text9" x="1815" y="1205" />
+            <use id="d09c01" href="#textCircle" fill="none" x="1875" y="1200" />
+            <use href="#text9" x="1875" y="1205" />
+            <use id="d09c00" href="#textCircle" fill="none" x="1935" y="1200" />
+            <use href="#text9" x="1935" y="1205" />
+         </g>
+      </g>
+      <g id="idAlignmentBubbles">
+         <use href="#textCircle" fill="black" x="2050" y="660" />
+         <use href="#textCircle" fill="black" x="2050" y="720" />
+         <use href="#textCircle" fill="black" x="2050" y="780" />
+         <use href="#textCircle" fill="black" x="2050" y="840" />
+         <use href="#textCircle" fill="black" x="2050" y="900" />
+         <use href="#textCircle" fill="black" x="2050" y="960" />
+         <use href="#textCircle" fill="black" x="2050" y="1020" />
+         <use href="#textCircle" fill="black" x="2050" y="1080" />
+         <use href="#textCircle" fill="black" x="2050" y="1140" />
+         <use href="#textCircle" fill="black" x="2050" y="1200" />
+      </g>
+
+      <g id="responseBubbles" font-family="Monospace">
+         <g id="col00response">
+            <rect x="100" y="1670" width="80" height="1200" stroke="none" fill="lightgray" />
+            <text x="100" y="1707" stroke-width="0" font-size="32px" style="white-space: pre;">  1)</text>
+            <use href="#textCircle" fill="none" x="220" y="1700" />
+            <use href="#textA" x="220" y="1705" />
+            <use href="#textCircle" fill="none" x="280" y="1700" />
+            <use href="#textB" x="280" y="1705" />
+            <use href="#textCircle" fill="none" x="340" y="1700" />
+            <use href="#textC" x="340" y="1705" />
+            <use href="#textCircle" fill="none" x="400" y="1700" />
+            <use href="#textD" x="400" y="1705" />
+            <use href="#textCircle" fill="none" x="460" y="1700" />
+            <use href="#textE" x="460" y="1705" />
+            <use href="#textCircle" fill="none" x="520" y="1700" />
+            <use href="#textF" x="520" y="1705" />
+            <text x="100" y="1767" stroke-width="0" font-size="32px" style="white-space: pre;">  2)</text>
+            <use href="#textCircle" fill="none" x="220" y="1760" />
+            <use href="#textA" x="220" y="1765" />
+            <use href="#textCircle" fill="none" x="280" y="1760" />
+            <use href="#textB" x="280" y="1765" />
+            <use href="#textCircle" fill="none" x="340" y="1760" />
+            <use href="#textC" x="340" y="1765" />
+            <use href="#textCircle" fill="none" x="400" y="1760" />
+            <use href="#textD" x="400" y="1765" />
+            <use href="#textCircle" fill="none" x="460" y="1760" />
+            <use href="#textE" x="460" y="1765" />
+            <use href="#textCircle" fill="none" x="520" y="1760" />
+            <use href="#textF" x="520" y="1765" />
+            <text x="100" y="1827" stroke-width="0" font-size="32px" style="white-space: pre;">  3)</text>
+            <use href="#textCircle" fill="none" x="220" y="1820" />
+            <use href="#textA" x="220" y="1825" />
+            <use href="#textCircle" fill="none" x="280" y="1820" />
+            <use href="#textB" x="280" y="1825" />
+            <use href="#textCircle" fill="none" x="340" y="1820" />
+            <use href="#textC" x="340" y="1825" />
+            <use href="#textCircle" fill="none" x="400" y="1820" />
+            <use href="#textD" x="400" y="1825" />
+            <use href="#textCircle" fill="none" x="460" y="1820" />
+            <use href="#textE" x="460" y="1825" />
+            <use href="#textCircle" fill="none" x="520" y="1820" />
+            <use href="#textF" x="520" y="1825" />
+            <text x="100" y="1887" stroke-width="0" font-size="32px" style="white-space: pre;">  4)</text>
+            <use href="#textCircle" fill="none" x="220" y="1880" />
+            <use href="#textA" x="220" y="1885" />
+            <use href="#textCircle" fill="none" x="280" y="1880" />
+            <use href="#textB" x="280" y="1885" />
+            <use href="#textCircle" fill="none" x="340" y="1880" />
+            <use href="#textC" x="340" y="1885" />
+            <use href="#textCircle" fill="none" x="400" y="1880" />
+            <use href="#textD" x="400" y="1885" />
+            <use href="#textCircle" fill="none" x="460" y="1880" />
+            <use href="#textE" x="460" y="1885" />
+            <use href="#textCircle" fill="none" x="520" y="1880" />
+            <use href="#textF" x="520" y="1885" />
+            <text x="100" y="1947" stroke-width="0" font-size="32px" style="white-space: pre;">  5)</text>
+            <use href="#textCircle" fill="none" x="220" y="1940" />
+            <use href="#textA" x="220" y="1945" />
+            <use href="#textCircle" fill="none" x="280" y="1940" />
+            <use href="#textB" x="280" y="1945" />
+            <use href="#textCircle" fill="none" x="340" y="1940" />
+            <use href="#textC" x="340" y="1945" />
+            <use href="#textCircle" fill="none" x="400" y="1940" />
+            <use href="#textD" x="400" y="1945" />
+            <use href="#textCircle" fill="none" x="460" y="1940" />
+            <use href="#textE" x="460" y="1945" />
+            <use href="#textCircle" fill="none" x="520" y="1940" />
+            <use href="#textF" x="520" y="1945" />
+            <text x="100" y="2007" stroke-width="0" font-size="32px" style="white-space: pre;">  6)</text>
+            <use href="#textCircle" fill="none" x="220" y="2000" />
+            <use href="#textA" x="220" y="2005" />
+            <use href="#textCircle" fill="none" x="280" y="2000" />
+            <use href="#textB" x="280" y="2005" />
+            <use href="#textCircle" fill="none" x="340" y="2000" />
+            <use href="#textC" x="340" y="2005" />
+            <use href="#textCircle" fill="none" x="400" y="2000" />
+            <use href="#textD" x="400" y="2005" />
+            <use href="#textCircle" fill="none" x="460" y="2000" />
+            <use href="#textE" x="460" y="2005" />
+            <use href="#textCircle" fill="none" x="520" y="2000" />
+            <use href="#textF" x="520" y="2005" />
+            <text x="100" y="2067" stroke-width="0" font-size="32px" style="white-space: pre;">  7)</text>
+            <use href="#textCircle" fill="none" x="220" y="2060" />
+            <use href="#textA" x="220" y="2065" />
+            <use href="#textCircle" fill="none" x="280" y="2060" />
+            <use href="#textB" x="280" y="2065" />
+            <use href="#textCircle" fill="none" x="340" y="2060" />
+            <use href="#textC" x="340" y="2065" />
+            <use href="#textCircle" fill="none" x="400" y="2060" />
+            <use href="#textD" x="400" y="2065" />
+            <use href="#textCircle" fill="none" x="460" y="2060" />
+            <use href="#textE" x="460" y="2065" />
+            <use href="#textCircle" fill="none" x="520" y="2060" />
+            <use href="#textF" x="520" y="2065" />
+            <text x="100" y="2127" stroke-width="0" font-size="32px" style="white-space: pre;">  8)</text>
+            <use href="#textCircle" fill="none" x="220" y="2120" />
+            <use href="#textA" x="220" y="2125" />
+            <use href="#textCircle" fill="none" x="280" y="2120" />
+            <use href="#textB" x="280" y="2125" />
+            <use href="#textCircle" fill="none" x="340" y="2120" />
+            <use href="#textC" x="340" y="2125" />
+            <use href="#textCircle" fill="none" x="400" y="2120" />
+            <use href="#textD" x="400" y="2125" />
+            <use href="#textCircle" fill="none" x="460" y="2120" />
+            <use href="#textE" x="460" y="2125" />
+            <use href="#textCircle" fill="none" x="520" y="2120" />
+            <use href="#textF" x="520" y="2125" />
+            <text x="100" y="2187" stroke-width="0" font-size="32px" style="white-space: pre;">  9)</text>
+            <use href="#textCircle" fill="none" x="220" y="2180" />
+            <use href="#textA" x="220" y="2185" />
+            <use href="#textCircle" fill="none" x="280" y="2180" />
+            <use href="#textB" x="280" y="2185" />
+            <use href="#textCircle" fill="none" x="340" y="2180" />
+            <use href="#textC" x="340" y="2185" />
+            <use href="#textCircle" fill="none" x="400" y="2180" />
+            <use href="#textD" x="400" y="2185" />
+            <use href="#textCircle" fill="none" x="460" y="2180" />
+            <use href="#textE" x="460" y="2185" />
+            <use href="#textCircle" fill="none" x="520" y="2180" />
+            <use href="#textF" x="520" y="2185" />
+            <text x="100" y="2247" stroke-width="0" font-size="32px" style="white-space: pre;"> 10)</text>
+            <use href="#textCircle" fill="none" x="220" y="2240" />
+            <use href="#textA" x="220" y="2245" />
+            <use href="#textCircle" fill="none" x="280" y="2240" />
+            <use href="#textB" x="280" y="2245" />
+            <use href="#textCircle" fill="none" x="340" y="2240" />
+            <use href="#textC" x="340" y="2245" />
+            <use href="#textCircle" fill="none" x="400" y="2240" />
+            <use href="#textD" x="400" y="2245" />
+            <use href="#textCircle" fill="none" x="460" y="2240" />
+            <use href="#textE" x="460" y="2245" />
+            <use href="#textCircle" fill="none" x="520" y="2240" />
+            <use href="#textF" x="520" y="2245" />
+            <text x="100" y="2307" stroke-width="0" font-size="32px" style="white-space: pre;"> 11)</text>
+            <use href="#textCircle" fill="none" x="220" y="2300" />
+            <use href="#textA" x="220" y="2305" />
+            <use href="#textCircle" fill="none" x="280" y="2300" />
+            <use href="#textB" x="280" y="2305" />
+            <use href="#textCircle" fill="none" x="340" y="2300" />
+            <use href="#textC" x="340" y="2305" />
+            <use href="#textCircle" fill="none" x="400" y="2300" />
+            <use href="#textD" x="400" y="2305" />
+            <use href="#textCircle" fill="none" x="460" y="2300" />
+            <use href="#textE" x="460" y="2305" />
+            <use href="#textCircle" fill="none" x="520" y="2300" />
+            <use href="#textF" x="520" y="2305" />
+            <text x="100" y="2367" stroke-width="0" font-size="32px" style="white-space: pre;"> 12)</text>
+            <use href="#textCircle" fill="none" x="220" y="2360" />
+            <use href="#textA" x="220" y="2365" />
+            <use href="#textCircle" fill="none" x="280" y="2360" />
+            <use href="#textB" x="280" y="2365" />
+            <use href="#textCircle" fill="none" x="340" y="2360" />
+            <use href="#textC" x="340" y="2365" />
+            <use href="#textCircle" fill="none" x="400" y="2360" />
+            <use href="#textD" x="400" y="2365" />
+            <use href="#textCircle" fill="none" x="460" y="2360" />
+            <use href="#textE" x="460" y="2365" />
+            <use href="#textCircle" fill="none" x="520" y="2360" />
+            <use href="#textF" x="520" y="2365" />
+            <text x="100" y="2427" stroke-width="0" font-size="32px" style="white-space: pre;"> 13)</text>
+            <use href="#textCircle" fill="none" x="220" y="2420" />
+            <use href="#textA" x="220" y="2425" />
+            <use href="#textCircle" fill="none" x="280" y="2420" />
+            <use href="#textB" x="280" y="2425" />
+            <use href="#textCircle" fill="none" x="340" y="2420" />
+            <use href="#textC" x="340" y="2425" />
+            <use href="#textCircle" fill="none" x="400" y="2420" />
+            <use href="#textD" x="400" y="2425" />
+            <use href="#textCircle" fill="none" x="460" y="2420" />
+            <use href="#textE" x="460" y="2425" />
+            <use href="#textCircle" fill="none" x="520" y="2420" />
+            <use href="#textF" x="520" y="2425" />
+            <text x="100" y="2487" stroke-width="0" font-size="32px" style="white-space: pre;"> 14)</text>
+            <use href="#textCircle" fill="none" x="220" y="2480" />
+            <use href="#textA" x="220" y="2485" />
+            <use href="#textCircle" fill="none" x="280" y="2480" />
+            <use href="#textB" x="280" y="2485" />
+            <use href="#textCircle" fill="none" x="340" y="2480" />
+            <use href="#textC" x="340" y="2485" />
+            <use href="#textCircle" fill="none" x="400" y="2480" />
+            <use href="#textD" x="400" y="2485" />
+            <use href="#textCircle" fill="none" x="460" y="2480" />
+            <use href="#textE" x="460" y="2485" />
+            <use href="#textCircle" fill="none" x="520" y="2480" />
+            <use href="#textF" x="520" y="2485" />
+            <text x="100" y="2547" stroke-width="0" font-size="32px" style="white-space: pre;"> 15)</text>
+            <use href="#textCircle" fill="none" x="220" y="2540" />
+            <use href="#textA" x="220" y="2545" />
+            <use href="#textCircle" fill="none" x="280" y="2540" />
+            <use href="#textB" x="280" y="2545" />
+            <use href="#textCircle" fill="none" x="340" y="2540" />
+            <use href="#textC" x="340" y="2545" />
+            <use href="#textCircle" fill="none" x="400" y="2540" />
+            <use href="#textD" x="400" y="2545" />
+            <use href="#textCircle" fill="none" x="460" y="2540" />
+            <use href="#textE" x="460" y="2545" />
+            <use href="#textCircle" fill="none" x="520" y="2540" />
+            <use href="#textF" x="520" y="2545" />
+            <text x="100" y="2607" stroke-width="0" font-size="32px" style="white-space: pre;"> 16)</text>
+            <use href="#textCircle" fill="none" x="220" y="2600" />
+            <use href="#textA" x="220" y="2605" />
+            <use href="#textCircle" fill="none" x="280" y="2600" />
+            <use href="#textB" x="280" y="2605" />
+            <use href="#textCircle" fill="none" x="340" y="2600" />
+            <use href="#textC" x="340" y="2605" />
+            <use href="#textCircle" fill="none" x="400" y="2600" />
+            <use href="#textD" x="400" y="2605" />
+            <use href="#textCircle" fill="none" x="460" y="2600" />
+            <use href="#textE" x="460" y="2605" />
+            <use href="#textCircle" fill="none" x="520" y="2600" />
+            <use href="#textF" x="520" y="2605" />
+            <text x="100" y="2667" stroke-width="0" font-size="32px" style="white-space: pre;"> 17)</text>
+            <use href="#textCircle" fill="none" x="220" y="2660" />
+            <use href="#textA" x="220" y="2665" />
+            <use href="#textCircle" fill="none" x="280" y="2660" />
+            <use href="#textB" x="280" y="2665" />
+            <use href="#textCircle" fill="none" x="340" y="2660" />
+            <use href="#textC" x="340" y="2665" />
+            <use href="#textCircle" fill="none" x="400" y="2660" />
+            <use href="#textD" x="400" y="2665" />
+            <use href="#textCircle" fill="none" x="460" y="2660" />
+            <use href="#textE" x="460" y="2665" />
+            <use href="#textCircle" fill="none" x="520" y="2660" />
+            <use href="#textF" x="520" y="2665" />
+            <text x="100" y="2727" stroke-width="0" font-size="32px" style="white-space: pre;"> 18)</text>
+            <use href="#textCircle" fill="none" x="220" y="2720" />
+            <use href="#textA" x="220" y="2725" />
+            <use href="#textCircle" fill="none" x="280" y="2720" />
+            <use href="#textB" x="280" y="2725" />
+            <use href="#textCircle" fill="none" x="340" y="2720" />
+            <use href="#textC" x="340" y="2725" />
+            <use href="#textCircle" fill="none" x="400" y="2720" />
+            <use href="#textD" x="400" y="2725" />
+            <use href="#textCircle" fill="none" x="460" y="2720" />
+            <use href="#textE" x="460" y="2725" />
+            <use href="#textCircle" fill="none" x="520" y="2720" />
+            <use href="#textF" x="520" y="2725" />
+            <text x="100" y="2787" stroke-width="0" font-size="32px" style="white-space: pre;"> 19)</text>
+            <use href="#textCircle" fill="none" x="220" y="2780" />
+            <use href="#textA" x="220" y="2785" />
+            <use href="#textCircle" fill="none" x="280" y="2780" />
+            <use href="#textB" x="280" y="2785" />
+            <use href="#textCircle" fill="none" x="340" y="2780" />
+            <use href="#textC" x="340" y="2785" />
+            <use href="#textCircle" fill="none" x="400" y="2780" />
+            <use href="#textD" x="400" y="2785" />
+            <use href="#textCircle" fill="none" x="460" y="2780" />
+            <use href="#textE" x="460" y="2785" />
+            <use href="#textCircle" fill="none" x="520" y="2780" />
+            <use href="#textF" x="520" y="2785" />
+            <text x="100" y="2847" stroke-width="0" font-size="32px" style="white-space: pre;"> 20)</text>
+            <use href="#textCircle" fill="none" x="220" y="2840" />
+            <use href="#textA" x="220" y="2845" />
+            <use href="#textCircle" fill="none" x="280" y="2840" />
+            <use href="#textB" x="280" y="2845" />
+            <use href="#textCircle" fill="none" x="340" y="2840" />
+            <use href="#textC" x="340" y="2845" />
+            <use href="#textCircle" fill="none" x="400" y="2840" />
+            <use href="#textD" x="400" y="2845" />
+            <use href="#textCircle" fill="none" x="460" y="2840" />
+            <use href="#textE" x="460" y="2845" />
+            <use href="#textCircle" fill="none" x="520" y="2840" />
+            <use href="#textF" x="520" y="2845" />
+         </g>
+         <g id="col01response">
+            <rect x="560" y="1670" width="80" height="1200" stroke="none" fill="lightgray" />
+            <text x="560" y="1707" stroke-width="0" font-size="32px" style="white-space: pre;"> 21)</text>
+            <use href="#textCircle" fill="none" x="680" y="1700" />
+            <use href="#textA" x="680" y="1705" />
+            <use href="#textCircle" fill="none" x="740" y="1700" />
+            <use href="#textB" x="740" y="1705" />
+            <use href="#textCircle" fill="none" x="800" y="1700" />
+            <use href="#textC" x="800" y="1705" />
+            <use href="#textCircle" fill="none" x="860" y="1700" />
+            <use href="#textD" x="860" y="1705" />
+            <use href="#textCircle" fill="none" x="920" y="1700" />
+            <use href="#textE" x="920" y="1705" />
+            <use href="#textCircle" fill="none" x="980" y="1700" />
+            <use href="#textF" x="980" y="1705" />
+            <text x="560" y="1767" stroke-width="0" font-size="32px" style="white-space: pre;"> 22)</text>
+            <use href="#textCircle" fill="none" x="680" y="1760" />
+            <use href="#textA" x="680" y="1765" />
+            <use href="#textCircle" fill="none" x="740" y="1760" />
+            <use href="#textB" x="740" y="1765" />
+            <use href="#textCircle" fill="none" x="800" y="1760" />
+            <use href="#textC" x="800" y="1765" />
+            <use href="#textCircle" fill="none" x="860" y="1760" />
+            <use href="#textD" x="860" y="1765" />
+            <use href="#textCircle" fill="none" x="920" y="1760" />
+            <use href="#textE" x="920" y="1765" />
+            <use href="#textCircle" fill="none" x="980" y="1760" />
+            <use href="#textF" x="980" y="1765" />
+            <text x="560" y="1827" stroke-width="0" font-size="32px" style="white-space: pre;"> 23)</text>
+            <use href="#textCircle" fill="none" x="680" y="1820" />
+            <use href="#textA" x="680" y="1825" />
+            <use href="#textCircle" fill="none" x="740" y="1820" />
+            <use href="#textB" x="740" y="1825" />
+            <use href="#textCircle" fill="none" x="800" y="1820" />
+            <use href="#textC" x="800" y="1825" />
+            <use href="#textCircle" fill="none" x="860" y="1820" />
+            <use href="#textD" x="860" y="1825" />
+            <use href="#textCircle" fill="none" x="920" y="1820" />
+            <use href="#textE" x="920" y="1825" />
+            <use href="#textCircle" fill="none" x="980" y="1820" />
+            <use href="#textF" x="980" y="1825" />
+            <text x="560" y="1887" stroke-width="0" font-size="32px" style="white-space: pre;"> 24)</text>
+            <use href="#textCircle" fill="none" x="680" y="1880" />
+            <use href="#textA" x="680" y="1885" />
+            <use href="#textCircle" fill="none" x="740" y="1880" />
+            <use href="#textB" x="740" y="1885" />
+            <use href="#textCircle" fill="none" x="800" y="1880" />
+            <use href="#textC" x="800" y="1885" />
+            <use href="#textCircle" fill="none" x="860" y="1880" />
+            <use href="#textD" x="860" y="1885" />
+            <use href="#textCircle" fill="none" x="920" y="1880" />
+            <use href="#textE" x="920" y="1885" />
+            <use href="#textCircle" fill="none" x="980" y="1880" />
+            <use href="#textF" x="980" y="1885" />
+            <text x="560" y="1947" stroke-width="0" font-size="32px" style="white-space: pre;"> 25)</text>
+            <use href="#textCircle" fill="none" x="680" y="1940" />
+            <use href="#textA" x="680" y="1945" />
+            <use href="#textCircle" fill="none" x="740" y="1940" />
+            <use href="#textB" x="740" y="1945" />
+            <use href="#textCircle" fill="none" x="800" y="1940" />
+            <use href="#textC" x="800" y="1945" />
+            <use href="#textCircle" fill="none" x="860" y="1940" />
+            <use href="#textD" x="860" y="1945" />
+            <use href="#textCircle" fill="none" x="920" y="1940" />
+            <use href="#textE" x="920" y="1945" />
+            <use href="#textCircle" fill="none" x="980" y="1940" />
+            <use href="#textF" x="980" y="1945" />
+            <text x="560" y="2007" stroke-width="0" font-size="32px" style="white-space: pre;"> 26)</text>
+            <use href="#textCircle" fill="none" x="680" y="2000" />
+            <use href="#textA" x="680" y="2005" />
+            <use href="#textCircle" fill="none" x="740" y="2000" />
+            <use href="#textB" x="740" y="2005" />
+            <use href="#textCircle" fill="none" x="800" y="2000" />
+            <use href="#textC" x="800" y="2005" />
+            <use href="#textCircle" fill="none" x="860" y="2000" />
+            <use href="#textD" x="860" y="2005" />
+            <use href="#textCircle" fill="none" x="920" y="2000" />
+            <use href="#textE" x="920" y="2005" />
+            <use href="#textCircle" fill="none" x="980" y="2000" />
+            <use href="#textF" x="980" y="2005" />
+            <text x="560" y="2067" stroke-width="0" font-size="32px" style="white-space: pre;"> 27)</text>
+            <use href="#textCircle" fill="none" x="680" y="2060" />
+            <use href="#textA" x="680" y="2065" />
+            <use href="#textCircle" fill="none" x="740" y="2060" />
+            <use href="#textB" x="740" y="2065" />
+            <use href="#textCircle" fill="none" x="800" y="2060" />
+            <use href="#textC" x="800" y="2065" />
+            <use href="#textCircle" fill="none" x="860" y="2060" />
+            <use href="#textD" x="860" y="2065" />
+            <use href="#textCircle" fill="none" x="920" y="2060" />
+            <use href="#textE" x="920" y="2065" />
+            <use href="#textCircle" fill="none" x="980" y="2060" />
+            <use href="#textF" x="980" y="2065" />
+            <text x="560" y="2127" stroke-width="0" font-size="32px" style="white-space: pre;"> 28)</text>
+            <use href="#textCircle" fill="none" x="680" y="2120" />
+            <use href="#textA" x="680" y="2125" />
+            <use href="#textCircle" fill="none" x="740" y="2120" />
+            <use href="#textB" x="740" y="2125" />
+            <use href="#textCircle" fill="none" x="800" y="2120" />
+            <use href="#textC" x="800" y="2125" />
+            <use href="#textCircle" fill="none" x="860" y="2120" />
+            <use href="#textD" x="860" y="2125" />
+            <use href="#textCircle" fill="none" x="920" y="2120" />
+            <use href="#textE" x="920" y="2125" />
+            <use href="#textCircle" fill="none" x="980" y="2120" />
+            <use href="#textF" x="980" y="2125" />
+            <text x="560" y="2187" stroke-width="0" font-size="32px" style="white-space: pre;"> 29)</text>
+            <use href="#textCircle" fill="none" x="680" y="2180" />
+            <use href="#textA" x="680" y="2185" />
+            <use href="#textCircle" fill="none" x="740" y="2180" />
+            <use href="#textB" x="740" y="2185" />
+            <use href="#textCircle" fill="none" x="800" y="2180" />
+            <use href="#textC" x="800" y="2185" />
+            <use href="#textCircle" fill="none" x="860" y="2180" />
+            <use href="#textD" x="860" y="2185" />
+            <use href="#textCircle" fill="none" x="920" y="2180" />
+            <use href="#textE" x="920" y="2185" />
+            <use href="#textCircle" fill="none" x="980" y="2180" />
+            <use href="#textF" x="980" y="2185" />
+            <text x="560" y="2247" stroke-width="0" font-size="32px" style="white-space: pre;"> 30)</text>
+            <use href="#textCircle" fill="none" x="680" y="2240" />
+            <use href="#textA" x="680" y="2245" />
+            <use href="#textCircle" fill="none" x="740" y="2240" />
+            <use href="#textB" x="740" y="2245" />
+            <use href="#textCircle" fill="none" x="800" y="2240" />
+            <use href="#textC" x="800" y="2245" />
+            <use href="#textCircle" fill="none" x="860" y="2240" />
+            <use href="#textD" x="860" y="2245" />
+            <use href="#textCircle" fill="none" x="920" y="2240" />
+            <use href="#textE" x="920" y="2245" />
+            <use href="#textCircle" fill="none" x="980" y="2240" />
+            <use href="#textF" x="980" y="2245" />
+            <text x="560" y="2307" stroke-width="0" font-size="32px" style="white-space: pre;"> 31)</text>
+            <use href="#textCircle" fill="none" x="680" y="2300" />
+            <use href="#textA" x="680" y="2305" />
+            <use href="#textCircle" fill="none" x="740" y="2300" />
+            <use href="#textB" x="740" y="2305" />
+            <use href="#textCircle" fill="none" x="800" y="2300" />
+            <use href="#textC" x="800" y="2305" />
+            <use href="#textCircle" fill="none" x="860" y="2300" />
+            <use href="#textD" x="860" y="2305" />
+            <use href="#textCircle" fill="none" x="920" y="2300" />
+            <use href="#textE" x="920" y="2305" />
+            <use href="#textCircle" fill="none" x="980" y="2300" />
+            <use href="#textF" x="980" y="2305" />
+            <text x="560" y="2367" stroke-width="0" font-size="32px" style="white-space: pre;"> 32)</text>
+            <use href="#textCircle" fill="none" x="680" y="2360" />
+            <use href="#textA" x="680" y="2365" />
+            <use href="#textCircle" fill="none" x="740" y="2360" />
+            <use href="#textB" x="740" y="2365" />
+            <use href="#textCircle" fill="none" x="800" y="2360" />
+            <use href="#textC" x="800" y="2365" />
+            <use href="#textCircle" fill="none" x="860" y="2360" />
+            <use href="#textD" x="860" y="2365" />
+            <use href="#textCircle" fill="none" x="920" y="2360" />
+            <use href="#textE" x="920" y="2365" />
+            <use href="#textCircle" fill="none" x="980" y="2360" />
+            <use href="#textF" x="980" y="2365" />
+            <text x="560" y="2427" stroke-width="0" font-size="32px" style="white-space: pre;"> 33)</text>
+            <use href="#textCircle" fill="none" x="680" y="2420" />
+            <use href="#textA" x="680" y="2425" />
+            <use href="#textCircle" fill="none" x="740" y="2420" />
+            <use href="#textB" x="740" y="2425" />
+            <use href="#textCircle" fill="none" x="800" y="2420" />
+            <use href="#textC" x="800" y="2425" />
+            <use href="#textCircle" fill="none" x="860" y="2420" />
+            <use href="#textD" x="860" y="2425" />
+            <use href="#textCircle" fill="none" x="920" y="2420" />
+            <use href="#textE" x="920" y="2425" />
+            <use href="#textCircle" fill="none" x="980" y="2420" />
+            <use href="#textF" x="980" y="2425" />
+            <text x="560" y="2487" stroke-width="0" font-size="32px" style="white-space: pre;"> 34)</text>
+            <use href="#textCircle" fill="none" x="680" y="2480" />
+            <use href="#textA" x="680" y="2485" />
+            <use href="#textCircle" fill="none" x="740" y="2480" />
+            <use href="#textB" x="740" y="2485" />
+            <use href="#textCircle" fill="none" x="800" y="2480" />
+            <use href="#textC" x="800" y="2485" />
+            <use href="#textCircle" fill="none" x="860" y="2480" />
+            <use href="#textD" x="860" y="2485" />
+            <use href="#textCircle" fill="none" x="920" y="2480" />
+            <use href="#textE" x="920" y="2485" />
+            <use href="#textCircle" fill="none" x="980" y="2480" />
+            <use href="#textF" x="980" y="2485" />
+            <text x="560" y="2547" stroke-width="0" font-size="32px" style="white-space: pre;"> 35)</text>
+            <use href="#textCircle" fill="none" x="680" y="2540" />
+            <use href="#textA" x="680" y="2545" />
+            <use href="#textCircle" fill="none" x="740" y="2540" />
+            <use href="#textB" x="740" y="2545" />
+            <use href="#textCircle" fill="none" x="800" y="2540" />
+            <use href="#textC" x="800" y="2545" />
+            <use href="#textCircle" fill="none" x="860" y="2540" />
+            <use href="#textD" x="860" y="2545" />
+            <use href="#textCircle" fill="none" x="920" y="2540" />
+            <use href="#textE" x="920" y="2545" />
+            <use href="#textCircle" fill="none" x="980" y="2540" />
+            <use href="#textF" x="980" y="2545" />
+            <text x="560" y="2607" stroke-width="0" font-size="32px" style="white-space: pre;"> 36)</text>
+            <use href="#textCircle" fill="none" x="680" y="2600" />
+            <use href="#textA" x="680" y="2605" />
+            <use href="#textCircle" fill="none" x="740" y="2600" />
+            <use href="#textB" x="740" y="2605" />
+            <use href="#textCircle" fill="none" x="800" y="2600" />
+            <use href="#textC" x="800" y="2605" />
+            <use href="#textCircle" fill="none" x="860" y="2600" />
+            <use href="#textD" x="860" y="2605" />
+            <use href="#textCircle" fill="none" x="920" y="2600" />
+            <use href="#textE" x="920" y="2605" />
+            <use href="#textCircle" fill="none" x="980" y="2600" />
+            <use href="#textF" x="980" y="2605" />
+            <text x="560" y="2667" stroke-width="0" font-size="32px" style="white-space: pre;"> 37)</text>
+            <use href="#textCircle" fill="none" x="680" y="2660" />
+            <use href="#textA" x="680" y="2665" />
+            <use href="#textCircle" fill="none" x="740" y="2660" />
+            <use href="#textB" x="740" y="2665" />
+            <use href="#textCircle" fill="none" x="800" y="2660" />
+            <use href="#textC" x="800" y="2665" />
+            <use href="#textCircle" fill="none" x="860" y="2660" />
+            <use href="#textD" x="860" y="2665" />
+            <use href="#textCircle" fill="none" x="920" y="2660" />
+            <use href="#textE" x="920" y="2665" />
+            <use href="#textCircle" fill="none" x="980" y="2660" />
+            <use href="#textF" x="980" y="2665" />
+            <text x="560" y="2727" stroke-width="0" font-size="32px" style="white-space: pre;"> 38)</text>
+            <use href="#textCircle" fill="none" x="680" y="2720" />
+            <use href="#textA" x="680" y="2725" />
+            <use href="#textCircle" fill="none" x="740" y="2720" />
+            <use href="#textB" x="740" y="2725" />
+            <use href="#textCircle" fill="none" x="800" y="2720" />
+            <use href="#textC" x="800" y="2725" />
+            <use href="#textCircle" fill="none" x="860" y="2720" />
+            <use href="#textD" x="860" y="2725" />
+            <use href="#textCircle" fill="none" x="920" y="2720" />
+            <use href="#textE" x="920" y="2725" />
+            <use href="#textCircle" fill="none" x="980" y="2720" />
+            <use href="#textF" x="980" y="2725" />
+            <text x="560" y="2787" stroke-width="0" font-size="32px" style="white-space: pre;"> 39)</text>
+            <use href="#textCircle" fill="none" x="680" y="2780" />
+            <use href="#textA" x="680" y="2785" />
+            <use href="#textCircle" fill="none" x="740" y="2780" />
+            <use href="#textB" x="740" y="2785" />
+            <use href="#textCircle" fill="none" x="800" y="2780" />
+            <use href="#textC" x="800" y="2785" />
+            <use href="#textCircle" fill="none" x="860" y="2780" />
+            <use href="#textD" x="860" y="2785" />
+            <use href="#textCircle" fill="none" x="920" y="2780" />
+            <use href="#textE" x="920" y="2785" />
+            <use href="#textCircle" fill="none" x="980" y="2780" />
+            <use href="#textF" x="980" y="2785" />
+            <text x="560" y="2847" stroke-width="0" font-size="32px" style="white-space: pre;"> 40)</text>
+            <use href="#textCircle" fill="none" x="680" y="2840" />
+            <use href="#textA" x="680" y="2845" />
+            <use href="#textCircle" fill="none" x="740" y="2840" />
+            <use href="#textB" x="740" y="2845" />
+            <use href="#textCircle" fill="none" x="800" y="2840" />
+            <use href="#textC" x="800" y="2845" />
+            <use href="#textCircle" fill="none" x="860" y="2840" />
+            <use href="#textD" x="860" y="2845" />
+            <use href="#textCircle" fill="none" x="920" y="2840" />
+            <use href="#textE" x="920" y="2845" />
+            <use href="#textCircle" fill="none" x="980" y="2840" />
+            <use href="#textF" x="980" y="2845" />
+         </g>
+         <g id="col02response">
+            <rect x="1020" y="1670" width="80" height="1200" stroke="none" fill="lightgray" />
+            <text x="1020" y="1707" stroke-width="0" font-size="32px" style="white-space: pre;"> 41)</text>
+            <use href="#textCircle" fill="none" x="1140" y="1700" />
+            <use href="#textA" x="1140" y="1705" />
+            <use href="#textCircle" fill="none" x="1200" y="1700" />
+            <use href="#textB" x="1200" y="1705" />
+            <use href="#textCircle" fill="none" x="1260" y="1700" />
+            <use href="#textC" x="1260" y="1705" />
+            <use href="#textCircle" fill="none" x="1320" y="1700" />
+            <use href="#textD" x="1320" y="1705" />
+            <use href="#textCircle" fill="none" x="1380" y="1700" />
+            <use href="#textE" x="1380" y="1705" />
+            <use href="#textCircle" fill="none" x="1440" y="1700" />
+            <use href="#textF" x="1440" y="1705" />
+            <text x="1020" y="1767" stroke-width="0" font-size="32px" style="white-space: pre;"> 42)</text>
+            <use href="#textCircle" fill="none" x="1140" y="1760" />
+            <use href="#textA" x="1140" y="1765" />
+            <use href="#textCircle" fill="none" x="1200" y="1760" />
+            <use href="#textB" x="1200" y="1765" />
+            <use href="#textCircle" fill="none" x="1260" y="1760" />
+            <use href="#textC" x="1260" y="1765" />
+            <use href="#textCircle" fill="none" x="1320" y="1760" />
+            <use href="#textD" x="1320" y="1765" />
+            <use href="#textCircle" fill="none" x="1380" y="1760" />
+            <use href="#textE" x="1380" y="1765" />
+            <use href="#textCircle" fill="none" x="1440" y="1760" />
+            <use href="#textF" x="1440" y="1765" />
+            <text x="1020" y="1827" stroke-width="0" font-size="32px" style="white-space: pre;"> 43)</text>
+            <use href="#textCircle" fill="none" x="1140" y="1820" />
+            <use href="#textA" x="1140" y="1825" />
+            <use href="#textCircle" fill="none" x="1200" y="1820" />
+            <use href="#textB" x="1200" y="1825" />
+            <use href="#textCircle" fill="none" x="1260" y="1820" />
+            <use href="#textC" x="1260" y="1825" />
+            <use href="#textCircle" fill="none" x="1320" y="1820" />
+            <use href="#textD" x="1320" y="1825" />
+            <use href="#textCircle" fill="none" x="1380" y="1820" />
+            <use href="#textE" x="1380" y="1825" />
+            <use href="#textCircle" fill="none" x="1440" y="1820" />
+            <use href="#textF" x="1440" y="1825" />
+            <text x="1020" y="1887" stroke-width="0" font-size="32px" style="white-space: pre;"> 44)</text>
+            <use href="#textCircle" fill="none" x="1140" y="1880" />
+            <use href="#textA" x="1140" y="1885" />
+            <use href="#textCircle" fill="none" x="1200" y="1880" />
+            <use href="#textB" x="1200" y="1885" />
+            <use href="#textCircle" fill="none" x="1260" y="1880" />
+            <use href="#textC" x="1260" y="1885" />
+            <use href="#textCircle" fill="none" x="1320" y="1880" />
+            <use href="#textD" x="1320" y="1885" />
+            <use href="#textCircle" fill="none" x="1380" y="1880" />
+            <use href="#textE" x="1380" y="1885" />
+            <use href="#textCircle" fill="none" x="1440" y="1880" />
+            <use href="#textF" x="1440" y="1885" />
+            <text x="1020" y="1947" stroke-width="0" font-size="32px" style="white-space: pre;"> 45)</text>
+            <use href="#textCircle" fill="none" x="1140" y="1940" />
+            <use href="#textA" x="1140" y="1945" />
+            <use href="#textCircle" fill="none" x="1200" y="1940" />
+            <use href="#textB" x="1200" y="1945" />
+            <use href="#textCircle" fill="none" x="1260" y="1940" />
+            <use href="#textC" x="1260" y="1945" />
+            <use href="#textCircle" fill="none" x="1320" y="1940" />
+            <use href="#textD" x="1320" y="1945" />
+            <use href="#textCircle" fill="none" x="1380" y="1940" />
+            <use href="#textE" x="1380" y="1945" />
+            <use href="#textCircle" fill="none" x="1440" y="1940" />
+            <use href="#textF" x="1440" y="1945" />
+            <text x="1020" y="2007" stroke-width="0" font-size="32px" style="white-space: pre;"> 46)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2000" />
+            <use href="#textA" x="1140" y="2005" />
+            <use href="#textCircle" fill="none" x="1200" y="2000" />
+            <use href="#textB" x="1200" y="2005" />
+            <use href="#textCircle" fill="none" x="1260" y="2000" />
+            <use href="#textC" x="1260" y="2005" />
+            <use href="#textCircle" fill="none" x="1320" y="2000" />
+            <use href="#textD" x="1320" y="2005" />
+            <use href="#textCircle" fill="none" x="1380" y="2000" />
+            <use href="#textE" x="1380" y="2005" />
+            <use href="#textCircle" fill="none" x="1440" y="2000" />
+            <use href="#textF" x="1440" y="2005" />
+            <text x="1020" y="2067" stroke-width="0" font-size="32px" style="white-space: pre;"> 47)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2060" />
+            <use href="#textA" x="1140" y="2065" />
+            <use href="#textCircle" fill="none" x="1200" y="2060" />
+            <use href="#textB" x="1200" y="2065" />
+            <use href="#textCircle" fill="none" x="1260" y="2060" />
+            <use href="#textC" x="1260" y="2065" />
+            <use href="#textCircle" fill="none" x="1320" y="2060" />
+            <use href="#textD" x="1320" y="2065" />
+            <use href="#textCircle" fill="none" x="1380" y="2060" />
+            <use href="#textE" x="1380" y="2065" />
+            <use href="#textCircle" fill="none" x="1440" y="2060" />
+            <use href="#textF" x="1440" y="2065" />
+            <text x="1020" y="2127" stroke-width="0" font-size="32px" style="white-space: pre;"> 48)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2120" />
+            <use href="#textA" x="1140" y="2125" />
+            <use href="#textCircle" fill="none" x="1200" y="2120" />
+            <use href="#textB" x="1200" y="2125" />
+            <use href="#textCircle" fill="none" x="1260" y="2120" />
+            <use href="#textC" x="1260" y="2125" />
+            <use href="#textCircle" fill="none" x="1320" y="2120" />
+            <use href="#textD" x="1320" y="2125" />
+            <use href="#textCircle" fill="none" x="1380" y="2120" />
+            <use href="#textE" x="1380" y="2125" />
+            <use href="#textCircle" fill="none" x="1440" y="2120" />
+            <use href="#textF" x="1440" y="2125" />
+            <text x="1020" y="2187" stroke-width="0" font-size="32px" style="white-space: pre;"> 49)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2180" />
+            <use href="#textA" x="1140" y="2185" />
+            <use href="#textCircle" fill="none" x="1200" y="2180" />
+            <use href="#textB" x="1200" y="2185" />
+            <use href="#textCircle" fill="none" x="1260" y="2180" />
+            <use href="#textC" x="1260" y="2185" />
+            <use href="#textCircle" fill="none" x="1320" y="2180" />
+            <use href="#textD" x="1320" y="2185" />
+            <use href="#textCircle" fill="none" x="1380" y="2180" />
+            <use href="#textE" x="1380" y="2185" />
+            <use href="#textCircle" fill="none" x="1440" y="2180" />
+            <use href="#textF" x="1440" y="2185" />
+            <text x="1020" y="2247" stroke-width="0" font-size="32px" style="white-space: pre;"> 50)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2240" />
+            <use href="#textA" x="1140" y="2245" />
+            <use href="#textCircle" fill="none" x="1200" y="2240" />
+            <use href="#textB" x="1200" y="2245" />
+            <use href="#textCircle" fill="none" x="1260" y="2240" />
+            <use href="#textC" x="1260" y="2245" />
+            <use href="#textCircle" fill="none" x="1320" y="2240" />
+            <use href="#textD" x="1320" y="2245" />
+            <use href="#textCircle" fill="none" x="1380" y="2240" />
+            <use href="#textE" x="1380" y="2245" />
+            <use href="#textCircle" fill="none" x="1440" y="2240" />
+            <use href="#textF" x="1440" y="2245" />
+            <text x="1020" y="2307" stroke-width="0" font-size="32px" style="white-space: pre;"> 51)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2300" />
+            <use href="#textA" x="1140" y="2305" />
+            <use href="#textCircle" fill="none" x="1200" y="2300" />
+            <use href="#textB" x="1200" y="2305" />
+            <use href="#textCircle" fill="none" x="1260" y="2300" />
+            <use href="#textC" x="1260" y="2305" />
+            <use href="#textCircle" fill="none" x="1320" y="2300" />
+            <use href="#textD" x="1320" y="2305" />
+            <use href="#textCircle" fill="none" x="1380" y="2300" />
+            <use href="#textE" x="1380" y="2305" />
+            <use href="#textCircle" fill="none" x="1440" y="2300" />
+            <use href="#textF" x="1440" y="2305" />
+            <text x="1020" y="2367" stroke-width="0" font-size="32px" style="white-space: pre;"> 52)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2360" />
+            <use href="#textA" x="1140" y="2365" />
+            <use href="#textCircle" fill="none" x="1200" y="2360" />
+            <use href="#textB" x="1200" y="2365" />
+            <use href="#textCircle" fill="none" x="1260" y="2360" />
+            <use href="#textC" x="1260" y="2365" />
+            <use href="#textCircle" fill="none" x="1320" y="2360" />
+            <use href="#textD" x="1320" y="2365" />
+            <use href="#textCircle" fill="none" x="1380" y="2360" />
+            <use href="#textE" x="1380" y="2365" />
+            <use href="#textCircle" fill="none" x="1440" y="2360" />
+            <use href="#textF" x="1440" y="2365" />
+            <text x="1020" y="2427" stroke-width="0" font-size="32px" style="white-space: pre;"> 53)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2420" />
+            <use href="#textA" x="1140" y="2425" />
+            <use href="#textCircle" fill="none" x="1200" y="2420" />
+            <use href="#textB" x="1200" y="2425" />
+            <use href="#textCircle" fill="none" x="1260" y="2420" />
+            <use href="#textC" x="1260" y="2425" />
+            <use href="#textCircle" fill="none" x="1320" y="2420" />
+            <use href="#textD" x="1320" y="2425" />
+            <use href="#textCircle" fill="none" x="1380" y="2420" />
+            <use href="#textE" x="1380" y="2425" />
+            <use href="#textCircle" fill="none" x="1440" y="2420" />
+            <use href="#textF" x="1440" y="2425" />
+            <text x="1020" y="2487" stroke-width="0" font-size="32px" style="white-space: pre;"> 54)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2480" />
+            <use href="#textA" x="1140" y="2485" />
+            <use href="#textCircle" fill="none" x="1200" y="2480" />
+            <use href="#textB" x="1200" y="2485" />
+            <use href="#textCircle" fill="none" x="1260" y="2480" />
+            <use href="#textC" x="1260" y="2485" />
+            <use href="#textCircle" fill="none" x="1320" y="2480" />
+            <use href="#textD" x="1320" y="2485" />
+            <use href="#textCircle" fill="none" x="1380" y="2480" />
+            <use href="#textE" x="1380" y="2485" />
+            <use href="#textCircle" fill="none" x="1440" y="2480" />
+            <use href="#textF" x="1440" y="2485" />
+            <text x="1020" y="2547" stroke-width="0" font-size="32px" style="white-space: pre;"> 55)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2540" />
+            <use href="#textA" x="1140" y="2545" />
+            <use href="#textCircle" fill="none" x="1200" y="2540" />
+            <use href="#textB" x="1200" y="2545" />
+            <use href="#textCircle" fill="none" x="1260" y="2540" />
+            <use href="#textC" x="1260" y="2545" />
+            <use href="#textCircle" fill="none" x="1320" y="2540" />
+            <use href="#textD" x="1320" y="2545" />
+            <use href="#textCircle" fill="none" x="1380" y="2540" />
+            <use href="#textE" x="1380" y="2545" />
+            <use href="#textCircle" fill="none" x="1440" y="2540" />
+            <use href="#textF" x="1440" y="2545" />
+            <text x="1020" y="2607" stroke-width="0" font-size="32px" style="white-space: pre;"> 56)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2600" />
+            <use href="#textA" x="1140" y="2605" />
+            <use href="#textCircle" fill="none" x="1200" y="2600" />
+            <use href="#textB" x="1200" y="2605" />
+            <use href="#textCircle" fill="none" x="1260" y="2600" />
+            <use href="#textC" x="1260" y="2605" />
+            <use href="#textCircle" fill="none" x="1320" y="2600" />
+            <use href="#textD" x="1320" y="2605" />
+            <use href="#textCircle" fill="none" x="1380" y="2600" />
+            <use href="#textE" x="1380" y="2605" />
+            <use href="#textCircle" fill="none" x="1440" y="2600" />
+            <use href="#textF" x="1440" y="2605" />
+            <text x="1020" y="2667" stroke-width="0" font-size="32px" style="white-space: pre;"> 57)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2660" />
+            <use href="#textA" x="1140" y="2665" />
+            <use href="#textCircle" fill="none" x="1200" y="2660" />
+            <use href="#textB" x="1200" y="2665" />
+            <use href="#textCircle" fill="none" x="1260" y="2660" />
+            <use href="#textC" x="1260" y="2665" />
+            <use href="#textCircle" fill="none" x="1320" y="2660" />
+            <use href="#textD" x="1320" y="2665" />
+            <use href="#textCircle" fill="none" x="1380" y="2660" />
+            <use href="#textE" x="1380" y="2665" />
+            <use href="#textCircle" fill="none" x="1440" y="2660" />
+            <use href="#textF" x="1440" y="2665" />
+            <text x="1020" y="2727" stroke-width="0" font-size="32px" style="white-space: pre;"> 58)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2720" />
+            <use href="#textA" x="1140" y="2725" />
+            <use href="#textCircle" fill="none" x="1200" y="2720" />
+            <use href="#textB" x="1200" y="2725" />
+            <use href="#textCircle" fill="none" x="1260" y="2720" />
+            <use href="#textC" x="1260" y="2725" />
+            <use href="#textCircle" fill="none" x="1320" y="2720" />
+            <use href="#textD" x="1320" y="2725" />
+            <use href="#textCircle" fill="none" x="1380" y="2720" />
+            <use href="#textE" x="1380" y="2725" />
+            <use href="#textCircle" fill="none" x="1440" y="2720" />
+            <use href="#textF" x="1440" y="2725" />
+            <text x="1020" y="2787" stroke-width="0" font-size="32px" style="white-space: pre;"> 59)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2780" />
+            <use href="#textA" x="1140" y="2785" />
+            <use href="#textCircle" fill="none" x="1200" y="2780" />
+            <use href="#textB" x="1200" y="2785" />
+            <use href="#textCircle" fill="none" x="1260" y="2780" />
+            <use href="#textC" x="1260" y="2785" />
+            <use href="#textCircle" fill="none" x="1320" y="2780" />
+            <use href="#textD" x="1320" y="2785" />
+            <use href="#textCircle" fill="none" x="1380" y="2780" />
+            <use href="#textE" x="1380" y="2785" />
+            <use href="#textCircle" fill="none" x="1440" y="2780" />
+            <use href="#textF" x="1440" y="2785" />
+            <text x="1020" y="2847" stroke-width="0" font-size="32px" style="white-space: pre;"> 60)</text>
+            <use href="#textCircle" fill="none" x="1140" y="2840" />
+            <use href="#textA" x="1140" y="2845" />
+            <use href="#textCircle" fill="none" x="1200" y="2840" />
+            <use href="#textB" x="1200" y="2845" />
+            <use href="#textCircle" fill="none" x="1260" y="2840" />
+            <use href="#textC" x="1260" y="2845" />
+            <use href="#textCircle" fill="none" x="1320" y="2840" />
+            <use href="#textD" x="1320" y="2845" />
+            <use href="#textCircle" fill="none" x="1380" y="2840" />
+            <use href="#textE" x="1380" y="2845" />
+            <use href="#textCircle" fill="none" x="1440" y="2840" />
+            <use href="#textF" x="1440" y="2845" />
+         </g>
+         <g id="col03response">
+            <rect x="1480" y="1670" width="80" height="1200" stroke="none" fill="lightgray" />
+            <text x="1480" y="1707" stroke-width="0" font-size="32px" style="white-space: pre;"> 61)</text>
+            <use href="#textCircle" fill="none" x="1600" y="1700" />
+            <use href="#textA" x="1600" y="1705" />
+            <use href="#textCircle" fill="none" x="1660" y="1700" />
+            <use href="#textB" x="1660" y="1705" />
+            <use href="#textCircle" fill="none" x="1720" y="1700" />
+            <use href="#textC" x="1720" y="1705" />
+            <use href="#textCircle" fill="none" x="1780" y="1700" />
+            <use href="#textD" x="1780" y="1705" />
+            <use href="#textCircle" fill="none" x="1840" y="1700" />
+            <use href="#textE" x="1840" y="1705" />
+            <use href="#textCircle" fill="none" x="1900" y="1700" />
+            <use href="#textF" x="1900" y="1705" />
+            <text x="1480" y="1767" stroke-width="0" font-size="32px" style="white-space: pre;"> 62)</text>
+            <use href="#textCircle" fill="none" x="1600" y="1760" />
+            <use href="#textA" x="1600" y="1765" />
+            <use href="#textCircle" fill="none" x="1660" y="1760" />
+            <use href="#textB" x="1660" y="1765" />
+            <use href="#textCircle" fill="none" x="1720" y="1760" />
+            <use href="#textC" x="1720" y="1765" />
+            <use href="#textCircle" fill="none" x="1780" y="1760" />
+            <use href="#textD" x="1780" y="1765" />
+            <use href="#textCircle" fill="none" x="1840" y="1760" />
+            <use href="#textE" x="1840" y="1765" />
+            <use href="#textCircle" fill="none" x="1900" y="1760" />
+            <use href="#textF" x="1900" y="1765" />
+            <text x="1480" y="1827" stroke-width="0" font-size="32px" style="white-space: pre;"> 63)</text>
+            <use href="#textCircle" fill="none" x="1600" y="1820" />
+            <use href="#textA" x="1600" y="1825" />
+            <use href="#textCircle" fill="none" x="1660" y="1820" />
+            <use href="#textB" x="1660" y="1825" />
+            <use href="#textCircle" fill="none" x="1720" y="1820" />
+            <use href="#textC" x="1720" y="1825" />
+            <use href="#textCircle" fill="none" x="1780" y="1820" />
+            <use href="#textD" x="1780" y="1825" />
+            <use href="#textCircle" fill="none" x="1840" y="1820" />
+            <use href="#textE" x="1840" y="1825" />
+            <use href="#textCircle" fill="none" x="1900" y="1820" />
+            <use href="#textF" x="1900" y="1825" />
+            <text x="1480" y="1887" stroke-width="0" font-size="32px" style="white-space: pre;"> 64)</text>
+            <use href="#textCircle" fill="none" x="1600" y="1880" />
+            <use href="#textA" x="1600" y="1885" />
+            <use href="#textCircle" fill="none" x="1660" y="1880" />
+            <use href="#textB" x="1660" y="1885" />
+            <use href="#textCircle" fill="none" x="1720" y="1880" />
+            <use href="#textC" x="1720" y="1885" />
+            <use href="#textCircle" fill="none" x="1780" y="1880" />
+            <use href="#textD" x="1780" y="1885" />
+            <use href="#textCircle" fill="none" x="1840" y="1880" />
+            <use href="#textE" x="1840" y="1885" />
+            <use href="#textCircle" fill="none" x="1900" y="1880" />
+            <use href="#textF" x="1900" y="1885" />
+            <text x="1480" y="1947" stroke-width="0" font-size="32px" style="white-space: pre;"> 65)</text>
+            <use href="#textCircle" fill="none" x="1600" y="1940" />
+            <use href="#textA" x="1600" y="1945" />
+            <use href="#textCircle" fill="none" x="1660" y="1940" />
+            <use href="#textB" x="1660" y="1945" />
+            <use href="#textCircle" fill="none" x="1720" y="1940" />
+            <use href="#textC" x="1720" y="1945" />
+            <use href="#textCircle" fill="none" x="1780" y="1940" />
+            <use href="#textD" x="1780" y="1945" />
+            <use href="#textCircle" fill="none" x="1840" y="1940" />
+            <use href="#textE" x="1840" y="1945" />
+            <use href="#textCircle" fill="none" x="1900" y="1940" />
+            <use href="#textF" x="1900" y="1945" />
+            <text x="1480" y="2007" stroke-width="0" font-size="32px" style="white-space: pre;"> 66)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2000" />
+            <use href="#textA" x="1600" y="2005" />
+            <use href="#textCircle" fill="none" x="1660" y="2000" />
+            <use href="#textB" x="1660" y="2005" />
+            <use href="#textCircle" fill="none" x="1720" y="2000" />
+            <use href="#textC" x="1720" y="2005" />
+            <use href="#textCircle" fill="none" x="1780" y="2000" />
+            <use href="#textD" x="1780" y="2005" />
+            <use href="#textCircle" fill="none" x="1840" y="2000" />
+            <use href="#textE" x="1840" y="2005" />
+            <use href="#textCircle" fill="none" x="1900" y="2000" />
+            <use href="#textF" x="1900" y="2005" />
+            <text x="1480" y="2067" stroke-width="0" font-size="32px" style="white-space: pre;"> 67)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2060" />
+            <use href="#textA" x="1600" y="2065" />
+            <use href="#textCircle" fill="none" x="1660" y="2060" />
+            <use href="#textB" x="1660" y="2065" />
+            <use href="#textCircle" fill="none" x="1720" y="2060" />
+            <use href="#textC" x="1720" y="2065" />
+            <use href="#textCircle" fill="none" x="1780" y="2060" />
+            <use href="#textD" x="1780" y="2065" />
+            <use href="#textCircle" fill="none" x="1840" y="2060" />
+            <use href="#textE" x="1840" y="2065" />
+            <use href="#textCircle" fill="none" x="1900" y="2060" />
+            <use href="#textF" x="1900" y="2065" />
+            <text x="1480" y="2127" stroke-width="0" font-size="32px" style="white-space: pre;"> 68)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2120" />
+            <use href="#textA" x="1600" y="2125" />
+            <use href="#textCircle" fill="none" x="1660" y="2120" />
+            <use href="#textB" x="1660" y="2125" />
+            <use href="#textCircle" fill="none" x="1720" y="2120" />
+            <use href="#textC" x="1720" y="2125" />
+            <use href="#textCircle" fill="none" x="1780" y="2120" />
+            <use href="#textD" x="1780" y="2125" />
+            <use href="#textCircle" fill="none" x="1840" y="2120" />
+            <use href="#textE" x="1840" y="2125" />
+            <use href="#textCircle" fill="none" x="1900" y="2120" />
+            <use href="#textF" x="1900" y="2125" />
+            <text x="1480" y="2187" stroke-width="0" font-size="32px" style="white-space: pre;"> 69)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2180" />
+            <use href="#textA" x="1600" y="2185" />
+            <use href="#textCircle" fill="none" x="1660" y="2180" />
+            <use href="#textB" x="1660" y="2185" />
+            <use href="#textCircle" fill="none" x="1720" y="2180" />
+            <use href="#textC" x="1720" y="2185" />
+            <use href="#textCircle" fill="none" x="1780" y="2180" />
+            <use href="#textD" x="1780" y="2185" />
+            <use href="#textCircle" fill="none" x="1840" y="2180" />
+            <use href="#textE" x="1840" y="2185" />
+            <use href="#textCircle" fill="none" x="1900" y="2180" />
+            <use href="#textF" x="1900" y="2185" />
+            <text x="1480" y="2247" stroke-width="0" font-size="32px" style="white-space: pre;"> 70)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2240" />
+            <use href="#textA" x="1600" y="2245" />
+            <use href="#textCircle" fill="none" x="1660" y="2240" />
+            <use href="#textB" x="1660" y="2245" />
+            <use href="#textCircle" fill="none" x="1720" y="2240" />
+            <use href="#textC" x="1720" y="2245" />
+            <use href="#textCircle" fill="none" x="1780" y="2240" />
+            <use href="#textD" x="1780" y="2245" />
+            <use href="#textCircle" fill="none" x="1840" y="2240" />
+            <use href="#textE" x="1840" y="2245" />
+            <use href="#textCircle" fill="none" x="1900" y="2240" />
+            <use href="#textF" x="1900" y="2245" />
+            <text x="1480" y="2307" stroke-width="0" font-size="32px" style="white-space: pre;"> 71)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2300" />
+            <use href="#textA" x="1600" y="2305" />
+            <use href="#textCircle" fill="none" x="1660" y="2300" />
+            <use href="#textB" x="1660" y="2305" />
+            <use href="#textCircle" fill="none" x="1720" y="2300" />
+            <use href="#textC" x="1720" y="2305" />
+            <use href="#textCircle" fill="none" x="1780" y="2300" />
+            <use href="#textD" x="1780" y="2305" />
+            <use href="#textCircle" fill="none" x="1840" y="2300" />
+            <use href="#textE" x="1840" y="2305" />
+            <use href="#textCircle" fill="none" x="1900" y="2300" />
+            <use href="#textF" x="1900" y="2305" />
+            <text x="1480" y="2367" stroke-width="0" font-size="32px" style="white-space: pre;"> 72)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2360" />
+            <use href="#textA" x="1600" y="2365" />
+            <use href="#textCircle" fill="none" x="1660" y="2360" />
+            <use href="#textB" x="1660" y="2365" />
+            <use href="#textCircle" fill="none" x="1720" y="2360" />
+            <use href="#textC" x="1720" y="2365" />
+            <use href="#textCircle" fill="none" x="1780" y="2360" />
+            <use href="#textD" x="1780" y="2365" />
+            <use href="#textCircle" fill="none" x="1840" y="2360" />
+            <use href="#textE" x="1840" y="2365" />
+            <use href="#textCircle" fill="none" x="1900" y="2360" />
+            <use href="#textF" x="1900" y="2365" />
+            <text x="1480" y="2427" stroke-width="0" font-size="32px" style="white-space: pre;"> 73)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2420" />
+            <use href="#textA" x="1600" y="2425" />
+            <use href="#textCircle" fill="none" x="1660" y="2420" />
+            <use href="#textB" x="1660" y="2425" />
+            <use href="#textCircle" fill="none" x="1720" y="2420" />
+            <use href="#textC" x="1720" y="2425" />
+            <use href="#textCircle" fill="none" x="1780" y="2420" />
+            <use href="#textD" x="1780" y="2425" />
+            <use href="#textCircle" fill="none" x="1840" y="2420" />
+            <use href="#textE" x="1840" y="2425" />
+            <use href="#textCircle" fill="none" x="1900" y="2420" />
+            <use href="#textF" x="1900" y="2425" />
+            <text x="1480" y="2487" stroke-width="0" font-size="32px" style="white-space: pre;"> 74)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2480" />
+            <use href="#textA" x="1600" y="2485" />
+            <use href="#textCircle" fill="none" x="1660" y="2480" />
+            <use href="#textB" x="1660" y="2485" />
+            <use href="#textCircle" fill="none" x="1720" y="2480" />
+            <use href="#textC" x="1720" y="2485" />
+            <use href="#textCircle" fill="none" x="1780" y="2480" />
+            <use href="#textD" x="1780" y="2485" />
+            <use href="#textCircle" fill="none" x="1840" y="2480" />
+            <use href="#textE" x="1840" y="2485" />
+            <use href="#textCircle" fill="none" x="1900" y="2480" />
+            <use href="#textF" x="1900" y="2485" />
+            <text x="1480" y="2547" stroke-width="0" font-size="32px" style="white-space: pre;"> 75)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2540" />
+            <use href="#textA" x="1600" y="2545" />
+            <use href="#textCircle" fill="none" x="1660" y="2540" />
+            <use href="#textB" x="1660" y="2545" />
+            <use href="#textCircle" fill="none" x="1720" y="2540" />
+            <use href="#textC" x="1720" y="2545" />
+            <use href="#textCircle" fill="none" x="1780" y="2540" />
+            <use href="#textD" x="1780" y="2545" />
+            <use href="#textCircle" fill="none" x="1840" y="2540" />
+            <use href="#textE" x="1840" y="2545" />
+            <use href="#textCircle" fill="none" x="1900" y="2540" />
+            <use href="#textF" x="1900" y="2545" />
+            <text x="1480" y="2607" stroke-width="0" font-size="32px" style="white-space: pre;"> 76)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2600" />
+            <use href="#textA" x="1600" y="2605" />
+            <use href="#textCircle" fill="none" x="1660" y="2600" />
+            <use href="#textB" x="1660" y="2605" />
+            <use href="#textCircle" fill="none" x="1720" y="2600" />
+            <use href="#textC" x="1720" y="2605" />
+            <use href="#textCircle" fill="none" x="1780" y="2600" />
+            <use href="#textD" x="1780" y="2605" />
+            <use href="#textCircle" fill="none" x="1840" y="2600" />
+            <use href="#textE" x="1840" y="2605" />
+            <use href="#textCircle" fill="none" x="1900" y="2600" />
+            <use href="#textF" x="1900" y="2605" />
+            <text x="1480" y="2667" stroke-width="0" font-size="32px" style="white-space: pre;"> 77)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2660" />
+            <use href="#textA" x="1600" y="2665" />
+            <use href="#textCircle" fill="none" x="1660" y="2660" />
+            <use href="#textB" x="1660" y="2665" />
+            <use href="#textCircle" fill="none" x="1720" y="2660" />
+            <use href="#textC" x="1720" y="2665" />
+            <use href="#textCircle" fill="none" x="1780" y="2660" />
+            <use href="#textD" x="1780" y="2665" />
+            <use href="#textCircle" fill="none" x="1840" y="2660" />
+            <use href="#textE" x="1840" y="2665" />
+            <use href="#textCircle" fill="none" x="1900" y="2660" />
+            <use href="#textF" x="1900" y="2665" />
+            <text x="1480" y="2727" stroke-width="0" font-size="32px" style="white-space: pre;"> 78)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2720" />
+            <use href="#textA" x="1600" y="2725" />
+            <use href="#textCircle" fill="none" x="1660" y="2720" />
+            <use href="#textB" x="1660" y="2725" />
+            <use href="#textCircle" fill="none" x="1720" y="2720" />
+            <use href="#textC" x="1720" y="2725" />
+            <use href="#textCircle" fill="none" x="1780" y="2720" />
+            <use href="#textD" x="1780" y="2725" />
+            <use href="#textCircle" fill="none" x="1840" y="2720" />
+            <use href="#textE" x="1840" y="2725" />
+            <use href="#textCircle" fill="none" x="1900" y="2720" />
+            <use href="#textF" x="1900" y="2725" />
+            <text x="1480" y="2787" stroke-width="0" font-size="32px" style="white-space: pre;"> 79)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2780" />
+            <use href="#textA" x="1600" y="2785" />
+            <use href="#textCircle" fill="none" x="1660" y="2780" />
+            <use href="#textB" x="1660" y="2785" />
+            <use href="#textCircle" fill="none" x="1720" y="2780" />
+            <use href="#textC" x="1720" y="2785" />
+            <use href="#textCircle" fill="none" x="1780" y="2780" />
+            <use href="#textD" x="1780" y="2785" />
+            <use href="#textCircle" fill="none" x="1840" y="2780" />
+            <use href="#textE" x="1840" y="2785" />
+            <use href="#textCircle" fill="none" x="1900" y="2780" />
+            <use href="#textF" x="1900" y="2785" />
+            <text x="1480" y="2847" stroke-width="0" font-size="32px" style="white-space: pre;"> 80)</text>
+            <use href="#textCircle" fill="none" x="1600" y="2840" />
+            <use href="#textA" x="1600" y="2845" />
+            <use href="#textCircle" fill="none" x="1660" y="2840" />
+            <use href="#textB" x="1660" y="2845" />
+            <use href="#textCircle" fill="none" x="1720" y="2840" />
+            <use href="#textC" x="1720" y="2845" />
+            <use href="#textCircle" fill="none" x="1780" y="2840" />
+            <use href="#textD" x="1780" y="2845" />
+            <use href="#textCircle" fill="none" x="1840" y="2840" />
+            <use href="#textE" x="1840" y="2845" />
+            <use href="#textCircle" fill="none" x="1900" y="2840" />
+            <use href="#textF" x="1900" y="2845" />
+         </g>
+      </g>
+      <g id="responseAlignmentBubbles">
+         <use href="#textCircle" fill="black" x="2050" y="1700" />
+         <use href="#textCircle" fill="black" x="2050" y="1760" />
+         <use href="#textCircle" fill="black" x="2050" y="1820" />
+         <use href="#textCircle" fill="black" x="2050" y="1880" />
+         <use href="#textCircle" fill="black" x="2050" y="1940" />
+         <use href="#textCircle" fill="black" x="2050" y="2000" />
+         <use href="#textCircle" fill="black" x="2050" y="2060" />
+         <use href="#textCircle" fill="black" x="2050" y="2120" />
+         <use href="#textCircle" fill="black" x="2050" y="2180" />
+         <use href="#textCircle" fill="black" x="2050" y="2240" />
+         <use href="#textCircle" fill="black" x="2050" y="2300" />
+         <use href="#textCircle" fill="black" x="2050" y="2360" />
+         <use href="#textCircle" fill="black" x="2050" y="2420" />
+         <use href="#textCircle" fill="black" x="2050" y="2480" />
+         <use href="#textCircle" fill="black" x="2050" y="2540" />
+         <use href="#textCircle" fill="black" x="2050" y="2600" />
+         <use href="#textCircle" fill="black" x="2050" y="2660" />
+         <use href="#textCircle" fill="black" x="2050" y="2720" />
+         <use href="#textCircle" fill="black" x="2050" y="2780" />
+         <use href="#textCircle" fill="black" x="2050" y="2840" />
+      </g>
+      <g id="responseHorizontalAlignmentBubbles">
+         <use href="#textCircle" fill="black" x="220" y="2920" />
+         <use href="#textCircle" fill="black" x="280" y="2920" />
+         <use href="#textCircle" fill="black" x="340" y="2920" />
+         <use href="#textCircle" fill="black" x="400" y="2920" />
+         <use href="#textCircle" fill="black" x="460" y="2920" />
+         <use href="#textCircle" fill="black" x="520" y="2920" />
+         <use href="#textCircle" fill="black" x="680" y="2920" />
+         <use href="#textCircle" fill="black" x="740" y="2920" />
+         <use href="#textCircle" fill="black" x="800" y="2920" />
+         <use href="#textCircle" fill="black" x="860" y="2920" />
+         <use href="#textCircle" fill="black" x="920" y="2920" />
+         <use href="#textCircle" fill="black" x="980" y="2920" />
+         <use href="#textCircle" fill="black" x="1140" y="2920" />
+         <use href="#textCircle" fill="black" x="1200" y="2920" />
+         <use href="#textCircle" fill="black" x="1260" y="2920" />
+         <use href="#textCircle" fill="black" x="1320" y="2920" />
+         <use href="#textCircle" fill="black" x="1380" y="2920" />
+         <use href="#textCircle" fill="black" x="1440" y="2920" />
+         <use href="#textCircle" fill="black" x="1600" y="2920" />
+         <use href="#textCircle" fill="black" x="1660" y="2920" />
+         <use href="#textCircle" fill="black" x="1720" y="2920" />
+         <use href="#textCircle" fill="black" x="1780" y="2920" />
+         <use href="#textCircle" fill="black" x="1840" y="2920" />
+         <use href="#textCircle" fill="black" x="1900" y="2920" />
+      </g>
+   </g>
+
+   <g id="logoBox">
+      <rect id="logoPlacementRect" x="100" y="1300" height="300" width="900" fill="none" stroke="transparent" stroke-width="2" />
+      <svg xmlns="http://www.w3.org/2000/svg" x="100" y="1300" height="300" width="900" viewBox="0 0 1100 200">
+         <symbol id="iDrop" viewBox="0 0 200 200">
+            <g fill="#FFD800">
+               <polygon points="100,10 146.15,120.77 53.85,120.77 " />
+               <circle cx="100" cy="140" r="50" />
+            </g>
+         </symbol>
+         <use href="#iDrop" x="0" y="0" width="200" height="200" />
+         <text font-size="32" font-family="Verdana" text-anchor="middle" x="600" y="33%">SOUTHERN HEMISPHERE INSTITUTE OF TECHNOLOGY</text>
+         <text font-size="30" font-family="Verdana" text-anchor="middle" x="600" y="66%">Te Whare Wānanga o Tuakoi Tonga</text>
+      </svg>
+   </g>
+</svg>
+
+   <script>
+      window.addEventListener('DOMContentLoaded', textEditing());
+
+      window.onload = function () {
+         document.getElementById('uploadLogo').value = '';
+      };
+
+      function textEditing() {
+         document.querySelectorAll("#captionTexts text, #instructions text").forEach(text => {
+            text.addEventListener('click', function (event) {
+               event.stopPropagation();
+               const currentText = this.textContent;
+               const inputText = prompt('Please edit text here', currentText);
+
+               if (inputText !== null) {
+                  this.textContent = currentText;
+               }
+            });
+         });
+      }
+
+      function insertSvg(logo) {
+         removeLogo();
+         const parser = new DOMParser();
+
+         const doc = parser.parseFromString(logo, 'image/svg+xml');
+         const svg = doc.querySelector('svg');
+
+         svg.setAttribute('x', 100);
+         svg.setAttribute('y', 1300);
+         svg.setAttribute('width', 900);
+         svg.setAttribute('height', 300);
+
+         const logoBox = document.getElementById('logoBox');
+
+         if (logoBox.children.length > 1) {
+            logoBox.removeChild(logoBox.lastChild);
+         }
+         const newSvg = document.importNode(svg, true);
+         logoBox.appendChild(newSvg);
+      }
+
+
+      document.getElementById("uploadLogo").addEventListener("change", (event) => {
+         const file = event.target.files[0];
+         if (!file) {
+            return;
+         }
+
+         const reader = new FileReader();
+         reader.onload = (event) => {
+            const svgLogo = event.target.result;
+            insertSvg(svgLogo);
+         };
+         reader.readAsText(file);
+      })
+
+
+      function removeLogo() {
+         const logoSvg = document.querySelector('#logoBox svg');
+         if (logoSvg) {
+            logoSvg.remove();
+         }
+      }
+
+      document.getElementById('removeLogo').addEventListener('click', removeLogo);
+
+      
+      document.getElementById('downloadSvg').addEventListener('click', function () {
+         const svg = document.querySelector('svg');
+         const svgData = new XMLSerializer().serializeToString(svg);
+         const blob = new Blob([svgData], { type: 'image/svg+xml' });
+         const url = URL.createObjectURL(blob);
+         const a = document.createElement('a');
+         a.href = url;
+         a.download = 'OmrSheet.svg';
+         a.click();
+         URL.revokeObjectURL(url);
+      });
+   </script>
+</body>
+</html>
