@@ -11,16 +11,18 @@
       }
    </style>
    <script>
+      let svgText = "";
       async function GetSVG() {
          const url = "OmrTemplateUoA.svg";
          const resp = await fetch(url);
-         const data = await resp.text();
-         document.getElementById("omr").innerHTML = data;
+         svgText = await resp.text();
+         document.getElementById("omr").innerHTML = svgText;
 
          document.getElementById("print").addEventListener("click", DoVersion);
       }
 
       function DoVersion() {
+         document.getElementById("omr").innerHTML = svgText;
          let version = document.getElementById("version").value;
          const scriptVersionTextElem = document.getElementById("scriptVersionTextbox");
          const versionElemCount = scriptVersionTextElem.children.length;
@@ -69,7 +71,7 @@
 <body>
    <div id="non-printable">
       <label>Enter version (no more than 12 digits):</label>
-      <input id="version" type="number" min="0" max="999999999999"></input>
+      <input id="version" type="number" min="0" max="999999999999" />
       <button id="print">Print</button>
    </div>
    <div id="printable">
