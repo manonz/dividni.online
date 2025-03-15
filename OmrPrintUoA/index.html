@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta charset="UTF-8">
+   <title></title>
+   <style>
+      #non-printable { padding: 20px 20px 20px 20px; }
+
+      @media print {
+         #non-printable { display: none; }
+      }
+   </style>
+   <script>
+      async function GetSVG() {
+         const url = "OmrTemplateUoA.svg";
+         const resp = await fetch(url);
+         const data = await resp.text();
+         document.getElementById("omr").innerHTML = data;
+
+         document.getElementById("print").addEventListener("click", DoVersion);
+      }
+
+      function DoVersion() {
+         let version = document.getElementById("version").value;
+         const scriptVersionTextElem = document.getElementById("scriptVersionTextbox");
+         const versionElemCount = scriptVersionTextElem.children.length;
+         const versionNum = Number(version);
+
+         if (!isNaN(versionNum) && version.length <= versionElemCount) {
+            version = versionNum.toString().padStart(12, '0');
+
+            // Do the version text first
+            const versionArray = [...version];
+            for (let i = 0; i < versionArray.length; ++i) {
+               const child = scriptVersionTextElem.children[i];
+               const x = child.x.baseVal.value;
+               const y = child.y.baseVal.value;
+               const textNode = document.createElement("text");
+               textNode.setAttribute("x", x + 10);
+               textNode.setAttribute("y", y + 40);
+               textNode.setAttribute("font-size", "40px");
+               textNode.innerText = versionArray[i].toString();
+               scriptVersionTextElem.appendChild(textNode);
+            }
+
+            // Then do the version bubbles
+            const rev = versionArray.reverse();
+            for (let i = 0; i < rev.length; ++i) {
+               const dVal = rev[i].padStart(2, '0');
+               const iVal = i.toString().padStart(2, '0');
+               const bubbleId = "d" + dVal + "c" + iVal;
+               const bubbleNode = document.getElementById(bubbleId);
+               bubbleNode.setAttribute("fill", "black");
+            }
+         }
+         else {
+            alert(`Version ${version} is not valid`);
+         }
+         const omr = document.getElementById("omr");
+         const newSvg = omr.innerHTML;
+         omr.innerHTML = newSvg;
+
+         window.print();
+      }
+
+      window.onload = GetSVG;
+   </script>
+</head>
+<body>
+   <div id="non-printable">
+      <label>Enter version (no more than 12 digits):</label>
+      <input id="version" type="number" min="0" max="999999999999"></input>
+      <button id="print">Print</button>
+   </div>
+   <div id="printable">
+      <div id="omr">
+      </div>
+   </div>
+</body>
+</html>
