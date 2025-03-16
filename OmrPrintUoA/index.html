@@ -4,11 +4,12 @@
    <meta charset="UTF-8">
    <title></title>
    <style>
-      #non-printable { padding: 20px 20px 20px 20px; }
-
-      @media print {
-         #non-printable { display: none; }
-      }
+   #non-printable {
+      padding: 20px 20px 20px 20px; 
+   }
+   @media print {
+      #non-printable { display: none; }
+   }
    </style>
    <script>
       let svgText = "";
@@ -24,6 +25,10 @@
       function DoVersion() {
          document.getElementById("omr").innerHTML = svgText;
          let version = document.getElementById("version").value;
+         if (!version || version.length === 0) {
+            alert(`Version [${version}] is not valid`);
+            return;
+         }
          const scriptVersionTextElem = document.getElementById("scriptVersionTextbox");
          const versionElemCount = scriptVersionTextElem.children.length;
          const versionNum = Number(version);
@@ -56,12 +61,12 @@
             }
          }
          else {
-            alert(`Version ${version} is not valid`);
+            alert(`Version [${version}] is not valid`);
          }
          const omr = document.getElementById("omr");
          const newSvg = omr.innerHTML;
          omr.innerHTML = newSvg;
-
+         
          window.print();
       }
 
@@ -71,7 +76,7 @@
 <body>
    <div id="non-printable">
       <label>Enter version (no more than 12 digits):</label>
-      <input id="version" type="number" min="0" max="999999999999" />
+      <input id="version" type="number" min="0" max="999999999999"></input>
       <button id="print">Print</button>
    </div>
    <div id="printable">
