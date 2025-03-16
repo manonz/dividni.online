@@ -25,7 +25,7 @@
          document.getElementById("omr").innerHTML = svgText;
          let version = document.getElementById("version").value;
          if (!version || version.length === 0) {
-            alert(`Version [${version}] is not valid`);
+            alert(`Version must not be blank`);
             return;
          }
          const scriptVersionTextElem = document.getElementById("scriptVersionTextbox");
