@@ -2,13 +2,27 @@
 <head>
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <meta charset="UTF-8">
-   <title></title>
+   <title>UOA OmrSheet Printer</title>
    <style>
       #non-printable { padding: 20px 20px 20px 20px; }
 
       @media print {
          #non-printable { display: none; }
       }
+
+      body {
+         font-family: Arial, sans-serif;
+         text-align: center;
+      }
+
+      input[type="number"] {
+         padding: 4px;
+         border: 1px solid #ccc;
+         text-align: center;
+      }
+
+      button { padding: 5px 10px; background: #007bff; color: #fff; border: none; cursor: pointer; }
+
    </style>
    <script>
       let svgText = "";
@@ -74,6 +88,7 @@
 </head>
 <body>
    <div id="non-printable">
+      <h2>UOA OmrSheet Printer</h2>
       <label>Enter version (no more than 12 digits):</label>
       <input id="version" type="number" min="0" max="999999999999"/>
       <button id="print">Print</button>
