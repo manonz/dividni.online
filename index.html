@@ -7,9 +7,11 @@
 
     <script src="script.js"></script>
     <script src="ckeditor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable/build/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.3/dist/purify.js"></script>
-    <script src="variables.js"></script>
     <script src="modal.js"></script>
+    <script defer src="variables.js"></script>
+
     <link rel="icon" type="image/svg+xml" href="https://dividni.com/images/Dividni-Logo.svg" />
     <link rel="mask-icon" href="https://dividni.com/images/Dividni-Logo-Black.svg" color="red">
 
@@ -97,17 +99,18 @@
           <div class="variables-heading">
             <h3 class="create__heading">Your variables</h3>
           </div>
-          <div id="variables-wrapper">
+          <div id="variables-wrapper" class="variables-wrapper">
             <ul id="variables-list" class="variables-list"></ul>
+            <button
+              id="add-variable"
+              class="pill-button"
+              type="button"
+              onclick="openModal(this)"
+            >
+              Add Variable
+            </button>
           </div>
-          <button
-            id="add-variable"
-            class="pill-button"
-            type="button"
-            onclick="openModal(this)"
-          >
-            Add Variable
-          </button>
+
           <div id="dialog_layer" class="dialogs">
             <div
               role="dialog"
@@ -634,5 +637,6 @@
       lambdaEditor.setTheme("ace/theme/monokai");
       lambdaEditor.session.setMode("ace/mode/csharp");
     </script>
+
   </body>
 </html>
