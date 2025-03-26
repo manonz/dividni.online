@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" type="image/svg+xml" href="https://dividni.com/images/Dividni-Logo.svg" />
+  <link rel="mask-icon" href="https://dividni.com/images/Dividni-Logo-Black.svg" color="red">
+  <title>MCQ Exam Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   <h1>MCQ Exam Generator</h1>
 
+   <div id="confirmModal">
+      <div class="modal-content">
+         <p id="confirmMessage">Do you want remove this question?</p>
+         <button id="confirmYesBtn">Yes</button>
+         <button id="confirmNoBtn">No</button>
+      </div>
+   </div>
+
+   <div class="section">
+      <h2>Upload file(a 10MB limit applies):</h2>
+      <div class="file-input-container">
+         <label>Prologue (HTML):</label><br>
+         <input type="file" id="prologueFile" name="PrologueFile" accept=".html">
+      </div>
+      <div class="file-input-container">
+         <label>Epilogue (HTML):</label><br>
+         <input type="file" id="epilogueFile" name="EpilogueFile" accept=".html">
+      </div>
+      <div class="file-input-container">
+         <label>Answer Sheet (SVG):</label><br>
+         <input type="file" id="answerSheetSvg" name="AnswerSheetSvg" accept=".svg">
+         <div>
+            <input type="checkbox" id="useDefaultAnswerSheet" name="UseDefaultAnswerSheet">
+            <label for="useDefaultAnswerSheet">Use default template:</label>
+         </div>
+      </div>
+      <div class="file-input-container">
+         <label>Questions zip file (ZIP):</label><br>
+         <input type="file" id="questionsZip" name="QuestionsZip" accept=".zip">
+      </div>
+      <div>
+         <input type="checkbox" id="proof" name="Proof">
+         <label for="proof">Include Proof</label>
+      </div>
+      <div>
+         <button type="button" onclick="upload()">Generate Preview</button>
+      </div>
+   </div>
+
+   <div class="section">
+      <h2>Questions:</h2>
+      <ul id="sortable-list"></ul>
+      <button type="button" onclick="addPageBreak()">+ Add Page Break</button>
+      <button id="reorderBtn" onclick="reorderPreview()">Regenerate Preview</button>
+      <div class="file-input-container" style="margin-top: 10px;">
+         <label>Upload new Question file (.cs):</label><br>
+         <input type="file" id="newQuestionFiles" name="newQuestionFiles" accept=".cs" multiple>
+         <button type="button" onclick="uploadNewQuestions()">Upload new Question file</button>
+      </div>
+   </div>
+
+   <div id="a4PreviewContainer" class="a4-page">
+      <img src="Loader.svg" alt="Loading..." id="loader" width="40" height="40">
+      <iframe id="a4PreviewEmbed" src="" style="display:none;"></iframe>
+   </div>
+
+   <div class="section">
+      <h2>Generate final MCQ Questions</h2>
+      <div class="final-form-group">
+         <label for="paperCount">Paper Count (max 2000 pages):</label>
+         <input type="number" id="paperCount" name="PaperCount" value="1" min="1" max="2000">
+      </div>
+      <div class="final-form-group">
+         <label for="startId">Start ID (no more than 12 digits):</label>
+         <input type="number" id="startId" name="StartId" value="0" min="0" max="999999999999">
+      </div>
+      <div class="final-form-group">
+         <input type="checkbox" id="finalProof" name="Proof">
+         <label for="finalProof">Include Proof</label>
+      </div>
+      <div class="final-form-group">
+         <input type="checkbox" id="combineAll" name="CombineAllPapers">
+         <label for="combineAll">Single Large PDF</label>
+      </div>
+
+      <div>
+         <button type="button" onclick="generateFinalExam()">Generate Final MCQS</button>
+      </div>
+      <img src="Loader.svg" alt="Loading..." id="finalLoader" width="60" height="60" style="display: none;">
+      <div id="finalResult"></div>
+   </div>
+   <footer id="version" class="footer">v25.01.18</footer>
+   <script src="app.js"></script>
+</body>
+</html>
