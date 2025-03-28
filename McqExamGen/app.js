@@ -69,9 +69,11 @@ function userConfirm(message) {
  
  function upload() {
    const loader = document.getElementById("loader");
+   const previewLoader= document.getElementById("previewLoader");
    const previewContainer = document.getElementById("a4PreviewContainer");
    const a4PreviewEmbed = document.getElementById("a4PreviewEmbed");
    loader.style.display = "block";
+   previewLoader.style.display = "inline";
    a4PreviewEmbed.style.display = "none";
    
    const prologueFile = document.getElementById("prologueFile").files[0];
@@ -81,6 +83,7 @@ function userConfirm(message) {
    if (!questionsZip) {
      showMessage("You need upload a ZIP file with questions.");
      loader.style.display = "none";
+     previewLoader.style.display = "none";
      return;
    }
    const formData = new FormData();
@@ -105,10 +108,12 @@ function userConfirm(message) {
          a4PreviewEmbed.src = response.mcqPaperPath + "?t=" + Date.now();
          a4PreviewEmbed.onload = function() {
            loader.style.display = "none";
+           previewLoader.style.display = "none";
            a4PreviewEmbed.style.display = "block";
          };
        } else {
          loader.style.display = "none";
+         previewLoader.style.display = "none";
        }
      }
    };
