@@ -145,6 +145,7 @@
                   >
                     Expression
                   </button>
+                  <!--
                   <button
                     type="button"
                     class="simple-button"
@@ -152,6 +153,7 @@
                   >
                     Lambda
                   </button>
+                  -->
                 </div>
                 <button
                   type="button"
@@ -353,6 +355,7 @@
                 </div>
               </div>
             </div>
+            <!--
             <div
               id="dialog5"
               role="dialog"
@@ -410,7 +413,6 @@
                   <div class="dialog_form_item">
                     <label>
                       <span class="label_text"> Lambda: </span>
-                      <!-- prettier-ignore -->
                       <div
                         id="lambda-editor"
                         style="height: 300px; width: 100%"
@@ -448,9 +450,10 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
+
         <div class="create__form__wrapper">
           <form id="dividni-form" class="create__form">
             <label
@@ -608,8 +611,8 @@
                 aria-live="polite"
               ></span>
             </button>
-            <p id="copyCode" class="pill-button" onclick="copyCode()">
-               Copy question code
+            <p id="downloadCode" class="pill-button" onclick="downloadCode()">
+               Download question code
             </p>
           </form>
         </div>
@@ -629,10 +632,12 @@
       src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.5/ace.js"
       crossorigin="anonymous"
     ></script>
+    <!--
     <script>
       lambdaEditor = ace.edit("lambda-editor");
       lambdaEditor.setTheme("ace/theme/monokai");
       lambdaEditor.session.setMode("ace/mode/csharp");
     </script>
+  -->
   </body>
 </html>

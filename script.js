@@ -3,7 +3,7 @@ let questionEditor,
   expressionEditor,
   correctsMCQEditor,
   incorrectsMCQEditor,
-  lambdaEditor,
+  //lambdaEditor,
   shortTextAnswersEditor;
 
 const getSanitisedEditorContent = (editor) => {
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   showVersion();
 });
 
-function copyCode() {
+function downloadCode() {
   completeFormValid = 1;
   clearStatus();
 
@@ -203,18 +203,18 @@ function copyCodeMcqMarkup() {
   const formData = getMcqFormData();
 
   if (multiChoice) {
-    copyCodeBase(formData, "CodeFromMcqXyzMarkup");
+    downLoadCodeBase(formData, "CodeFromMcqXyzMarkup");
   } else {
-    copyCodeBase(formData, "CodeFromMcqTruthMarkup");
+    downLoadCodeBase(formData, "CodeFromMcqTruthMarkup");
   }
 }
 
 function copyCodeNumericalMarkup() {
-  copyCodeBase(getNumericalFormData(), "CodeFromNumericalMarkup");
+  downLoadCodeBase(getNumericalFormData(), "CodeFromNumericalMarkup");
 }
 
 function copyCodeShortTextMarkup() {
-  copyCodeBase(getShortTextFormData(), "CodeFromShortTextMarkup");
+  downLoadCodeBase(getShortTextFormData(), "CodeFromShortTextMarkup");
 }
 
 function downloadQuestionBank(e) {

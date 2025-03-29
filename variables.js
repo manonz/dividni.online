@@ -45,6 +45,7 @@ class ChoiceVariable extends Variable {
   }
 }
 
+/*
 class LambdaVariable extends Variable {
   constructor(id, returnType, lambdaCode) {
     super(id, "lambda");
@@ -60,16 +61,17 @@ class LambdaVariable extends Variable {
     this._returnType = isValidReturnType(returnType) ? returnType : "string";
   }
 }
-
+*/
 let variables = [
   new RandomVariable("randomExample", 1, 10),
   new ChoiceVariable("choiceExample", "bananas|apples|oranges"),
   new ExpressionVariable("expressionExample", "@randomExample * 4"),
+  /*
   new LambdaVariable(
     "lambdaExample",
     "string",
     '() => { switch (choiceExample) { case "banana": return "yellow"; case "apples": return "red"; default: return "orange"; } }'
-  ),
+  ),*/
 ];
 
 function isValidName(n) {
@@ -298,6 +300,7 @@ function isValidReturnType(value) {
   return Boolean(validReturnTypes.find((t) => t === value));
 }
 
+/*
 function validateLambda(isEditing = false) {
   let modalValid = 1;
 
@@ -351,6 +354,7 @@ function validateLambda(isEditing = false) {
   }
 }
 
+
 function addLambda(closeButton) {
   const variableProperties = validateLambda();
 
@@ -393,7 +397,7 @@ function editLambda(variableToEdit, closeButton) {
   closeDialog(closeButton);
 
 }
-
+*/
 function validateExpression(isEditing = false) {
   let modalValid = 1;
 
@@ -562,10 +566,11 @@ function displayVariables() {
       case "expression":
         value.innerHTML = DOMPurify.sanitize(variable.expression);
         break;
+        /*
       case "lambda":
         value = document.createElement("code");
         value.innerHTML = DOMPurify.sanitize(variable.lambdaCode);
-        break;
+        break;*/
     }
 
     li.appendChild(name);
@@ -657,6 +662,7 @@ function openEditorModal(element, variableId) {
         savedHandler = button.onclick;
         button.onclick = () => { editExpression(variableToEdit, button); button.onclick = savedHandler; };
         break;
+        /*
       case "lambda":
         replaceDialog('dialog5', undefined, 'lambda-name');
 
@@ -672,6 +678,7 @@ function openEditorModal(element, variableId) {
         savedHandler = button.onclick;
         button.onclick = () => { editLambda(variableToEdit, button); button.onclick = savedHandler; };
         break;
+        */
     
   }
   nameField.value = `${variableToEdit.id.substring(1)}`;
