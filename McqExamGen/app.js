@@ -1,4 +1,5 @@
 const baseUrl = "https://academicintegrity.cs.auckland.ac.nz/exgen/api";
+//const baseUrl ="http://localhost/exgen/api";
 function Clear() {
    document.getElementById("prologueFile").value = "";
    document.getElementById("epilogueFile").value = "";
@@ -11,6 +12,7 @@ function Clear() {
    document.getElementById("combineAll").checked = false;
    document.getElementById("finalProof").checked = false;
    document.getElementById("newQuestionFiles").value = "";
+   document.getElementById("courseName").value = "";
 }
 
 window.onload = function () {
@@ -56,6 +58,7 @@ function userConfirm(message) {
  
  let currentPreviewId = null;
  let currentCmdLineOrder = [];
+ let currentCourseName = "";
  
  document.getElementById("answerSheetSvg").addEventListener("change", function () {
    const defaultCheckbox = document.getElementById("useDefaultAnswerSheet");
@@ -80,12 +83,15 @@ function userConfirm(message) {
    const epilogueFile = document.getElementById("epilogueFile").files[0];
    const answerSheetSvg = document.getElementById("answerSheetSvg").files[0];
    const questionsZip = document.getElementById("questionsZip").files[0];
+
    if (!questionsZip) {
      showMessage("You need upload a ZIP file with questions.");
      loader.style.display = "none";
      previewLoader.style.display = "none";
      return;
    }
+   const courseName = document.getElementById("courseName").value;
+   currentCourseName = courseName;
    const formData = new FormData();
    if (prologueFile) formData.append("PrologueFile", prologueFile);
    if (epilogueFile) formData.append("EpilogueFile", epilogueFile);
@@ -94,6 +100,7 @@ function userConfirm(message) {
    formData.append("Proof", document.getElementById("proof").checked);
    formData.append("NoPageBreak", true);
    formData.append("UseDefaultAnswerSheet", document.getElementById("useDefaultAnswerSheet").checked);
+   formData.append("courseName", courseName);
    
    const xhr = new XMLHttpRequest();
     xhr.open("POST", `${baseUrl}/GenerateMcqPreview`, true);
@@ -154,6 +161,7 @@ function userConfirm(message) {
    formData.append("Proof", proof);
    formData.append("UseDefaultAnswerSheet", useDefault);
    formData.append("CombineAllPapers", combineAllPapers);
+   formData.append("courseName", currentCourseName);
  
    const loader = document.getElementById("finalLoader");
    loader.style.display = "inline";
@@ -379,7 +387,8 @@ function showMessage(message) {
      previewId: currentPreviewId,
      newOrder: newOrder,
      proof: proof,
-     noPageBreak: noPageBreak
+     noPageBreak: noPageBreak,
+     courseName: currentCourseName
    };
  
     fetch(`${baseUrl}/ReorderPreview`, {
