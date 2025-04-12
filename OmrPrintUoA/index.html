@@ -50,7 +50,7 @@
       function addQuestionEntry() {
          let list = document.getElementById('questionList');
          let li = document.createElement('li');
-         li.appendChild(document.createTextNode("Answer(s):"));
+         li.appendChild(document.createTextNode("Answer(s): "));
          let flip = true;
          for (let label in labels) {
             let sp = document.createElement('span');
@@ -75,17 +75,21 @@
          li.appendChild(marks);
          list.appendChild(li);
          questions++;
+         if (questions >= 80) {
+            document.getElementById('addQuestion').removeEventListener('click', addQuestionEntry);
+         }
       }
 
       function doDownload() {
          let data = "";
 
          for (let i = 0; i < questions; i++) {
-            data += (i + 1) + "\t";
+            data += `${ (i + 1) }\t`;
             let solutionWeight = 0;
             let optionWeight = 1;
             for (let j = 0; j < 6; j++) {
-               if (document.getElementById("opt" + i + "_" + labels[j]).checked) {
+               const labelId = `opt${i}_${labels[j]}`;
+               if (document.getElementById(labelId).checked) {
                   solutionWeight += optionWeight;
                }
                optionWeight *= 2;
@@ -140,7 +144,7 @@
             for (let d = 0; d < 10; ++d) {
                const dVal = d.toString().padStart(2, '0');
                const iVal = i.toString().padStart(2, '0');
-               const bubbleId = "d" + dVal + "c" + iVal;
+               const bubbleId = `d${dVal}c${iVal}`;
                console.log(bubbleId);
                const bubbleNode = document.getElementById(bubbleId);
                bubbleNode.setAttribute("fill", "none");
@@ -181,7 +185,7 @@
             for (let i = 0; i < rev.length; ++i) {
                const dVal = rev[i].padStart(2, '0');
                const iVal = i.toString().padStart(2, '0');
-               const bubbleId = "d" + dVal + "c" + iVal;
+               const bubbleId = `d${dVal}c${iVal}`;
                const bubbleNode = document.getElementById(bubbleId);
                bubbleNode.setAttribute("fill", "black");
             }
@@ -219,16 +223,15 @@
          <li><input type="text" size="80" id="instructionInput04" value="Do not write on the back of this form." /></li>
          <li><input type="text" size="80" id="instructionInput05" value="Do not fold this form." /></li>
       </ul>
-      <p>Questions:</p>
       <p>
-         <ol id="questionList">
-         </ol>
-      </p>
-      <p>
-         <button id="addQuestion">Add question</button>
-         <button id="saveButton">Download answer file for this version</button>
+         <button id="saveButton">Download answer key file for this version</button>
          <button id="omrButton">Print or download OMR sheet for this version</button>
       </p>
+      <p>
+         Answer keys: <button id="addQuestion">Add question</button>
+      </p>
+      <ol id="questionList">
+      </ol>
       <p style="text-align: center;">
          FORM PREVIEW FOLLOWS
          <hr style="width: 100%;" />
