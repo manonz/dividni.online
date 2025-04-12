@@ -107,16 +107,16 @@
       }
 
       function updateCourseTitle() {
-         document.getElementById("courseInfoText").innerHTML = document.getElementById('courseTitle').value;
+         document.getElementById("courseInfoText").textContent = document.getElementById('courseTitle').value;
       }
 
       function updateAssessmentDate() {
-         document.getElementById("dateInfoText").innerHTML = document.getElementById('dateSelector').value;
+         document.getElementById("dateInfoText").textContent = document.getElementById('dateSelector').value;
       }
 
       function updateInstructions() {
          for (let i = 1; i <= 5; i++) {
-            document.getElementById('instruction0' + i).innerHTML = document.getElementById('instructionInput0' + i).value;
+            document.getElementById('instruction0' + i).textContent = document.getElementById('instructionInput0' + i).value;
          }
       }
 
