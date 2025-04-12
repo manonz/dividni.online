@@ -8,7 +8,8 @@ const dom = {
    imageContainer: document.getElementById('image'),
    loadingOverlay: document.getElementById('loading'),
    resultImage: document.getElementById('resultImage'),
-   markerCanvas: document.getElementById('markerCanvas')
+   markerCanvas: document.getElementById('markerCanvas'),
+   progressBar: document.getElementById('progressBar')
 };
 
 
@@ -211,7 +212,7 @@ function drawAllGrids() {
    {
       const cellWidth = studentIdArea.totalWidth / studentIdArea.columns;
       const cellHeight = studentIdArea.totalHeight / studentIdArea.rows;
-      markerCtx.strokeStyle = 'red';
+      markerCtx.strokeStyle = 'lime';
       markerCtx.lineWidth = 1;
       currentStudentID.forEach((selectedRow, col) => {
          if (selectedRow !== undefined) {
@@ -226,7 +227,7 @@ function drawAllGrids() {
    {
       const cellWidth = scriptVersionArea.totalWidth / scriptVersionArea.columns;
       const cellHeight = scriptVersionArea.totalHeight / scriptVersionArea.rows;
-      markerCtx.strokeStyle = 'red';
+      markerCtx.strokeStyle = 'lime';
       markerCtx.lineWidth = 1;
       currentScriptVersion.forEach((selectedRow, col) => {
          if (selectedRow !== undefined) {
@@ -239,15 +240,28 @@ function drawAllGrids() {
 
    //anwsers
    {
+      markerCtx.lineWidth = 1;
       answerArea.columns.forEach((colDef, colIndex) => {
          const cellWidth = colDef.totalWidth / answerArea.optionsPerQuestion;
          const cellHeight = answerArea.totalHeight / answerArea.questionsPerColumn;
-         markerCtx.strokeStyle = 'red';
-         markerCtx.lineWidth = 1;
          for (let q = 0; q < answerArea.questionsPerColumn; q++) {
+            const selectedIndices = [];
             for (let opt = 0; opt < answerArea.optionsPerQuestion; opt++) {
                if (currentAnswer[colIndex][q][opt]) {
-                  const x = colDef.startX + opt * cellWidth;
+                  selectedIndices.push(opt);
+               }
+            }
+            if (selectedIndices.length === 1) {
+               markerCtx.strokeStyle = 'lime';
+               const onlyOpt = selectedIndices[0];
+               const x = colDef.startX + onlyOpt * cellWidth;
+               const y = answerArea.startY + q * cellHeight;
+               markerCtx.strokeRect(x, y, cellWidth, cellHeight);
+
+            } else if (selectedIndices.length > 1) {
+               markerCtx.strokeStyle = 'red';
+               for (const optIndex of selectedIndices) {
+                  const x = colDef.startX + optIndex * cellWidth;
                   const y = answerArea.startY + q * cellHeight;
                   markerCtx.strokeRect(x, y, cellWidth, cellHeight);
                }
@@ -315,6 +329,14 @@ function updateUI() {
       const txtLine = txtData[page] || "";
       updateUIFromRowData(txtLine);
       drawAllGrids();
+
+      isValidStudentId();
+      isValidScriptVersion();
+
+      const totalSheets = items.length;
+      const currentSheet = currentIndex + 1;
+      const precent = ((currentSheet / totalSheets) * 100).toFixed(0);
+      dom.progressBar.textContent = `Sheet ${currentSheet} out of ${totalSheets} (${precent}%)`;
 
    };
    dom.resultImage.style.pointerEvents = 'none';
@@ -402,5 +424,70 @@ dom.markerCanvas.addEventListener('click', function (event) {
       drawAllGrids();
       const page = items[currentIndex].index;
       txtData[page] = generateNewLine();
+      isValidStudentId();
+      isValidScriptVersion();
    }
 });
+
+function isValidStudentId() {
+   let str = "";
+
+   for (let i= 0; i < currentStudentID.length; i++) {
+      str += (currentStudentID[i] === undefined) ? " " : String(currentStudentID[i]);
+   }
+
+   let allIDParts = str.trim().split(" ");
+
+   allIDParts = allIDParts.filter(part => part !== "");
+
+   let isValid;
+
+   if (allIDParts.length === 1) {
+      isValid = true;
+   }else {
+      isValid = false;
+   }
+
+
+   if(!isValid) {
+      document.getElementById('studentIDSign').style.visibility = 'visible';
+   }else {
+      document.getElementById('studentIDSign').style.visibility = 'hidden';
+   }
+}
+
+function isValidScriptVersion() {
+   let str = "";
+
+   for (let i = 0; i < currentScriptVersion.length; i++) {
+      if (currentScriptVersion[i] === undefined) {
+         str += " ";
+      } else {
+         str += String(currentScriptVersion[i]);
+      }
+   }
+
+   let numString = "";
+
+   for (let i = 0; i < str.length; i++) {
+      if (str[i] !== " ") {
+         numString += str[i];
+      }
+   }
+
+   let num = parseInt(numString, 10);
+
+   let isValid;
+   if (numString === "" || isNaN(num) || numString.length < 12) {
+      isValid = false;
+   } else {
+      isValid = true;
+   }
+
+
+   if(!isValid) {
+      document.getElementById('scriptVersionSign').style.visibility = 'visible';
+   }else {
+      document.getElementById('scriptVersionSign').style.visibility = 'hidden';
+   }
+}

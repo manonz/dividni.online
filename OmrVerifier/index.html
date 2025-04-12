@@ -32,20 +32,20 @@
          <button id="download" class="downloadButton">2) Download updated TXT</button>
       </div>
 
+      <div id="progressBar" style="text-align:center">Sheet 0 out of 0 (0%)</div>
+
       <div class="view-container">
+         <span id="studentIDSign">&#9888;</span>
+         <button id="prev" class="nav-button left-nav"><</button>
          <div id="image">
             <img id="resultImage" />
             <canvas id="markerCanvas"></canvas>
             <div id="image-loading-message" style="display: none;">Loading images...</div>
          </div>
+         <button id="next" class="nav-button right-nav">></button>
+         <span id="scriptVersionSign">&#9888;</span>
       </div>
 
-      <div class="image-navigation">
-         <div class="nav-wrapper">
-            <button id="prev" class="nav-button left-nav">Previous</button>
-            <button id="next" class="nav-button right-nav">Next</button>
-         </div>
-      </div>
    </div>
    <script src="app.js"></script>
 </body>
