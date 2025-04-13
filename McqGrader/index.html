@@ -74,6 +74,21 @@
          xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                document.getElementById("loader").style.display = "none";
+               if (xhr.status !== 200) {
+                  var reader = new FileReader();
+                  reader.onload = function () {
+                     const errorMessage = reader.result;
+                     alert("Error: " + errorMessage);
+                  };
+                  if (xhr.response) {
+                     reader.readAsText(xhr.response);
+                  }else {
+                     alert("Error: No response from server.");
+                  }
+                  document.getElementById("fid").value = "";
+                  document.getElementById("resultFile").value = "";
+                  return;
+               }
                const res_url = URL.createObjectURL(xhr.response);
                const lnk = document.getElementById("dlink");
                lnk.href = res_url;
