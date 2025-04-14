@@ -20,12 +20,22 @@ dom.nextButton.addEventListener('click', () => handleNavigation(1));
 let currentIndex = 0;
 let items = [];
 let txtData = [];
+let isProcessing = false;
+
+window.onload = function() {
+   document.getElementById('zipInput').value = '';
+   document.getElementById('txtInput').value = '';
+};
 
 dom.processButton.addEventListener('click', async () => {
+   isProcessing = true;
+   document.getElementById('scriptVersionSign').style.visibility = 'hidden';
+   document.getElementById('studentIDSign').style.visibility = 'hidden';
    txtData = [];
 
    if (!dom.zipInput.files[0] || !dom.txtInput.files[0]) {
       alert("You need upload both ZIP and TXT file.");
+      isProcessing = false;
       return;
    }
    dom.resultImage.src = "Loader.svg";
@@ -45,13 +55,16 @@ dom.processButton.addEventListener('click', async () => {
 
       if (missingIndices.length > 0) {
          alert(`Missing pages：${missingIndices.join(", ")}, you may need to check the files.`);
+         isProcessing = false;
       }
 
       currentIndex = 0;
 
       updateUI();
+      isProcessing = false;
    } catch (error) {
       alert(`error: ${error.message}`);
+      isProcessing = false;
    }
 });
 
@@ -212,7 +225,7 @@ function drawAllGrids() {
    {
       const cellWidth = studentIdArea.totalWidth / studentIdArea.columns;
       const cellHeight = studentIdArea.totalHeight / studentIdArea.rows;
-      markerCtx.strokeStyle = 'lime';
+      markerCtx.strokeStyle = 'blue';
       markerCtx.lineWidth = 1;
       currentStudentID.forEach((selectedRow, col) => {
          if (selectedRow !== undefined) {
@@ -227,7 +240,7 @@ function drawAllGrids() {
    {
       const cellWidth = scriptVersionArea.totalWidth / scriptVersionArea.columns;
       const cellHeight = scriptVersionArea.totalHeight / scriptVersionArea.rows;
-      markerCtx.strokeStyle = 'lime';
+      markerCtx.strokeStyle = 'blue';
       markerCtx.lineWidth = 1;
       currentScriptVersion.forEach((selectedRow, col) => {
          if (selectedRow !== undefined) {
@@ -252,7 +265,7 @@ function drawAllGrids() {
                }
             }
             if (selectedIndices.length === 1) {
-               markerCtx.strokeStyle = 'lime';
+               markerCtx.strokeStyle = 'blue';
                const onlyOpt = selectedIndices[0];
                const x = colDef.startX + onlyOpt * cellWidth;
                const y = answerArea.startY + q * cellHeight;
@@ -430,6 +443,7 @@ dom.markerCanvas.addEventListener('click', function (event) {
 });
 
 function isValidStudentId() {
+   if (isProcessing) return;
    let str = "";
 
    for (let i= 0; i < currentStudentID.length; i++) {
@@ -457,6 +471,7 @@ function isValidStudentId() {
 }
 
 function isValidScriptVersion() {
+   if (isProcessing) return;
    let str = "";
 
    for (let i = 0; i < currentScriptVersion.length; i++) {
