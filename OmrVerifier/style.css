@@ -115,7 +115,7 @@ h1 {
     position: relative;
     top: -300px;
     color: red;
-    font-size: 30px; 
+    font-size: 40px; 
 }
 
 #scriptVersionSign {
@@ -124,9 +124,14 @@ h1 {
     position: relative;
     top: -300px;
     color: red;
-    font-size: 30px; 
+    font-size: 40px; 
 }
 
 #progressBar{
     margin: 10px auto;
+}
+
+#verification {
+    visibility: hidden;
+    position: relative;
 }

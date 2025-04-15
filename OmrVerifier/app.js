@@ -9,7 +9,8 @@ const dom = {
    loadingOverlay: document.getElementById('loading'),
    resultImage: document.getElementById('resultImage'),
    markerCanvas: document.getElementById('markerCanvas'),
-   progressBar: document.getElementById('progressBar')
+   progressBar: document.getElementById('progressBar'),
+   verification: document.getElementById('verification')
 };
 
 
@@ -342,9 +343,10 @@ function updateUI() {
       const txtLine = txtData[page] || "";
       updateUIFromRowData(txtLine);
       drawAllGrids();
-
       isValidStudentId();
       isValidScriptVersion();
+
+      updateVerification();
 
       const totalSheets = items.length;
       const currentSheet = currentIndex + 1;
@@ -439,6 +441,7 @@ dom.markerCanvas.addEventListener('click', function (event) {
       txtData[page] = generateNewLine();
       isValidStudentId();
       isValidScriptVersion();
+      updateVerification();
    }
 });
 
@@ -505,4 +508,26 @@ function isValidScriptVersion() {
    }else {
       document.getElementById('scriptVersionSign').style.visibility = 'hidden';
    }
+}
+
+function updateVerification() {
+   const studentIdCount = currentStudentID.filter(val => val !== undefined).length;
+   let answersCount = 0;
+   for (let col = 0; col < answerArea.columns.length; col++) {
+      for (let q = 0; q < answerArea.questionsPerColumn; q++) {
+         let options = currentAnswer[col][q];
+         let selected = false;
+         for (let i = 0; i < options.length; i++) {
+            if (options[i] === true) {
+               selected = true;
+               break;
+            }
+         }
+         if (selected) {
+            answersCount++;
+         }
+      }
+   }
+   dom.verification.textContent = `${studentIdCount} ID digits, ${answersCount} questions answered`;
+   dom.verification.style.visibility = 'visible';
 }
