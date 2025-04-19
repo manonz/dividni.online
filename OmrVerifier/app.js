@@ -1,6 +1,5 @@
 const dom = {
    zipInput: document.getElementById('zipInput'),
-   txtInput: document.getElementById('txtInput'),
    processButton: document.getElementById('process'),
    prevButton: document.getElementById('prev'),
    nextButton: document.getElementById('next'),
@@ -22,30 +21,45 @@ let currentIndex = 0;
 let items = [];
 let txtData = [];
 let isProcessing = false;
+let txtFileName = "";
 
 window.onload = function() {
    document.getElementById('zipInput').value = '';
-   document.getElementById('txtInput').value = '';
 };
 
 dom.processButton.addEventListener('click', async () => {
    isProcessing = true;
+   txtFileName = "";
    document.getElementById('scriptVersionSign').style.visibility = 'hidden';
    document.getElementById('studentIDSign').style.visibility = 'hidden';
    txtData = [];
+   items = [];
 
-   if (!dom.zipInput.files[0] || !dom.txtInput.files[0]) {
-      alert("You need upload both ZIP and TXT file.");
+   const file = dom.zipInput.files[0];
+   if (!dom.zipInput.files[0]) {
+      alert("You need upload a ZIP file.");
       isProcessing = false;
       return;
    }
    dom.resultImage.src = "Loader.svg";
    try {
-      [items, txtData] = await Promise.all([
-         processZipFile(dom.zipInput.files[0]),
-         processTXTfile(dom.txtInput.files[0])
-      ]);
+      zip = new JSZip();
+      const arrayBuffer = await file.arrayBuffer();
+      const outerZipFile =  await zip.loadAsync(arrayBuffer);
 
+      for (const filename of Object.keys(outerZipFile.files)) {
+         const entry = outerZipFile.files[filename];
+
+         if (filename.toLowerCase().endsWith(".zip")) {
+            const imageBolb = await entry.async("blob");
+            items = await processZipFile(imageBolb);
+          }
+          else if (filename.toLowerCase().endsWith(".txt")) {
+            txtFileName = filename.split('/').pop();
+            const txtBlob = await entry.async("blob");
+            txtData = await processTXTfile(txtBlob);
+          }
+      }
 
       const imgsIndexs = new Set(items.map(item => item.index));
 
@@ -313,7 +327,7 @@ function generateNewLine() {
 
 //for download 
 dom.download.addEventListener('click', function () {
-   const orininFileName = dom.txtInput.files[0].name;
+   const orininFileName = txtFileName;
    const pureName = orininFileName.split('.').slice(0, -1).join('.');
    const newFileName = pureName + '_updated.txt';
    const page = items[currentIndex].index;
