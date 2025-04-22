@@ -366,6 +366,16 @@ function updateUI() {
       const currentSheet = currentIndex + 1;
       const precent = ((currentSheet / totalSheets) * 100).toFixed(0);
       dom.progressBar.textContent = `Sheet ${currentSheet} out of ${totalSheets} (${precent}%)`;
+      if (currentIndex ===0) {
+         dom.prevButton.style.visibility = 'hidden';
+      } else {
+         dom.prevButton.style.visibility = 'visible';
+      }
+      if (currentIndex === totalSheets - 1) {
+         dom.nextButton.style.visibility = 'hidden';
+      } else {
+         dom.nextButton.style.visibility = 'visible';
+      }
 
    };
    dom.resultImage.style.pointerEvents = 'none';
@@ -376,12 +386,10 @@ function handleNavigation(direction) {
    let newIndex = currentIndex + direction;
    if (newIndex < 0) {
       newIndex = 0;
-      alert("There are no more valid pages before this.");
 
    }
    if (newIndex > items.length - 1) {
       newIndex = items.length - 1;
-      alert("There are no more valid pages remaining.")
    }
    currentIndex = newIndex;
 
