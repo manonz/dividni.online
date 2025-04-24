@@ -96,7 +96,7 @@
             }
             data += solutionWeight + "\t" + document.getElementById("marks" + i).value + "\n";
          }
-         let filename = document.getElementById('version').value + ".txt";
+         let filename = document.getElementById('version').value.padStart(12, "0") + ".txt";
          const a = document.createElement('a');
          a.setAttribute('href', 'data:text/plain; content-disposition: attachment; encoding:utf-8,' + encodeURIComponent(data));
          a.setAttribute('download', filename);
