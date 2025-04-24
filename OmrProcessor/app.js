@@ -1,9 +1,19 @@
 //script for OMR Response Reader
-fetch("https://academicintegrity.cs.auckland.ac.nz/omr/api/Version").then(response=> response.text()).then(
-   version => {
-      document.getElementById("version").textContent = "v" + version;
+async function fetchVersion() {
+   const versionElement = document.getElementById("version");
+   try {
+      const response = await fetch("https://academicintegrity.cs.auckland.ac.nz/omr/api/Version");
+      if (!response.ok) { 
+         throw new Error("Failed to load version." + response.statusText);
+      }
+      const version = (await response.text()).trim();
+
+      versionElement.textContent = "v" + version;
+
+   } catch (error) {
+      versionElement.textContent = "Server not responding. You can still use the Verification feature.";
    }
-);
+}
 
 
 function uploadPdf() {
@@ -22,16 +32,21 @@ function uploadPdf() {
       xhr.responseType = "blob";
       xhr.onreadystatechange = function () {
          if (xhr.readyState === XMLHttpRequest.DONE) {
-            document.getElementById("loader").style.display = "none";
-            const res_url = URL.createObjectURL(xhr.response);
-            const lnk = document.getElementById("dlink");
-            lnk.href = res_url;
-            lnk.download = filename + "_results.zip";
-            lnk.style.display = "block";
-            lastZip = xhr.response;
-            document.getElementById('verifyCurrentZip').style.display = 'inline-block';
 
-            document.getElementById("fid").value = "";
+            if (xhr.status === 200) {
+               document.getElementById("loader").style.display = "none";
+               const res_url = URL.createObjectURL(xhr.response);
+               const lnk = document.getElementById("dlink");
+               lnk.href = res_url;
+               lnk.download = filename + "_results.zip";
+               lnk.style.display = "block";
+               lastZip = xhr.response;
+               document.getElementById('verifyCurrentZip').style.display = 'inline-block';
+   
+               document.getElementById("fid").value = "";
+            } else {
+               document.getElementById("loader").style.display = "none";
+            }
          }
       }
       xhr.send(formData);
@@ -623,4 +638,5 @@ document.getElementById('verifyCurrentZip').addEventListener('click', () => {
 window.addEventListener("DOMContentLoaded", () => {
    document.getElementById('fid').value = '';
    document.getElementById('zipInput').value = '';
+   fetchVersion();
 });
