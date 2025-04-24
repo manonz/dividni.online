@@ -25,6 +25,7 @@
       async function setup() {
          document.getElementById('saveButton').addEventListener('click', doDownload);
          document.getElementById('addQuestion').addEventListener('click', addQuestionEntry);
+         document.getElementById('removeQuestion').addEventListener('click', removeQuestionEntry);
          document.getElementById('version').addEventListener('input', DoVersion);
          document.getElementById('courseTitle').addEventListener('input', updateCourseTitle);
          document.getElementById('dateSelector').addEventListener('input', updateAssessmentDate);
@@ -49,35 +50,40 @@
 
       function addQuestionEntry() {
          let list = document.getElementById('questionList');
-         let li = document.createElement('li');
-         li.appendChild(document.createTextNode("Answer(s): "));
-         let flip = true;
-         for (let label in labels) {
-            let sp = document.createElement('span');
-            sp.style.border = '1px solid';
-            if (flip) {
-               sp.style.backgroundColor = 'LemonChiffon';
+         if (questions < 80) {
+            let li = document.createElement('li');
+            li.appendChild(document.createTextNode("Answer(s): "));
+            let flip = true;
+            for (let label in labels) {
+               let sp = document.createElement('span');
+               sp.style.border = '1px solid';
+               if (flip) {
+                  sp.style.backgroundColor = 'LemonChiffon';
+               }
+               else {
+                  sp.style.backgroundColor = 'Lavender';
+               }
+               flip = !flip;
+               sp.appendChild(document.createTextNode(" " + labels[label]));
+               sp.appendChild(ansOpt(questions, labels[label]));
+               li.appendChild(sp);
             }
-            else {
-               sp.style.backgroundColor = 'Lavender';
-            }
-            flip = !flip;
-            sp.appendChild(document.createTextNode(" " + labels[label]));
-            sp.appendChild(ansOpt(questions, labels[label]));
-            li.appendChild(sp);
+            li.appendChild(document.createTextNode(" - Marks: "));
+            let marks = document.createElement('input');
+            marks.type = 'text';
+            marks.id = "marks" + questions;
+            marks.size = "4";
+            marks.value = "1";
+            li.appendChild(marks);
+            list.appendChild(li);
+            ++questions;
          }
-         li.appendChild(document.createTextNode(" - Marks: "));
-         let marks = document.createElement('input');
-         marks.type = 'text';
-         marks.id = "marks" + questions;
-         marks.size = "4";
-         marks.value = "1";
-         li.appendChild(marks);
-         list.appendChild(li);
-         questions++;
-         if (questions >= 80) {
-            document.getElementById('addQuestion').removeEventListener('click', addQuestionEntry);
-         }
+      }
+
+      function removeQuestionEntry() {
+         let list = document.getElementById('questionList');
+         list.removeChild(list.lastChild);
+         --questions;
       }
 
       function doDownload() {
@@ -228,12 +234,14 @@
          <button id="omrButton">Print or download OMR sheet for this version</button>
       </p>
       <p>
-         Answer keys: <button id="addQuestion">Add question</button>
+         Answer keys:
+         <button id="addQuestion">Add question</button>
+         <button id="removeQuestion">Remove question</button>
       </p>
       <ol id="questionList">
       </ol>
       <p style="text-align: center;">
-         FORM PREVIEW FOLLOWS
+         ANSWER SHEET PREVIEW FOLLOWS
          <hr style="width: 100%;" />
       </p>
    </div>
