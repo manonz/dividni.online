@@ -67,6 +67,8 @@
          const withAnswer = document.getElementById("withAnswer").checked;
          formData.append("feedback", feedback);
          formData.append("withAnswer", withAnswer);
+         const useLite = document.getElementById("useLite").checked;
+         formData.append("useLite", useLite);
          const postUrl = "https://academicintegrity.cs.auckland.ac.nz/mcqg/api/Upload";
          const xhr = new XMLHttpRequest();
          xhr.open("POST", postUrl);
@@ -83,7 +85,7 @@
                   if (xhr.response) {
                      reader.readAsText(xhr.response);
                   }else {
-                     alert("Error: No response from server.");
+                     alert("Error when processing.");
                   }
                   document.getElementById("fid").value = "";
                   document.getElementById("resultFile").value = "";
@@ -132,13 +134,15 @@
       <input type="checkbox" id="withAnswer" name="withAnswer" value="true" />
       <label for="withAnswer">Include correct answer in feedback</label>
    </p>
+   <p>
+      <input type="checkbox" id="useLite" name="useLite" value="true" />
+      <label for="withAnswer">Use McqGraderLite (for limited versions)</label>
+   </p>
    <button type="submit" onclick="upload()">Upload</button>
-   <p />
    <hr />
    <div id="loader">
       <img src="Loader.svg" alt="Loading..." />
    </div>
-   <p />
    <p>
       <a id="dlink" href="#" download="result.zip" style="display: none;">Download processed ZIP</a>
    </p>
