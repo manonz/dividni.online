@@ -23,19 +23,30 @@
 
       <div id="loader" style="display: none;"> <img src="Loader.svg" alt="Loading..." /></div>
       <p>
-         <button id="verifyCurrentZip" style="display: none; margin-left: 1em;">Verify results</button>
-      </p>
-      <p>
          <a id="dlink" href="#" download="result.zip" style="display: none;">Save scan results ZIP for later verification</a>
       </p>
+
+      <div id="verifyCurrentSection" style="display: none;">
+         <p>
+            Upload student ID txt file here for verification (optional):
+            <input type="file" id="studentIDInput" accept=".txt">
+         </p>
+         <p>
+            <button id="verifyCurrentZip">Verify results</button>
+         </p>
+      </div>
 
       <fieldset id="have_result">
          <legend>Already have scan results?</legend>
          <p>
             Upload the scan results ZIP file here for verification:
             <input type="file" id="zipInput" accept=".zip">
-            <button id="VerifyButton">Verify results</button>
          </p>
+         <p>
+            Upload student ID txt file here for verification (optional):
+            <input type="file" id="studentIDInputCurrent" accept=".txt">
+         </p>
+         <button id="VerifyButton">Verify results</button>
       </fieldset>
 
    </div>
@@ -55,6 +66,7 @@
             <img id="resultImage" />
             <canvas id="markerCanvas"></canvas>
             <div id="verification">0 ID digits, 0 questions answered</div>
+            <div id="studentIdCheck" style="display: none;"></div>
             <div id="image-loading-message" style="display: none;">Loading images...</div>
          </div>
          <button id="next" class="nav-button right-nav">></button>

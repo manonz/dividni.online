@@ -17,9 +17,10 @@ async function fetchVersion() {
 
 
 function uploadPdf() {
-   document.getElementById('verifyCurrentZip').style.display = 'none';
+   document.getElementById('verifyCurrentSection').style.display = 'none';
    document.getElementById('omr-verifier').style.display = 'none';
    document.getElementById('dlink').style.display = 'none';
+   document.getElementById('have_result').style.display = 'none';
    const input = document.getElementById("fid");
    const filename = getFilename(input.value);
    if (input.files && input.files[0]) {
@@ -41,7 +42,7 @@ function uploadPdf() {
                lnk.download = filename + "_results.zip";
                lnk.style.display = "block";
                lastZip = xhr.response;
-               document.getElementById('verifyCurrentZip').style.display = 'inline-block';
+               document.getElementById('verifyCurrentSection').style.display = 'block';
    
                document.getElementById("fid").value = "";
             } else {
@@ -75,11 +76,13 @@ const dom = {
    nextButton: document.getElementById('next'),
    download: document.getElementById('download'),
    imageContainer: document.getElementById('image'),
-   loadingOverlay: document.getElementById('loading'),
    resultImage: document.getElementById('resultImage'),
    markerCanvas: document.getElementById('markerCanvas'),
    progressBar: document.getElementById('progressBar'),
-   verification: document.getElementById('verification')
+   verification: document.getElementById('verification'),
+   studentIdCheck: document.getElementById('studentIdCheck'),
+   studentIDInput: document.getElementById('studentIDInput'),
+   studentIDInputCurrent : document.getElementById('studentIDInputCurrent'),
 };
 
 
@@ -93,7 +96,7 @@ let txtData = [];
 let isProcessing = false;
 let txtFileName = "";
 let lastZip = null;
-
+let studentIDList=[];
 
 
 async function runVerifier(file) {
@@ -429,6 +432,7 @@ function updateUI() {
       drawAllGrids();
       isValidStudentId();
       isValidScriptVersion();
+      checkStudentId();
 
       updateVerification();
 
@@ -532,6 +536,7 @@ dom.markerCanvas.addEventListener('click', function (event) {
       isValidStudentId();
       isValidScriptVersion();
       updateVerification();
+      checkStudentId();
    }
 });
 
@@ -638,5 +643,170 @@ document.getElementById('verifyCurrentZip').addEventListener('click', () => {
 window.addEventListener("DOMContentLoaded", () => {
    document.getElementById('fid').value = '';
    document.getElementById('zipInput').value = '';
+   document.getElementById('studentIDInputCurrent').value = '';
+   document.getElementById('studentIDInput').value = '';
    fetchVersion();
+});
+
+
+//checkStudentId
+
+function matchStudentId(s, list) {
+   const normalized = s.replace(/ /g, '');
+
+   // Step 1: Exact match
+   if (list.includes(normalized)) {
+      return normalized;
+   }
+
+   // Step 2: Hamming distance check (1 char different by ±1)
+   const hammingMatches = [];
+   for (const candidate of list) {
+      if (candidate.length !== normalized.length) continue;
+
+      let diffCount = 0;
+      let validDiff = true;
+
+      for (let i = 0; i < candidate.length; i++) {
+         if (candidate[i] !== normalized[i]) {
+            diffCount++;
+            if (
+               diffCount > 1 ||
+               Math.abs(candidate.charCodeAt(i) - normalized.charCodeAt(i)) !== 1
+            ) {
+               validDiff = false;
+               break;
+            }
+         }
+      }
+
+      if (validDiff && diffCount === 1) {
+         hammingMatches.push(candidate);
+      }
+   }
+
+   if (hammingMatches.length === 1) {
+      return hammingMatches[0];
+   } else if (hammingMatches.length > 1) {
+      return '';
+   }
+
+   // Step 3(a): Check if inserting one digit results in a match
+   for (const candidate of list) {
+      if (candidate.length !== normalized.length + 1) continue;
+
+      for (let i = 0; i <= normalized.length; i++) {
+         const withInsert =
+            normalized.slice(0, i) + candidate[i] + normalized.slice(i);
+         if (withInsert === candidate) {
+            return candidate;
+         }
+      }
+   }
+
+   // Step 3(b): Check if removing one digit results in a match
+
+   for (const candidate of list) {
+      if (candidate.length !== normalized.length -1) continue;
+
+      for (let i = 0; i < normalized.length; i++) {
+         const withInsert = normalized.slice(0, i) + normalized.slice(i + 1);
+         if (withInsert === candidate) {
+            return candidate;
+         }
+      }
+   }
+
+
+   // Step 4: Check for removing spaces in original string (again)
+   const noSpaces = s.replace(/ /g, '');
+   if (list.includes(noSpaces)) {
+      return noSpaces;
+   }
+
+   // Step 5: Adjacent digit swap
+   const chars = normalized.split('');
+   for (let i = 0; i < chars.length - 1; i++) {
+      // Swap
+      [chars[i], chars[i + 1]] = [chars[i + 1], chars[i]];
+      const swapped = chars.join('');
+      if (list.includes(swapped)) {
+         return swapped;
+      }
+      // Swap back
+      [chars[i], chars[i + 1]] = [chars[i + 1], chars[i]];
+   }
+
+   // Step 6: No match found
+   return '';
+}
+
+function checkStudentId() {
+   if (isProcessing) return;
+
+   if (!studentIDList || studentIDList.length === 0) {
+      dom.studentIdCheck.style.display = "none";
+      return;
+   }
+
+   let rawId = "";
+   for (let i = 0; i < currentStudentID.length; i++) {
+     rawId += currentStudentID[i] === undefined ? " " : String(currentStudentID[i]);
+   }
+   rawId = rawId.trim();
+ 
+   const match = matchStudentId(rawId, studentIDList);
+   const sign = document.getElementById('studentIDSign');
+ 
+   let text = "";
+   if (match === rawId.replace(/ /g, "")) {
+     text = "";
+   } else if (match) {
+     text = `Student ID ${rawId} does not exist, but ${match} does`;
+     sign.style.visibility = 'visible';
+   } else if (rawId.length > 0) {
+     text = `Student ID ${rawId} does not exist`;
+     sign.style.visibility = 'visible';
+   }
+ 
+   dom.studentIdCheck.textContent = text;
+   dom.studentIdCheck.style.display = text ? "block" : "none";
+   dom.studentIdCheck.style.fontWeight = "bold";
+}
+ 
+function parseStudentID(s) {
+   const Alllines = s.split(/\r?\n/);
+
+   const result = [];
+   for (let i = 0; i < Alllines.length; i++) {
+      const line = Alllines[i].trim();
+      if (line.length > 0) {
+         result.push(line);
+      }
+   }
+   return result;
+}
+
+dom.studentIDInput.addEventListener('change', e=> {
+   const file = e.target.files[0];
+   if (file) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+         const text = event.target.result;
+         studentIDList = parseStudentID(text);
+      };
+      reader.readAsText(file);
+   }
+});
+
+dom.studentIDInputCurrent.addEventListener('change', e=> {
+   const file = e.target.files[0];
+   if (file) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+         const text = event.target.result;
+         studentIDList = parseStudentID(text);
+      };
+      reader.readAsText(file);
+   }
 });
