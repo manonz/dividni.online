@@ -759,7 +759,7 @@ function checkStudentId() {
    const sign = document.getElementById('studentIDSign');
  
    let text = "";
-   if (match === rawId.replace(/ /g, "")) {
+   if (match === rawId) {
      text = "";
    } else if (match) {
      text = `Student ID ${rawId} does not exist, but ${match} does`;
