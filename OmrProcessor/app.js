@@ -40,7 +40,7 @@ function uploadPdf() {
                const lnk = document.getElementById("dlink");
                lnk.href = res_url;
                lnk.download = filename + "_results.zip";
-               lnk.style.display = "block";
+               lnk.style.display = "none";
                lastZip = xhr.response;
                document.getElementById('verifyCurrentSection').style.display = 'block';
    
