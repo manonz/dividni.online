@@ -36,6 +36,7 @@ function uploadPdf() {
 
             if (xhr.status === 200) {
                document.getElementById("loader").style.display = "none";
+               document.getElementById("pdfUpload").style.display = "none";
                const res_url = URL.createObjectURL(xhr.response);
                const lnk = document.getElementById("dlink");
                lnk.href = res_url;
@@ -637,6 +638,7 @@ document.getElementById('VerifyButton').addEventListener('click', () => {
 
 document.getElementById('verifyCurrentZip').addEventListener('click', () => { 
    document.getElementById('have_result').style.display = 'none';
+   document.getElementById('verifyCurrentSection').style.display = 'none';
    runVerifier(lastZip);
 });
 

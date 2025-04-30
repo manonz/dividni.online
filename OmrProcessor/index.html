@@ -13,14 +13,15 @@
 <body>
    <h1 style="text-align: center;">OMR Processor</h1>
    <div id="omr-reader" class="container">
-      <p>Upload the pdf here (a 500MB limit applies):</p>
+      <div id="pdfUpload">
+         <p>Upload the pdf here (a 500MB limit applies):</p>
 
-      <input id="fid" name="fid" type="file" accept=".pdf" />
+         <input id="fid" name="fid" type="file" accept=".pdf" />
 
-      <button type="submit" onclick="uploadPdf()">Upload</button>
+         <button type="submit" onclick="uploadPdf()">Upload</button>
 
-      <hr />
-
+         <hr />
+      </div>
       <div id="loader" style="display: none;"> <img src="Loader.svg" alt="Loading..." /></div>
       <p>
          <a id="dlink" href="#" download="result.zip" style="display: none;">Save scan results ZIP for later verification</a>
