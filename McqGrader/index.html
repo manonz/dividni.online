@@ -21,24 +21,24 @@
 </head>
 <body>
    <script type="text/javascript">
-      window.onload = function(){
+      window.onload = function () {
          const feedback = document.getElementById("feedback");
          const withAnswer = document.getElementById("withAnswer");
 
-         withAnswer.addEventListener("change", function(){
-            if (this.checked){
+         withAnswer.addEventListener("change", function () {
+            if (this.checked) {
                feedback.checked = true;
             }
          });
 
-         feedback.addEventListener("change", function(){
-            if (!this.checked){
+         feedback.addEventListener("change", function () {
+            if (!this.checked) {
                withAnswer.checked = false;
             }
          });
       }
 
-      fetch("https://academicintegrity.cs.auckland.ac.nz/mcqg/api/Version").then(response=> response.text()).then(
+      fetch("https://academicintegrity.cs.auckland.ac.nz/mcqg/api/Version").then(response => response.text()).then(
          version => {
             document.getElementById("version").textContent = "v" + version;
          }
@@ -84,7 +84,7 @@
                   };
                   if (xhr.response) {
                      reader.readAsText(xhr.response);
-                  }else {
+                  } else {
                      alert("Error when processing.");
                   }
                   document.getElementById("fid").value = "";
@@ -97,7 +97,7 @@
                lnk.download = filename + "_GRADED.zip";
                lnk.style.display = "block";
                document.getElementById("fid").value = "";
-			   document.getElementById("resultFile").value = "";
+               document.getElementById("resultFile").value = "";
             }
          }
          xhr.send(formData);
@@ -136,7 +136,12 @@
    </p>
    <p>
       <input type="checkbox" id="useLite" name="useLite" value="true" />
-      <label for="withAnswer">Use McqGraderLite (only for limited version assessments)</label>
+      <label for="withAnswer">
+         Use McqGraderLite <br />
+         <span style="font-style: italic; background-color: yellow;">
+            Select this option for limited (e.g., 4) version assessments. Do NOT select this otherwise.
+         </span>
+      </label>
    </p>
    <button type="submit" onclick="upload()">Upload</button>
    <hr />
