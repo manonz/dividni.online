@@ -27,7 +27,7 @@ function uploadPdf() {
       document.getElementById("loader").style.display = "block";
       const formData = new FormData();
       formData.append("PdFfile", input.files[0]);
-      const postUrl = "https://academicintegrity.cs.auckland.ac.nz/omr/api/Upload"
+      const postUrl = "https://academicintegrity.cs.auckland.ac.nz/omr/api/Upload";
       const xhr = new XMLHttpRequest();
       xhr.open("POST", postUrl);
       xhr.responseType = "blob";
@@ -192,8 +192,7 @@ async function processTXTfile(txtFile) {
       const reader = new FileReader();
       reader.onload = function (event) {
          const text = event.target.result;
-         //const splitText = text.split(/\r?\n/).filter(line => line.trim() !== '');
-         const splitText = text.split(/\r?\n/).map(l => l.replace(/\r$/,'')) 
+         const splitText = text.split(/\r?\n/).map(l => l.replace(/\r$/,'')).filter(line => line.trim() !== '');
          resolve(splitText);
       };
       reader.readAsText(txtFile);
