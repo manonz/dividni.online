@@ -192,7 +192,8 @@ async function processTXTfile(txtFile) {
       const reader = new FileReader();
       reader.onload = function (event) {
          const text = event.target.result;
-         const splitText = text.split("\r\n").filter(line => line.trim() !== '');
+         //const splitText = text.split(/\r?\n/).filter(line => line.trim() !== '');
+         const splitText = text.split(/\r?\n/).map(l => l.replace(/\r$/,'')) 
          resolve(splitText);
       };
       reader.readAsText(txtFile);
