@@ -1,9 +1,14 @@
 //script for OMR Response Reader
+
+// api Configuration
+const apiUrl = "https://academicintegrity.cs.auckland.ac.nz/omr/api";
+
+
 async function fetchVersion() {
    const versionElement = document.getElementById("version");
    try {
-      const response = await fetch("https://academicintegrity.cs.auckland.ac.nz/omr/api/Version");
-      if (!response.ok) { 
+      const response = await fetch(apiUrl + "/Version");
+      if (!response.ok) {
          throw new Error("Failed to load version." + response.statusText);
       }
       const version = (await response.text()).trim();
@@ -15,44 +20,48 @@ async function fetchVersion() {
    }
 }
 
-
-function uploadPdf() {
+async function uploadPdf() {
    document.getElementById('verifyCurrentSection').style.display = 'none';
    document.getElementById('omr-verifier').style.display = 'none';
    document.getElementById('dlink').style.display = 'none';
    document.getElementById('have_result').style.display = 'none';
+
    const input = document.getElementById("fid");
    const filename = getFilename(input.value);
+
    if (input.files && input.files[0]) {
       document.getElementById("loader").style.display = "block";
       const formData = new FormData();
       formData.append("PdFfile", input.files[0]);
-      const postUrl = "https://academicintegrity.cs.auckland.ac.nz/omr/api/Upload";
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", postUrl);
-      xhr.responseType = "blob";
-      xhr.onreadystatechange = function () {
-         if (xhr.readyState === XMLHttpRequest.DONE) {
+      const postUrl = apiUrl + "/Upload";
 
-            if (xhr.status === 200) {
-               document.getElementById("loader").style.display = "none";
-               document.getElementById("pdfUpload").style.display = "none";
-               const res_url = URL.createObjectURL(xhr.response);
-               const lnk = document.getElementById("dlink");
-               lnk.href = res_url;
-               lnk.download = filename + "_results.zip";
-               lnk.style.display = "none";
-               lastZip = xhr.response;
-               document.getElementById('verifyCurrentSection').style.display = 'block';
-   
-               document.getElementById("fid").value = "";
-            } else {
-               document.getElementById("loader").style.display = "none";
-            }
+      try {
+         const response  = await fetch(postUrl, {
+            method: "POST",
+            body: formData
+         });
+
+         if (!response.ok) {
+            throw new Error("Failed to upload PDF file: " + response.statusText);
          }
-      }
-      xhr.send(formData);
 
+         const blob = await response.blob();
+
+         document.getElementById("pdfUpload").style.display = "none";
+         const res_url = URL.createObjectURL(blob);
+         const lnk = document.getElementById("dlink");
+         lnk.href = res_url;
+         lnk.download = filename + "_results.zip";
+         lnk.style.display = "none";
+         lastZip = blob;
+         document.getElementById('verifyCurrentSection').style.display = 'block';
+         document.getElementById("fid").value = "";
+      } catch (error) {
+         console.error("Upload Error:", error);
+         alert(error.message);
+      } finally {
+         document.getElementById("loader").style.display = "none";
+      }
    }
 }
 

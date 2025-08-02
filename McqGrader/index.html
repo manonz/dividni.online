@@ -21,6 +21,12 @@
 </head>
 <body>
    <script type="text/javascript">
+
+      const apiUrl = "https://academicintegrity.cs.auckland.ac.nz/mcqg/api";
+
+      
+
+
       window.onload = function () {
          const feedback = document.getElementById("feedback");
          const withAnswer = document.getElementById("withAnswer");
@@ -38,13 +44,13 @@
          });
       }
 
-      fetch("https://academicintegrity.cs.auckland.ac.nz/mcqg/api/Version").then(response => response.text()).then(
+      fetch(apiUrl + "/Version").then(response => response.text()).then(
          version => {
             document.getElementById("version").textContent = "v" + version;
          }
       );
 
-      function upload() {
+      async function upload() {
          dlink.style.display = 'none';
          const answerInput = document.getElementById("fid");
          const resultInput = document.getElementById("resultFile");
@@ -69,40 +75,36 @@
          formData.append("withAnswer", withAnswer);
          const useLite = document.getElementById("useLite").checked;
          formData.append("useLite", useLite);
-         const postUrl = "https://academicintegrity.cs.auckland.ac.nz/mcqg/api/Upload";
-         const xhr = new XMLHttpRequest();
-         xhr.open("POST", postUrl);
-         xhr.responseType = "blob";
-         xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-               document.getElementById("loader").style.display = "none";
-               if (xhr.status !== 200) {
-                  var reader = new FileReader();
-                  reader.onload = function () {
-                     const errorMessage = reader.result;
-                     alert("Error: " + errorMessage);
-                  };
-                  if (xhr.response) {
-                     reader.readAsText(xhr.response);
-                  } else {
-                     alert("Error when processing.");
-                  }
-                  document.getElementById("fid").value = "";
-                  document.getElementById("resultFile").value = "";
-                  return;
-               }
-               const res_url = URL.createObjectURL(xhr.response);
-               const lnk = document.getElementById("dlink");
-               lnk.href = res_url;
-               lnk.download = filename + "_GRADED.zip";
-               lnk.style.display = "block";
-               document.getElementById("fid").value = "";
-               document.getElementById("resultFile").value = "";
+         const postUrl = apiUrl + "/Upload";
+
+         try {
+            const response = await fetch(postUrl, {
+               method: "POST",
+               body: formData
+            });
+
+            if (!response.ok) {
+               const errorMessage = await response.text();
+               throw new Error(errorMessage);
             }
+
+            const blob = await response.blob();
+            const res_url = URL.createObjectURL(blob);
+            const lnk = document.getElementById("dlink");
+            lnk.href = res_url;
+            lnk.download = filename + "_GRADED.zip";
+            lnk.style.display = "block";
+
+            document.getElementById("fid").value = "";
+            document.getElementById("resultFile").value = "";
+
+         } catch (error) {
+            alert("Error: " + error.message);
+            document.getElementById("fid").value = "";
+            document.getElementById("resultFile").value = "";
+         } finally {
+            document.getElementById("loader").style.display = "none";
          }
-         xhr.send(formData);
-
-
       }
 
       function getFilename(input) {
