@@ -1,7 +1,7 @@
 //script for OMR Response Reader
 
 // api Configuration
-const apiUrl = "https://academicintegrity.cs.auckland.ac.nz/omr/api";
+const apiUrl = "https://redsox.uoa.auckland.ac.nz/omr/api";
 
 
 async function fetchVersion() {

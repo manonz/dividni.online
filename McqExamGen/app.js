@@ -1,4 +1,4 @@
-const baseUrl = "https://academicintegrity.cs.auckland.ac.nz/exgen/api";
+const baseUrl = "https://redsox.uoa.auckland.ac.nz/exgen/api";
 //const baseUrl ="http://localhost/exgen/api";
 function Clear() {
    document.getElementById("prologueFile").value = "";

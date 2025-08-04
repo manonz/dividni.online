@@ -1,7 +1,7 @@
 let questionType = "Numerical";
 let completeFormValid = 1;
 
-const apiUrl = "https://academicintegrity.cs.auckland.ac.nz/duc/Converter";
+const apiUrl = "https://redsox.uoa.auckland.ac.nz/duc/Converter";
 //const apiUrl = "http://localhost:7074/Converter";
 
 const getSanitisedValue = (field) => {
