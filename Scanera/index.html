@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+   <meta charset="utf-8">
+   <title>Scanera</title>
+   <style>
+      body {
+         font-family: sans-serif;
+         padding: 20px;
+      }
+
+      video, canvas, img {
+         width: 400px;
+         border: 1px solid #ccc;
+         margin-top: 10px;
+      }
+   </style>
+</head>
+<body>
+   <h2>Scanera: Scan ID and Capture Photo</h2>
+
+   <input type="text" id="nameInput" placeholder="Scanned ID here…" autofocus="autofocus">
+   <div>
+      <video id="video" autoplay="autoplay" playsinline="playsinline"></video>
+      <canvas id="canvas" style="display: none;"></canvas>
+      <img id="captured" style="display: none;">
+   </div>
+   <p id="status"></p>
+
+   <script>
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const captured = document.getElementById('captured');
+      const input = document.getElementById('nameInput');
+      const status = document.getElementById('status');
+
+      // Start camera stream
+      navigator.mediaDevices.getUserMedia({ video: true })
+         .then(stream => video.srcObject = stream)
+         .catch(err => status.textContent = "Camera error: " + err);
+
+      input.addEventListener('keydown', e => {
+         if (e.key === "Enter") {
+            const text = input.value.trim();
+            if (!text) {
+               status.textContent = "Please enter a valid ID.";
+               return;
+            }
+
+            // Draw video frame to canvas
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+
+            // Show frozen image
+            captured.src = canvas.toDataURL("image/jpeg");
+            captured.style.display = "block";
+            video.style.display = "none";
+
+            // Trigger download
+            const link = document.createElement('a');
+            link.download = text.replace(/[^\w\d-_]/g, "_") + ".jpg";
+            link.href = captured.src;
+            link.click();
+
+            status.textContent = "Saved as " + link.download;
+         }
+      });
+   </script>
+</body>
+</html>
