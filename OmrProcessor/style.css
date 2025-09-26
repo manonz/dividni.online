@@ -158,6 +158,7 @@ h1 {
 
 #progressBar {
    margin: 10px auto;
+   font-weight: bold;
 }
 
 #verification {
@@ -173,4 +174,34 @@ h1 {
 
 #studentIdCheck {
    color: red;
+}
+
+.page-jump-control {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin: 0;
+}
+
+#pageInput {
+   width: 40px;
+   text-align: center;
+   margin-right: 10px;
+}
+
+#jumpButton {
+   padding: 3px 8px;
+   background: #007bff;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+}
+
+.progress-navigation {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   margin: 10px auto;
+   gap: 10px;
 }

@@ -84,6 +84,8 @@ const dom = {
    processButton: document.getElementById('process'),
    prevButton: document.getElementById('prev'),
    nextButton: document.getElementById('next'),
+   pageInput: document.getElementById('pageInput'),
+   jumpButton: document.getElementById('jumpButton'),
    download: document.getElementById('download'),
    imageContainer: document.getElementById('image'),
    resultImage: document.getElementById('resultImage'),
@@ -98,6 +100,7 @@ const dom = {
 
 dom.prevButton.addEventListener('click', () => handleNavigation(-1));
 dom.nextButton.addEventListener('click', () => handleNavigation(1));
+dom.jumpButton.addEventListener('click', handlePageJump);
 
 //global variables
 let currentIndex = 0;
@@ -450,6 +453,7 @@ function updateUI() {
       const currentSheet = currentIndex + 1;
       const precent = ((currentSheet / totalSheets) * 100).toFixed(0);
       dom.progressBar.textContent = `Sheet ${currentSheet} out of ${totalSheets} (${precent}%)`;
+      dom.pageInput.max = totalSheets;
       if (currentIndex ===0) {
          dom.prevButton.style.visibility = 'hidden';
       } else {
@@ -821,3 +825,25 @@ dom.studentIDInputCurrent.addEventListener('change', e=> {
       reader.readAsText(file);
    }
 });
+
+dom.jumpButton.addEventListener('click', handlePageJump);
+
+dom.pageInput.addEventListener('keypress', function(event) {
+   if (event.key === 'Enter') {
+      handlePageJump();
+   }
+});
+
+function handlePageJump() {
+   const pageNumber = parseInt(dom.pageInput.value);
+
+   if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > items.length) {
+      alert(`Please enter a valid page number: (1-${items.length})`);
+      return;
+   }
+   
+   currentIndex = pageNumber - 1;
+   updateUI();
+   
+   dom.pageInput.value = '';
+}

@@ -58,7 +58,13 @@
          <button id="download" class="downloadButton">Save Verified Results</button>
       </div>
 
-      <div id="progressBar" style="text-align:center">Sheet 0 out of 0 (0%)</div>
+      <div class="progress-navigation">
+         <div id="progressBar">Sheet 0 out of 0 (0%)</div>
+         <div class="page-jump-control">
+            <input type="number" id="pageInput" min="1">
+            <button id="jumpButton">jump</button>
+         </div>
+      </div>
 
       <div class="view-container">
          <span id="studentIDSign"><b>&#9888;</b></span>
