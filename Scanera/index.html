@@ -1,33 +1,71 @@
 <!doctype html>
 <html lang="en">
 <head>
-   <meta charset="utf-8">
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1" />
    <link rel="icon" type="image/svg+xml" href="https://dividni.com/images/Dividni-Logo.svg" />
-   <link rel="mask-icon" href="https://dividni.com/images/Dividni-Logo-Black.svg" color="red">
+   <link rel="mask-icon" href="https://dividni.com/images/Dividni-Logo-Black.svg" color="red" />
    <title>Scanera</title>
    <style>
       body {
          font-family: sans-serif;
-         padding: 20px;
+         margin: 0;
+         padding: 1rem;
+         background: #f9f9f9;
+      }
+
+      main {
+         text-align: center;
+         max-width: 600px;
+         margin: 0 auto;
+      }
+
+      h2 {
+         font-size: clamp(1.2rem, 4vw, 2rem);
+         margin-bottom: 2rem;
+      }
+
+      input {
+         width: 100%;
+         max-width: 400px;
+         padding: 0.5rem;
+         font-size: 1rem;
+         margin-bottom: 1rem;
+         border: 1px solid #ccc;
+         border-radius: 6px;
       }
 
       video, canvas, img {
-         width: 400px;
+         width: 100%;
+         max-width: 100%;
+         height: auto;
          border: 1px solid #ccc;
+         border-radius: 8px;
          margin-top: 10px;
+         background: #000; /* fallback for camera feed */
+      }
+
+      p {
+         margin-top: 0.5rem;
+         font-size: 0.9rem;
+         color: #555;
       }
    </style>
 </head>
 <body>
-   <h2>Scanera: Scan ID and Capture Photo</h2>
+   <main>
+      <h2>Scanera: Scan ID and Capture Photo</h2>
 
-   <input type="text" id="nameInput" placeholder="Scanned ID here…" autofocus="autofocus">
-   <div>
-      <video id="video" autoplay="autoplay" playsinline="playsinline"></video>
-      <canvas id="canvas" style="display: none;"></canvas>
-      <img id="captured" style="display: none;">
-   </div>
-   <p id="status"></p>
+      <input type="text" id="nameInput" placeholder="Scanned ID here…" autofocus="autofocus">
+
+      <div>
+         <video id="video" autoplay="autoplay" playsinline="playsinline"></video>
+         <canvas id="canvas" style="display: none;"></canvas>
+         <img id="captured" style="display: none;">
+      </div>
+
+      <p id="status"></p>
+   </main>
 
    <script>
       const video = document.getElementById('video');
