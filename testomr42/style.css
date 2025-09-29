@@ -1,0 +1,245 @@
+body {
+   font-family: Arial, sans-serif;
+   margin: 10px auto;
+   text-align: center;
+}
+
+#loader {
+   display: none;
+   width: 50px;
+   height: 50px;
+   margin: 0 auto;
+}
+
+button {
+   padding: 5px 10px;
+   background: #007bff;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+}
+
+#dlink {
+   display: none;
+   color: #007bff;
+   font-weight: bold;
+   text-decoration: underline;
+   margin: 10px auto;
+}
+
+#verifyBtn {
+   margin: 10px auto;
+}
+
+
+.container {
+   max-width: 900px;
+   margin: 20px auto;
+   padding: 10px;
+   text-align: center;
+}
+
+h1 {
+   margin-bottom: 10px;
+}
+
+.upload-section {
+   border: 1px solid #ccc;
+   padding: 10px;
+   margin-bottom: 10px;
+   overflow: auto;
+   width: 100%;
+   box-sizing: border-box;
+}
+
+.view-container {
+   border: 1px solid #ccc;
+   padding: 10px;
+   margin-bottom: 10px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
+   box-sizing: border-box;
+   flex-shrink: 0;
+}
+
+.right-nav-group {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+}
+
+.nav-button {
+   padding: 5px 10px;
+   background: #007bff;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+   visibility: hidden;
+}
+
+.nextQuick {
+   padding: 5px 10px;
+   background: #007bff;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+   visibility: hidden;
+}
+
+.prevQuick {
+   padding: 5px 10px;
+   background: #007bff;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+   visibility: hidden;
+}
+
+.processButton {
+   float: left;
+   padding: 5px 10px;
+   background: #007bff;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+}
+
+.downloadButton {
+   margin: 5px auto;
+   padding: 5px 10px;
+   background: #007bff;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+}
+
+.image-navigation {
+   position: relative;
+   margin: 20px auto;
+   width: 624px;
+}
+
+.left-nav-group {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+
+.right-nav-group {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+
+
+#image {
+   position: relative;
+   width: 624px;
+   height: 888px;
+   margin: 0 10px;
+   display: inline-block;
+}
+
+#resultImage {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   object-fit: contain;
+}
+
+#markerCanvas {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 624px;
+   height: 888px;
+   z-index: 10;
+   pointer-events: auto;
+}
+
+
+#image-loading-message {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+}
+
+#studentIDSign {
+   display: inline-block;
+   visibility: hidden;
+   position: relative;
+   top: -300px;
+   color: red;
+   font-size: 40px;
+}
+
+#scriptVersionSign {
+   display: inline-block;
+   visibility: hidden;
+   position: relative;
+   top: -300px;
+   color: red;
+   font-size: 40px;
+}
+
+#progressBar {
+   margin: 10px auto;
+   font-weight: bold;
+}
+
+#verification {
+   visibility: hidden;
+   position: relative;
+}
+
+#verifyCurrentSection {
+   border: 1px solid #0d0d0d;
+   padding: 10px;
+   margin-bottom: 10px;
+}
+
+#studentIdCheck {
+   color: red;
+}
+
+.progress-navigation {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   margin: 10px auto;
+   gap: 10px;
+}
+
+#currentPageInput {
+   width: 55px;
+   font-weight: bold;
+   text-align: center;
+}
+
+#search-container {
+   display: none;
+   flex-direction: column;
+   gap: 10px;
+   margin-left: 20px;
+   align-items: center;
+   justify-content: center;
+   padding-top: 0px;
+}
+
+#searchInput {
+   padding: 5px;
+   border: 1px solid #ccc;
+   border-radius: 3px;
+}
+
+.main-layout {
+   display: flex;
+   justify-content: space-between;
+   align-items: flex-start;
+}
