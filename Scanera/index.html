@@ -56,12 +56,15 @@
    <main>
       <h2>Scanera: Scan ID and Capture Photo</h2>
 
+      <label for="fileInput">Upload student ID list (comma or newline separated):</label><br>
+      <input type="file" id="fileInput" accept=".txt"><br><br>
+
       <input type="text" id="nameInput" placeholder="Scanned ID here…" autofocus="autofocus">
 
       <div>
          <video id="video" autoplay="autoplay" playsinline="playsinline"></video>
          <canvas id="canvas" style="display: none;"></canvas>
-         <img id="captured"/>
+         <img id="captured" />
       </div>
 
       <p id="status"></p>
@@ -73,6 +76,26 @@
       const captured = document.getElementById('captured');
       const input = document.getElementById('nameInput');
       const status = document.getElementById('status');
+      const statusDefaultColour = status.style.color;
+      let idList = [];
+
+      document.getElementById('fileInput').addEventListener('change', function (event) {
+         const file = event.target.files[0];
+         if (!file) return;
+
+         const reader = new FileReader();
+         reader.onload = function (e) {
+            const content = e.target.result;
+            idList = content.split(/[\s,]+/).filter(str => {
+               if (str === null || str === undefined) {
+                  return false;
+               }
+               return typeof str === 'string' && str.trim().length > 0;
+            });
+            document.getElementById('status').textContent = `File loaded with ${idList.length} IDs.`;
+         };
+         reader.readAsText(file);
+      });
 
       // Start camera stream
       navigator.mediaDevices.getUserMedia({ video: true })
@@ -82,9 +105,18 @@
       input.addEventListener('keydown', e => {
          if (e.key === "Enter") {
             const text = input.value.trim();
+            status.style.color = statusDefaultColour;
             if (!text) {
                status.textContent = "Please enter a valid ID.";
                return;
+            }
+
+            if (idList.length > 0) {
+               if (!idList.includes(text)) {
+                  status.textContent = `ID ${text} does NOT exist in the ID list.`;
+                  status.style.color = 'red';
+                  return;
+               }
             }
 
             // Draw video frame to canvas
