@@ -871,7 +871,9 @@ dom.studentIDInput.addEventListener('change', e => {
          const text = event.target.result;
          studentIDList = parseStudentID(text);
          studentInfoList = parseStudentInfo(text);
-         document.getElementById('search-container').style.display = 'flex';
+         const hasNames = studentInfoList.some(s => s.name && s.name.trim() !== "");
+         const searchContainer = document.getElementById('search-container');
+         searchContainer.style.display = hasNames ? 'flex' : 'none';
       };
       reader.readAsText(file);
    }
@@ -885,7 +887,10 @@ dom.studentIDInputCurrent.addEventListener('change', e => {
          const text = event.target.result;
          studentIDList = parseStudentID(text);
          studentInfoList = parseStudentInfo(text);
-         document.getElementById('search-container').style.display = 'flex';
+
+         const hasNames = studentInfoList.some(s => s.name && s.name.trim() !== "");
+         const searchContainer = document.getElementById('search-container');
+         searchContainer.style.display = hasNames ? 'flex' : 'none';
       };
       reader.readAsText(file);
    }
