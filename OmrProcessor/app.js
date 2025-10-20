@@ -36,7 +36,7 @@ async function uploadPdf() {
       const postUrl = apiUrl + "/Upload";
 
       try {
-         const response  = await fetch(postUrl, {
+         const response = await fetch(postUrl, {
             method: "POST",
             body: formData
          });
@@ -54,11 +54,11 @@ async function uploadPdf() {
          lnk.download = filename + "_results.zip";
          lnk.style.display = "none";
          lastZip = blob;
-         document.getElementById('verifyCurrentSection').style.display = 'block';
-         document.getElementById("fid").value = "";
+         document.getElementById('verifyCurrentSection').style.display = 'block';
+         document.getElementById("fid").value = "";
       } catch (error) {
          console.error("Upload Error:", error);
-         alert(error.message);
+         alert(error.message);
       } finally {
          document.getElementById("loader").style.display = "none";
       }
@@ -84,8 +84,9 @@ const dom = {
    processButton: document.getElementById('process'),
    prevButton: document.getElementById('prev'),
    nextButton: document.getElementById('next'),
-   pageInput: document.getElementById('pageInput'),
-   jumpButton: document.getElementById('jumpButton'),
+   nextQuick: document.getElementById('nextQuick'),
+   prevQuick: document.getElementById('prevQuick'),
+   currentPageInput: document.getElementById('currentPageInput'),
    download: document.getElementById('download'),
    imageContainer: document.getElementById('image'),
    resultImage: document.getElementById('resultImage'),
@@ -94,13 +95,36 @@ const dom = {
    verification: document.getElementById('verification'),
    studentIdCheck: document.getElementById('studentIdCheck'),
    studentIDInput: document.getElementById('studentIDInput'),
-   studentIDInputCurrent : document.getElementById('studentIDInputCurrent'),
+   studentIDInputCurrent: document.getElementById('studentIDInputCurrent'),
+   searchInput: document.getElementById('searchInput'),
+   searchResults: document.getElementById('searchResults'),
 };
-
 
 dom.prevButton.addEventListener('click', () => handleNavigation(-1));
 dom.nextButton.addEventListener('click', () => handleNavigation(1));
-dom.jumpButton.addEventListener('click', handlePageJump);
+dom.currentPageInput.addEventListener('keypress', function (event) {
+   if (event.key === 'Enter') {
+      handleProgressJump();
+   }
+});
+
+dom.currentPageInput.addEventListener('blur', function () {
+   handleProgressJump();
+});
+
+function handleProgressJump() {
+   const pageNumber = parseInt(dom.currentPageInput.value);
+   const totalSheets = items.length;
+
+   if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > totalSheets) {
+      dom.currentPageInput.value = currentIndex + 1;
+      alert(`Please enter a valid page number: (1-${totalSheets})`);
+      return;
+   }
+
+   currentIndex = pageNumber - 1;
+   updateUI();
+}
 
 //global variables
 let currentIndex = 0;
@@ -109,7 +133,9 @@ let txtData = [];
 let isProcessing = false;
 let txtFileName = "";
 let lastZip = null;
-let studentIDList=[];
+let studentIDList = [];
+let mostFrequentAnswerCount = null;
+let studentInfoList = [];
 
 
 async function runVerifier(file) {
@@ -131,7 +157,7 @@ async function runVerifier(file) {
    try {
       const zip = new JSZip();
       const arrayBuffer = await file.arrayBuffer();
-      const outerZipFile =  await zip.loadAsync(arrayBuffer);
+      const outerZipFile = await zip.loadAsync(arrayBuffer);
 
       for (const filename of Object.keys(outerZipFile.files)) {
          const entry = outerZipFile.files[filename];
@@ -139,12 +165,12 @@ async function runVerifier(file) {
          if (filename.toLowerCase().endsWith(".zip")) {
             const imageBolb = await entry.async("blob");
             items = await processZipFile(imageBolb);
-          }
-          else if (filename.toLowerCase().endsWith(".txt")) {
+         }
+         else if (filename.toLowerCase().endsWith(".txt")) {
             txtFileName = filename.split('/').pop();
             const txtBlob = await entry.async("blob");
             txtData = await processTXTfile(txtBlob);
-          }
+         }
       }
 
       const imgsIndexs = new Set(items.map(item => item.index));
@@ -204,7 +230,13 @@ async function processTXTfile(txtFile) {
       const reader = new FileReader();
       reader.onload = function (event) {
          const text = event.target.result;
-         const splitText = text.split(/\r?\n/).map(l => l.replace(/\r$/,'')).filter(line => line.trim() !== '');
+         const splitText = text.split(/\r?\n/).map(l => l.replace(/\r$/, '')).filter(line => line.trim() !== '');
+
+         const mostCommonCount = getMostFrequentAnswerCount(splitText);
+         mostFrequentAnswerCount = mostCommonCount;
+
+         //console.log(`Most students answered ${mostFrequentAnswerCount} questions.`);
+
          resolve(splitText);
       };
       reader.readAsText(txtFile);
@@ -452,17 +484,25 @@ function updateUI() {
       const totalSheets = items.length;
       const currentSheet = currentIndex + 1;
       const precent = ((currentSheet / totalSheets) * 100).toFixed(0);
-      dom.progressBar.textContent = `Sheet ${currentSheet} out of ${totalSheets} (${precent}%)`;
-      dom.pageInput.max = totalSheets;
-      if (currentIndex ===0) {
+
+      dom.currentPageInput.value = currentSheet;
+      dom.currentPageInput.max = totalSheets;
+      document.getElementById('totalPages').textContent = totalSheets;
+      document.getElementById('percentage').textContent = `${precent}%`;
+
+      if (currentIndex === 0) {
          dom.prevButton.style.visibility = 'hidden';
+         dom.prevQuick.style.visibility = 'hidden';
       } else {
          dom.prevButton.style.visibility = 'visible';
+         dom.prevQuick.style.visibility = 'visible';
       }
       if (currentIndex === totalSheets - 1) {
          dom.nextButton.style.visibility = 'hidden';
+         dom.nextQuick.style.visibility = 'hidden';
       } else {
          dom.nextButton.style.visibility = 'visible';
+         dom.nextQuick.style.visibility = 'visible';
       }
    };
    dom.resultImage.style.pointerEvents = 'none';
@@ -558,7 +598,7 @@ function isValidStudentId() {
    if (isProcessing) return;
    let str = "";
 
-   for (let i= 0; i < currentStudentID.length; i++) {
+   for (let i = 0; i < currentStudentID.length; i++) {
       str += (currentStudentID[i] === undefined) ? " " : String(currentStudentID[i]);
    }
 
@@ -570,14 +610,14 @@ function isValidStudentId() {
 
    if (allIDParts.length === 1) {
       isValid = true;
-   }else {
+   } else {
       isValid = false;
    }
 
 
-   if(!isValid) {
+   if (!isValid) {
       document.getElementById('studentIDSign').style.visibility = 'visible';
-   }else {
+   } else {
       document.getElementById('studentIDSign').style.visibility = 'hidden';
    }
 }
@@ -612,9 +652,9 @@ function isValidScriptVersion() {
    }
 
 
-   if(!isValid) {
+   if (!isValid) {
       document.getElementById('scriptVersionSign').style.visibility = 'visible';
-   }else {
+   } else {
       document.getElementById('scriptVersionSign').style.visibility = 'hidden';
    }
 }
@@ -637,11 +677,15 @@ function updateVerification() {
          }
       }
    }
-   dom.verification.textContent = `${studentIdCount} ID digits, ${answersCount} questions answered`;
+   if (mostFrequentAnswerCount != null && answersCount !== mostFrequentAnswerCount) {
+      dom.verification.innerHTML = `${studentIdCount} ID digits, <span style="color: red; font-weight: bold;">${answersCount} questions answered</span>`;
+   } else {
+      dom.verification.textContent = `${studentIdCount} ID digits, ${answersCount} questions answered`;
+   }
    dom.verification.style.visibility = 'visible';
 }
 
- 
+
 
 document.getElementById('VerifyButton').addEventListener('click', () => {
    const inputZip = document.getElementById('zipInput');
@@ -649,7 +693,7 @@ document.getElementById('VerifyButton').addEventListener('click', () => {
    runVerifier(file);
 });
 
-document.getElementById('verifyCurrentZip').addEventListener('click', () => { 
+document.getElementById('verifyCurrentZip').addEventListener('click', () => {
    document.getElementById('have_result').style.display = 'none';
    document.getElementById('verifyCurrentSection').style.display = 'none';
    runVerifier(lastZip);
@@ -722,7 +766,7 @@ function matchStudentId(s, list) {
    // Step 3(b): Check if removing one digit results in a match
 
    for (const candidate of list) {
-      if (candidate.length !== normalized.length -1) continue;
+      if (candidate.length !== normalized.length - 1) continue;
 
       for (let i = 0; i < normalized.length; i++) {
          const withInsert = normalized.slice(0, i) + normalized.slice(i + 1);
@@ -766,84 +810,265 @@ function checkStudentId() {
 
    let rawId = "";
    for (let i = 0; i < currentStudentID.length; i++) {
-     rawId += currentStudentID[i] === undefined ? " " : String(currentStudentID[i]);
+      rawId += currentStudentID[i] === undefined ? " " : String(currentStudentID[i]);
    }
    rawId = rawId.trim();
- 
+
    const match = matchStudentId(rawId, studentIDList);
    const sign = document.getElementById('studentIDSign');
- 
+
    let text = "";
    if (match === rawId) {
-     text = "";
+      text = "";
    } else if (match) {
-     text = `Student ID ${rawId} does not exist, but ${match} does`;
-     sign.style.visibility = 'visible';
+      text = `Student ID ${rawId} does not exist, but ${match} does`;
+      sign.style.visibility = 'visible';
    } else if (rawId.length > 0) {
-     text = `Student ID ${rawId} does not exist`;
-     sign.style.visibility = 'visible';
+      text = `Student ID ${rawId} does not exist`;
+      sign.style.visibility = 'visible';
    }
- 
+
    dom.studentIdCheck.textContent = text;
    dom.studentIdCheck.style.display = text ? "block" : "none";
    dom.studentIdCheck.style.fontWeight = "bold";
 }
- 
+
 function parseStudentID(s) {
    const Alllines = s.split(/\r?\n/);
-
    const result = [];
    for (let i = 0; i < Alllines.length; i++) {
       const line = Alllines[i].trim();
       if (line.length > 0) {
-         result.push(line);
+         const parts = line.split(/\s+/);
+         result.push(parts[0]);
       }
    }
    return result;
 }
 
-dom.studentIDInput.addEventListener('change', e=> {
+function parseStudentInfo(s) {
+   const Alllines = s.split(/\r?\n/);
+   const result = [];
+   for (let i = 0; i < Alllines.length; i++) {
+      const line = Alllines[i].trim();
+      if (line.length > 0) {
+         const parts = line.split(/\s+/);
+         if (parts.length === 1) {
+            result.push({ id: parts[0], name: '' });
+         } else {
+            result.push({ id: parts[0], name: parts.slice(1).join(' ') });
+         }
+      }
+   }
+   return result;
+}
+
+dom.studentIDInput.addEventListener('change', e => {
    const file = e.target.files[0];
    if (file) {
       const reader = new FileReader();
       reader.onload = function (event) {
          const text = event.target.result;
          studentIDList = parseStudentID(text);
+         studentInfoList = parseStudentInfo(text);
+         document.getElementById('search-container').style.display = 'flex';
       };
       reader.readAsText(file);
    }
 });
 
-dom.studentIDInputCurrent.addEventListener('change', e=> {
+dom.studentIDInputCurrent.addEventListener('change', e => {
    const file = e.target.files[0];
    if (file) {
       const reader = new FileReader();
       reader.onload = function (event) {
          const text = event.target.result;
          studentIDList = parseStudentID(text);
+         studentInfoList = parseStudentInfo(text);
+         document.getElementById('search-container').style.display = 'flex';
       };
       reader.readAsText(file);
    }
 });
 
-dom.jumpButton.addEventListener('click', handlePageJump);
+function getMostFrequentAnswerCount(lines) {
+   if (!lines || lines.length === 0) {
+      return null;
+   }
 
-dom.pageInput.addEventListener('keypress', function(event) {
-   if (event.key === 'Enter') {
-      handlePageJump();
+   const answerCounts = lines.map(line => {
+      const answerString = line.substring(32, 192).trim();
+      let answeredCount = 0;
+      for (let i = 0; i < answerString.length; i += 2) {
+         if (answerString.substring(i, i + 2) !== '00') {
+            answeredCount++;
+         }
+      }
+      return answeredCount;
+   });
+
+   const frequencyMap = {};
+   let maxFrequency = 0;
+   let mode = null;
+
+   answerCounts.forEach(count => {
+      frequencyMap[count] = (frequencyMap[count] || 0) + 1;
+      if (frequencyMap[count] > maxFrequency) {
+         maxFrequency = frequencyMap[count];
+         mode = count;
+      }
+   });
+
+   return mode;
+}
+
+function getAnsweredCountFromLine(rowDataLine) {
+   const answerString = (rowDataLine || '').substring(32, 192).trim();
+   let answeredCount = 0;
+   for (let i = 0; i + 2 <= answerString.length; i += 2) {
+      if (answerString.substring(i, i + 2) !== '00') {
+         answeredCount++;
+      }
+   }
+   return answeredCount;
+}
+
+function hasQuestionWithMultipleSelections(rowDataLine) {
+   const answerString = (rowDataLine || '').substring(32, 192).trim();
+   for (let i = 0; i + 2 <= answerString.length; i += 2) {
+      const code = answerString.substring(i, i + 2);
+      if (code === '00') continue;
+      const num = parseInt(code, 10);
+      if (isNaN(num)) continue;
+      const bits = num & 0b111111;
+      let x = bits, cnt = 0;
+      while (x) { x &= (x - 1); cnt++; }
+      if (cnt > 1) return true;
+   }
+   return false;
+}
+
+function findNextErrorPage() {
+   for (let i = currentIndex + 1; i < items.length; i++) {
+      const pageIndex = items[i].index;
+      const rowDataLine = txtData[pageIndex] || "";
+
+      const studentIDStr = rowDataLine.substring(0, 18).padEnd(18, " ");
+      const tempStudentID = Array.from(studentIDStr).map(ch => {
+         return (ch === ' ' || isNaN(parseInt(ch, 10))) ? undefined : parseInt(ch, 10);
+      });
+
+      const idForValidation = tempStudentID.map(val => (val === undefined ? " " : String(val))).join("").trim();
+      const hasGeneralError = idForValidation.length === 0 || (idForValidation.split(" ").filter(part => part !== "").length !== 1);
+
+      let idNotInListError = false;
+      if (studentIDList && studentIDList.length > 0 && idForValidation.length > 0) {
+         const match = matchStudentId(idForValidation, studentIDList);
+         if (!match) {
+            idNotInListError = true;
+         }
+      }
+
+      let answerCountMismatch = false;
+      if (mostFrequentAnswerCount != null) {
+         const answeredCount = getAnsweredCountFromLine(rowDataLine);
+         answerCountMismatch = (answeredCount !== mostFrequentAnswerCount);
+      }
+
+      const multiSelectError = hasQuestionWithMultipleSelections(rowDataLine);
+
+      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError) {
+         return i;
+      }
+   }
+   return -1;
+}
+
+function findPrevErrorPage() {
+   for (let i = currentIndex - 1; i >= 0; i--) {
+      const pageIndex = items[i].index;
+      const rowDataLine = txtData[pageIndex] || "";
+
+      const studentIDStr = rowDataLine.substring(0, 18).padEnd(18, " ");
+      const tempStudentID = Array.from(studentIDStr).map(ch => {
+         return (ch === ' ' || isNaN(parseInt(ch, 10))) ? undefined : parseInt(ch, 10);
+      });
+
+      const idForValidation = tempStudentID.map(val => (val === undefined ? " " : String(val))).join("").trim();
+      const hasGeneralError = idForValidation.length === 0 || (idForValidation.split(" ").filter(part => part !== "").length !== 1);
+
+      let idNotInListError = false;
+      if (studentIDList && studentIDList.length > 0 && idForValidation.length > 0) {
+         const match = matchStudentId(idForValidation, studentIDList);
+         if (!match) {
+            idNotInListError = true;
+         }
+      }
+
+      let answerCountMismatch = false;
+      if (mostFrequentAnswerCount != null) {
+         const answeredCount = getAnsweredCountFromLine(rowDataLine);
+         answerCountMismatch = (answeredCount !== mostFrequentAnswerCount);
+      }
+
+      const multiSelectError = hasQuestionWithMultipleSelections(rowDataLine);
+
+      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError) {
+         return i;
+      }
+   }
+   return -1;
+}
+
+dom.nextQuick.addEventListener('click', () => {
+   const nextErrorIndex = findNextErrorPage();
+
+   if (nextErrorIndex !== -1) {
+      currentIndex = nextErrorIndex;
+      updateUI();
+   } else {
+      alert("No more error pages found.");
    }
 });
 
-function handlePageJump() {
-   const pageNumber = parseInt(dom.pageInput.value);
+dom.prevQuick.addEventListener('click', () => {
+   const prevErrorIndex = findPrevErrorPage();
 
-   if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > items.length) {
-      alert(`Please enter a valid page number: (1-${items.length})`);
+   if (prevErrorIndex !== -1) {
+      currentIndex = prevErrorIndex;
+      updateUI();
+   } else {
+      alert("No more error pages found.");
+   }
+});
+
+dom.searchInput.addEventListener('input', function () {
+   const searchTerm = this.value.trim().toLowerCase();
+
+   if (!searchTerm) {
+      dom.searchResults.style.display = 'none';
       return;
    }
-   
-   currentIndex = pageNumber - 1;
-   updateUI();
-   
-   dom.pageInput.value = '';
-}
+
+   const matches = [];
+
+   for (let i = 0; i < studentInfoList.length; i++) {
+      const student = studentInfoList[i];
+
+      if (student.id.toLowerCase().includes(searchTerm) ||
+         student.name.toLowerCase().includes(searchTerm)) {
+         matches.push(student);
+      }
+   }
+
+   if (matches.length > 0) {
+      dom.searchResults.innerHTML = matches.map(m => {
+         const display = m.name ? `${m.id} - ${m.name}` : m.id;
+         return `<div class="search-result-item">${display}</div>`;
+      }).join('');
+      dom.searchResults.style.display = 'block';
+   } else {
+      dom.searchResults.innerHTML = '<div style="padding:5px;">No Matches Found</div>';
+      dom.searchResults.style.display = 'block';
+   }
+});
