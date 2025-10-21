@@ -495,14 +495,14 @@ function updateUI() {
          dom.prevQuick.style.visibility = 'hidden';
       } else {
          dom.prevButton.style.visibility = 'visible';
-         dom.prevQuick.style.visibility = 'visible';
+         dom.prevQuick.style.visibility = findPrevErrorPage() !== -1 ? 'visible' : 'hidden';
       }
       if (currentIndex === totalSheets - 1) {
          dom.nextButton.style.visibility = 'hidden';
          dom.nextQuick.style.visibility = 'hidden';
       } else {
          dom.nextButton.style.visibility = 'visible';
-         dom.nextQuick.style.visibility = 'visible';
+         dom.nextQuick.style.visibility = findNextErrorPage() !== -1 ? 'visible' : 'hidden';
       }
    };
    dom.resultImage.style.pointerEvents = 'none';
@@ -1031,8 +1031,6 @@ dom.nextQuick.addEventListener('click', () => {
    if (nextErrorIndex !== -1) {
       currentIndex = nextErrorIndex;
       updateUI();
-   } else {
-      alert("No more error pages found.");
    }
 });
 
@@ -1042,8 +1040,6 @@ dom.prevQuick.addEventListener('click', () => {
    if (prevErrorIndex !== -1) {
       currentIndex = prevErrorIndex;
       updateUI();
-   } else {
-      alert("No more error pages found.");
    }
 });
 
