@@ -990,8 +990,9 @@ function findNextErrorPage() {
       }
 
       const multiSelectError = hasQuestionWithMultipleSelections(rowDataLine);
+      const scriptVersionError = hasScriptVersionError(rowDataLine);
 
-      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError) {
+      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError) {
          return i;
       }
    }
@@ -1023,8 +1024,9 @@ function findPrevErrorPage() {
       }
 
       const multiSelectError = hasQuestionWithMultipleSelections(rowDataLine);
+      const scriptVersionError = hasScriptVersionError(rowDataLine);
 
-      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError) {
+      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError) {
          return i;
       }
    }
@@ -1103,3 +1105,16 @@ dom.studentIdCheck.addEventListener('click', (e) => {
    const corrected = target.getAttribute('data-id');
    if (corrected) applyStudentId(corrected);
 });
+
+
+function hasScriptVersionError(rowDataLine) {
+   const scriptVersionStr = rowDataLine.substring(19, 31).padEnd(12, " ");
+   let numString = "";
+   for (let j = 0; j < scriptVersionStr.length; j++) {
+      if (scriptVersionStr[j] !== " ") {
+         numString += scriptVersionStr[j];
+      }
+   }
+   const scriptVersionNum = parseInt(numString, 10);
+   return numString === "" || isNaN(scriptVersionNum) || numString.length < 12;
+}
