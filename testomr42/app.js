@@ -831,7 +831,7 @@ function checkStudentId() {
    if (match === rawId) {
       html = "";
    } else if (match) {
-      html = `<div class="apply-id-text" data-id="${match}" style="cursor:pointer; font-weight:bold;">
+      html = `<div class="apply-id-text" data-id="${match}" style="cursor:pointer; font-weight:bold;" title="Click to apply">
                  Student ID ${rawId} does not exist, but ${match} does.
               </div>`;
       sign.style.visibility = 'visible';
