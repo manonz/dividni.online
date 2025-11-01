@@ -185,8 +185,13 @@ async function runVerifier(file) {
          isProcessing = false;
       }
 
-      currentIndex = 0;
-
+      const firstErr = findFirstErrorPage();
+      if (firstErr !== -1) {
+         currentIndex = firstErr;
+      } else {
+         currentIndex = 0;
+         alert('Did not find any erroneous scripts needing correction');
+      }
       updateUI();
       isProcessing = false;
    } catch (error) {
@@ -831,8 +836,9 @@ function checkStudentId() {
    if (match === rawId) {
       html = "";
    } else if (match) {
+      const entry = studentInfoList.find(s => s.id === match);
       html = `<div class="apply-id-text" data-id="${match}" style="cursor:pointer; font-weight:bold;" title="Click to apply">
-                 Student ID ${rawId} does not exist, but ${match} does.
+                 Student ID ${rawId} does not exist, but ${match}(${entry.name}) does.
               </div>`;
       sign.style.visibility = 'visible';
    } else if (rawId.length > 0) {
@@ -1001,6 +1007,40 @@ function findNextErrorPage() {
 
 function findPrevErrorPage() {
    for (let i = currentIndex - 1; i >= 0; i--) {
+      const pageIndex = items[i].index;
+      const rowDataLine = txtData[pageIndex] || "";
+
+      const studentIDStr = rowDataLine.substring(0, 18).padEnd(18, " ");
+      const tempStudentID = Array.from(studentIDStr).map(ch => {
+         return (ch === ' ' || isNaN(parseInt(ch, 10))) ? undefined : parseInt(ch, 10);
+      });
+
+      const idForValidation = tempStudentID.map(val => (val === undefined ? " " : String(val))).join("").trim();
+      const hasGeneralError = idForValidation.length === 0 || (idForValidation.split(" ").filter(part => part !== "").length !== 1);
+
+      let idNotInListError = false;
+      if (studentIDList && studentIDList.length > 0 && idForValidation.length > 0) {
+         idNotInListError = !studentIDList.includes(idForValidation);
+      }
+
+      let answerCountMismatch = false;
+      if (mostFrequentAnswerCount != null) {
+         const answeredCount = getAnsweredCountFromLine(rowDataLine);
+         answerCountMismatch = (answeredCount !== mostFrequentAnswerCount);
+      }
+
+      const multiSelectError = hasQuestionWithMultipleSelections(rowDataLine);
+      const scriptVersionError = hasScriptVersionError(rowDataLine);
+
+      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError) {
+         return i;
+      }
+   }
+   return -1;
+}
+
+function findFirstErrorPage() {
+   for (let i = 0; i < items.length; i++) {
       const pageIndex = items[i].index;
       const rowDataLine = txtData[pageIndex] || "";
 
