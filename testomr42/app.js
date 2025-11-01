@@ -837,8 +837,10 @@ function checkStudentId() {
       html = "";
    } else if (match) {
       const entry = studentInfoList.find(s => s.id === match);
+      const hasName = entry && entry.name !== undefined && entry.name !== "";
+      const namePart = hasName ? ` (${entry.name})` : "";
       html = `<div class="apply-id-text" data-id="${match}" style="cursor:pointer; font-weight:bold;" title="Click to apply">
-                 Student ID ${rawId} does not exist, but ${match}(${entry.name}) does.
+                 Student ID ${rawId} does not exist, but ${match}${namePart} does.
               </div>`;
       sign.style.visibility = 'visible';
    } else if (rawId.length > 0) {
