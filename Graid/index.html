@@ -142,6 +142,7 @@
          preview.src = URL.createObjectURL(f);
          preview.style.display = 'block';
          sendImage(f);
+         fileInput.value = "";
       };
 
       async function sendImage(blob) {
