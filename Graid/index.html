@@ -28,7 +28,6 @@
 
       video {
          width: 100%;
-         max-width: 100%;
          height: auto;
          background: #111;
          object-fit: cover;
@@ -40,19 +39,17 @@
          gap: 0.5rem;
       }
 
-      button {
+      .button {
          padding: 0.6rem 0.9rem;
          border-radius: 8px;
          border: 1px solid #ddd;
          background: #fff;
          cursor: pointer;
+         display: block;
+         width: 100%;
+         box-sizing: border-box;
+         text-align: center;
       }
-
-         button.primary {
-            background: #0b74de;
-            color: #fff;
-            border-color: transparent;
-         }
 
       #result {
          white-space: pre-wrap;
@@ -83,13 +80,18 @@
       </div>
 
       <div class="controls">
-         <button type="button" id="startCamera">Start Camera</button>
-         <button type="button" id="snap" class="primary" disabled>Capture to recognize</button>
+         <button type="button" class="button" id="startCamera">Start Camera</button>
+         <button type="button" id="snap" class="button" disabled>Capture to recognize</button>
+
          <label style="display: block; margin-top: 0.8rem;">
             Or upload image:
-            <input type="file" id="fileInput" accept="image/jpeg" style="display:block; margin-top: 0.4rem;" />
+            <label for="fileInput" class="button" style="margin-top: 0.4rem;">
+               Choose image file
+            </label>
+            <input type="file" id="fileInput" accept="image/jpeg" style="display: none;" />
          </label>
-         <div id="previewWrap" style=" width: 50%; margin: auto;">
+
+         <div id="previewWrap" style="width: 50%; margin: auto;">
             <img id="preview" alt="preview" style="display: none;" />
          </div>
          <div id="status"></div>
@@ -125,7 +127,6 @@
       };
 
       snap.onclick = async () => {
-         // draw frame to canvas
          canvas.width = video.videoWidth;
          canvas.height = video.videoHeight;
          const ctx = canvas.getContext('2d');
