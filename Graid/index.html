@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width,initial-scale=1" />
+   <title>Graid — Handwriting OCR</title>
+   <style>
+      body {
+         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+         max-width: 900px;
+         margin: 2rem auto;
+         padding: 1rem;
+      }
+
+      .capture {
+         display: flex;
+         gap: 1rem;
+         flex-wrap: wrap;
+         align-items: flex-start;
+      }
+
+      video, img {
+         border-radius: 8px;
+         box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+         max-width: 100%;
+      }
+
+      video {
+         width: 360px;
+         height: 270px;
+         background: #111;
+         object-fit: cover;
+      }
+
+      .controls {
+         display: flex;
+         flex-direction: column;
+         gap: 0.5rem;
+      }
+
+      button {
+         padding: 0.6rem 0.9rem;
+         border-radius: 8px;
+         border: 1px solid #ddd;
+         background: #fff;
+         cursor: pointer;
+      }
+
+         button.primary {
+            background: #0b74de;
+            color: #fff;
+            border-color: transparent;
+         }
+
+      #result {
+         white-space: pre-wrap;
+         background: #f8f9fb;
+         padding: 1rem;
+         border-radius: 8px;
+         margin-top: 1rem;
+         min-height: 4rem;
+      }
+
+      #status {
+         font-size: 0.9rem;
+         color: #555;
+      }
+   </style>
+</head>
+<body>
+   <h1>Graid — Aids Grading</h1>
+   <p>
+      Take a photo of a handwritten answer (or upload one)
+      to see recognized text.
+   </p>
+
+   <div class="capture">
+      <div>
+         <video id="video" autoplay playsinline></video>
+         <canvas id="canvas" style="display:none;"></canvas>
+      </div>
+
+      <div class="controls">
+         <button type="button" id="startCamera">Start Camera</button>
+         <button type="button" id="snap" class="primary" disabled>Capture to recognize</button>
+         <label style="display: block; margin-top: 0.8rem;">
+            Or upload image:
+            <input type="file" id="fileInput" accept="image/*" style="display:block; margin-top: 0.4rem;" />
+         </label>
+         <div id="previewWrap" style="margin-top: 0.6rem;">
+            <img id="preview" alt="preview" style="max-width: 320px; display: none;" />
+         </div>
+         <div id="status"></div>
+      </div>
+   </div>
+
+   <h3>Recognized text</h3>
+   <div id="result">No text yet.</div>
+
+   <script>
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const startCamera = document.getElementById('startCamera');
+      const snap = document.getElementById('snap');
+      const fileInput = document.getElementById('fileInput');
+      const preview = document.getElementById('preview');
+      const result = document.getElementById('result');
+      const status = document.getElementById('status');
+
+      let stream;
+
+      startCamera.onclick = async () => {
+         try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+            video.srcObject = stream;
+            snap.disabled = false;
+            status.textContent = 'Camera running. Frame the answer and press "Capture to recognize".';
+         }
+         catch (err) {
+            status.textContent = 'Camera not available: ' + err.message;
+         }
+      };
+
+      snap.onclick = async () => {
+         // draw frame to canvas
+         canvas.width = video.videoWidth;
+         canvas.height = video.videoHeight;
+         const ctx = canvas.getContext('2d');
+         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+         canvas.toBlob(sendImage, 'image/jpeg', 0.9);
+      };
+
+      fileInput.onchange = () => {
+         const f = fileInput.files[0];
+         if (!f) return;
+         preview.src = URL.createObjectURL(f);
+         preview.style.display = 'block';
+         sendImage(f);
+      };
+
+      async function sendImage(blob) {
+         status.textContent = 'Fetching text...';
+         result.textContent = '';
+         const url = 'https://academicintegrity.cs.auckland.ac.nz/hwocr/api';
+
+         try {
+            const resp = await fetch(url, {
+               method: 'POST',
+               headers: { 'Content-Type': 'image/jpeg' },
+               body: blob
+            });
+
+            if (!resp.ok) {
+               const txt = await resp.text();
+               status.textContent = 'Server error: ' + resp.status + ' — ' + txt;
+               return;
+            }
+
+            const data = await resp.json();
+            result.textContent = data.text || '[no text detected]';
+            status.textContent = 'Done';
+         }
+         catch (err) {
+            status.textContent = 'Network error: ' + err.message;
+         }
+      }
+   </script>
+</body>
+</html>
