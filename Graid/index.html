@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -5,7 +6,7 @@
    <meta name="viewport" content="width=device-width,initial-scale=1" />
    <link rel="icon" type="image/svg+xml" href="https://dividni.com/images/Dividni-Logo.svg" />
    <link rel="mask-icon" href="https://dividni.com/images/Dividni-Logo-Black.svg" color="red" />
-   <title>Graid — Handwriting OCR</title>
+   <title>Graid — Aids Grading</title>
    <style>
       body {
          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -73,7 +74,7 @@
 <body>
    <h1>Graid — Aids Grading</h1>
    <p>
-      Take a photo of a handwritten answer (or upload one)
+      Take a photo of a handwritten text (or upload one)
       to see recognized text.
    </p>
 
@@ -118,6 +119,7 @@
             video.srcObject = stream;
             snap.disabled = false;
             status.textContent = 'Camera running. Frame the answer and press "Capture to recognize".';
+            startCamera.disabled = true;
          }
          catch (err) {
             status.textContent = 'Camera not available: ' + err.message;
