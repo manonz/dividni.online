@@ -148,7 +148,7 @@
       async function sendImage(blob) {
          status.textContent = 'Fetching text...';
          result.textContent = '';
-         const url = 'https://academicintegrity.cs.auckland.ac.nz/hwocr/api';
+         const url = 'https://academicintegrity.cs.auckland.ac.nz/graid/api/Text';
 
          try {
             const resp = await fetch(url, {
