@@ -109,7 +109,7 @@
       const fileInput = document.getElementById('fileInput');
       const preview = document.getElementById('preview');
       const result = document.getElementById('result');
-      const status = document.getElementById('status');
+      const statusInfo = document.getElementById('status');
 
       let stream;
 
@@ -118,11 +118,11 @@
             stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
             video.srcObject = stream;
             snap.disabled = false;
-            status.textContent = 'Camera running. Frame the answer and press "Capture to recognize".';
+            statusInfo.textContent = 'Camera running. Frame the answer and press "Capture to recognize".';
             startCamera.disabled = true;
          }
          catch (err) {
-            status.textContent = 'Camera not available: ' + err.message;
+            statusInfo.textContent = 'Camera not available: ' + err.message;
          }
       };
 
@@ -146,29 +146,32 @@
       };
 
       async function sendImage(blob) {
-         status.textContent = 'Fetching text...';
+
+         statusInfo.textContent = 'Fetching text...';
          result.textContent = '';
          const url = 'https://academicintegrity.cs.auckland.ac.nz/graid/api/Text';
 
          try {
+            const form = new FormData();
+            form.append("image", blob, "picture.jpg");
+
             const resp = await fetch(url, {
-               method: 'POST',
-               headers: { 'Content-Type': 'image/jpeg' },
-               body: blob
+               method: "POST",
+               body: form  // for form data, no manual content-types
             });
 
             if (!resp.ok) {
                const txt = await resp.text();
-               status.textContent = 'Server error: ' + resp.status + ' — ' + txt;
+               statusInfo.textContent = 'Server error: ' + resp.status + ' — ' + txt;
                return;
             }
 
-            const data = await resp.json();
-            result.textContent = data.text || '[no text detected]';
-            status.textContent = 'Done';
+            const data = await resp.text();
+            result.textContent = data;
+            statusInfo.textContent = 'Done';
          }
          catch (err) {
-            status.textContent = 'Network error: ' + err.message;
+            statusInfo.textContent = 'Network error: ' + err.message;
          }
       }
    </script>
