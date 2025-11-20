@@ -482,7 +482,10 @@ dom.download.addEventListener('click', function () {
    const pureName = orininFileName.split('.').slice(0, -1).join('.');
    const newFileName = pureName + '_updated.txt';
    const page = items[currentIndex].index;
-   txtData[page] = generateNewLine();
+   const item = items[currentIndex];
+   if (!item.placeholder) {
+      txtData[page] = generateNewLine();
+   }
    let content = txtData.join("\r\n");
    let blob = new Blob([content], { type: "text/plain;charset=utf-8" });
    let url = URL.createObjectURL(blob);
