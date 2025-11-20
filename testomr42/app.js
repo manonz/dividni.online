@@ -163,8 +163,8 @@ async function runVerifier(file) {
          const entry = outerZipFile.files[filename];
 
          if (filename.toLowerCase().endsWith(".zip")) {
-            const imageBolb = await entry.async("blob");
-            items = await processZipFile(imageBolb);
+            const imageBlob = await entry.async("blob");
+            items = await processZipFile(imageBlob);
          }
          else if (filename.toLowerCase().endsWith(".txt")) {
             txtFileName = filename.split('/').pop();
@@ -173,16 +173,12 @@ async function runVerifier(file) {
          }
       }
 
-      const imgsIndexs = new Set(items.map(item => item.index));
-
-      const txtIndex = Array.from({ length: txtData.length }, (_, i) => i);
-
-      const missingIndices = txtIndex.filter(i => !imgsIndexs.has(i)).map(i => String(i).padStart(6, '0'));
-
-
-      if (missingIndices.length > 0) {
-         alert(`Missing pages：${missingIndices.join(", ")}, you may need to check the files.`);
-         isProcessing = false;
+      if (items.length === 0) {
+         items.push({
+            index: 0,
+            image: createImageMessage(`No usable OMR sheets exist.`),
+            placeholder: true
+         });
       }
 
       const firstErr = findFirstErrorPage();
@@ -227,7 +223,39 @@ async function processZipFile(zipFile) {
       }
    }));
    itemsArray.sort((a, b) => a.index - b.index);
+   fillMissingImages(itemsArray);
    return itemsArray;
+}
+
+function fillMissingImages(itemsArray) {
+   let expectedIndex = 0;
+
+   itemsArray.forEach(item => {
+      while (expectedIndex < item.index) {
+         itemsArray.push({
+            index: expectedIndex,
+            image: createImageMessage(`OMR sheet ${expectedIndex + 1} may be damaged.`),
+            placeholder: true
+         });
+         expectedIndex++;
+      }
+
+      expectedIndex = item.index + 1;
+   });
+
+   itemsArray.sort((a, b) => a.index - b.index);
+}
+
+function createImageMessage(mesg) {
+   const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+        <rect width="100%" height="100%" fill="none" stroke="red"/>
+        <text x="50%" y="50%" style="font-family: Arial, sans-serif; font-size: small;" fill="red" text-anchor="middle">
+            ${mesg}
+        </text>
+    </svg>`;
+   const blob = new Blob([svg], { type: "image/svg+xml" });
+   return URL.createObjectURL(blob);
 }
 
 async function processTXTfile(txtFile) {
@@ -476,6 +504,52 @@ function updateUI() {
       dom.resultImage.style.pointerEvents = 'auto';
       dom.markerCanvas.width = 624;
       dom.markerCanvas.height = 888;
+
+      if (item.placeholder) {
+         currentStudentID.fill(undefined);
+         currentScriptVersion.fill(undefined);
+         for (let c = 0; c < answerArea.columns.length; c++) {
+            for (let q = 0; q < answerArea.questionsPerColumn; q++) {
+               currentAnswer[c][q].fill(false);
+            }
+         }
+
+         markerCtx.clearRect(0, 0, dom.markerCanvas.width, dom.markerCanvas.height);
+
+         dom.verification.textContent = "";
+         dom.verification.style.visibility = "hidden";
+         document.getElementById('studentIDSign').style.visibility = 'hidden';
+         document.getElementById('scriptVersionSign').style.visibility = 'hidden';
+         dom.studentIdCheck.style.display = 'none';
+
+         const totalSheets = items.length;
+         const currentSheet = currentIndex + 1;
+         const percent = ((currentSheet / totalSheets) * 100).toFixed(0);
+         dom.currentPageInput.value = currentSheet;
+         dom.currentPageInput.max = totalSheets;
+         document.getElementById('totalPages').textContent = totalSheets;
+         document.getElementById('percentage').textContent = `${percent}%`;
+
+         if (currentIndex === 0) {
+            dom.prevButton.style.visibility = 'hidden';
+            dom.prevQuick.style.visibility = 'hidden';
+         } else {
+            dom.prevButton.style.visibility = 'visible';
+            dom.prevQuick.style.visibility = findPrevErrorPage() !== -1 ? 'visible' : 'hidden';
+         }
+         if (currentIndex === totalSheets - 1) {
+            dom.nextButton.style.visibility = 'hidden';
+            dom.nextQuick.style.visibility = 'hidden';
+         } else {
+            dom.nextButton.style.visibility = 'visible';
+            dom.nextQuick.style.visibility = findNextErrorPage() !== -1 ? 'visible' : 'hidden';
+         }
+
+         return;
+      }
+
+
+
       const page = item.index;
       const txtLine = txtData[page] || "";
       updateUIFromRowData(txtLine);
