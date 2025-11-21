@@ -2,6 +2,7 @@ body {
    font-family: Arial, sans-serif;
    margin: 10px auto;
    text-align: center;
+   min-width: fit-content;
 }
 
 #loader {
@@ -62,6 +63,7 @@ h1 {
    width: 100%;
    box-sizing: border-box;
    flex-shrink: 0;
+   min-width: fit-content;
 }
 
 .right-nav-group {
@@ -140,6 +142,7 @@ h1 {
    height: 888px;
    margin: 0 10px;
    display: inline-block;
+   flex-shrink: 0;
 }
 
 #resultImage {
@@ -245,4 +248,9 @@ h1 {
    display: flex;
    justify-content: space-between;
    align-items: flex-start;
+}
+
+#omr-verifier {
+   min-width: fit-content;
+   width: 100%; 
 }
