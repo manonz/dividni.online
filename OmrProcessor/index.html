@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
    <meta charset="utf-8" />
    <meta name="mobile-web-app-capable" content="yes" />
@@ -10,6 +11,7 @@
    <link rel="stylesheet" href="style.css" />
    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
 </head>
+
 <body>
    <h1 style="text-align: center;">OMR Processor</h1>
    <div id="omr-reader" class="container">
@@ -24,7 +26,8 @@
       </div>
       <div id="loader" style="display: none;"> <img src="Loader.svg" alt="Loading..." /></div>
       <p>
-         <a id="dlink" href="#" download="result.zip" style="display: none;">Save scan results ZIP for later verification</a>
+         <a id="dlink" href="#" download="result.zip" style="display: none;">Save scan results ZIP for later
+            verification</a>
       </p>
 
       <div id="verifyCurrentSection" style="display: none;">
@@ -59,31 +62,42 @@
       </div>
 
       <div class="progress-navigation">
-         <div id="progressBar">Sheet 0 out of 0 (0%)</div>
-         <div class="page-jump-control">
-            <input type="number" id="pageInput" min="1">
-            <button id="jumpButton">jump</button>
-         </div>
+         <div id="progressBar">Sheet <input type="number" id="currentPageInput" min="1" value="0"> out of <span
+               id="totalPages">0</span> (<span id="percentage">0%</span>)</div>
       </div>
 
-      <div class="view-container">
-         <span id="studentIDSign"><b>&#9888;</b></span>
-         <button id="prev" class="nav-button left-nav"><</button>
-         <div id="image">
-            <img id="resultImage" />
-            <canvas id="markerCanvas"></canvas>
-            <div id="verification">0 ID digits, 0 questions answered</div>
-            <div id="studentIdCheck" style="display: none;"></div>
-            <div id="image-loading-message" style="display: none;">Loading images...</div>
+      <div class="main-layout">
+
+         <div class="view-container">
+            <span id="studentIDSign"><b>&#9888;</b></span>
+            <div class="left-nav-group">
+               <button id="prevQuick" class="prevQuick">&laquo;</button>
+               <button id="prev" class="nav-button left-nav">&lt;</button>
+            </div>
+            <div id="image">
+               <img id="resultImage" />
+               <canvas id="markerCanvas"></canvas>
+               <div id="verification">0 ID digits, 0 questions answered</div>
+               <div id="studentIdCheck" style="display: none;"></div>
+               <div id="image-loading-message" style="display: none;">Loading images...</div>
+            </div>
+            <div class="right-nav-group">
+               <button id="nextQuick" class="nextQuick">&raquo;</button>
+               <button id="next" class="nav-button right-nav">&gt;</button>
+            </div>
+            <span id="scriptVersionSign"><b>&#9888;</b></span>
          </div>
-         <button id="next" class="nav-button right-nav">></button>
-         <span id="scriptVersionSign"><b>&#9888;</b></span>
+
+         <div id="search-container">
+            <input type="text" id="searchInput" placeholder="Search by ID or Name...">
+            <div id="searchResults" class="search-results"></div>
+         </div>
+
       </div>
-
-
    </div>
 
    <footer id="version" class="footer" style="text-align: center;"></footer>
    <script src="app.js"></script>
 </body>
+
 </html>

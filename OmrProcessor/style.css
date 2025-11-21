@@ -1,14 +1,15 @@
 body {
-   font-family: Arial, sans-serif; 
+   font-family: Arial, sans-serif;
    margin: 10px auto;
    text-align: center;
+   min-width: fit-content;
 }
 
 #loader {
    display: none;
    width: 50px;
    height: 50px;
-   margin: 0 auto; 
+   margin: 0 auto;
 }
 
 button {
@@ -19,12 +20,12 @@ button {
    cursor: pointer;
 }
 
-#dlink { 
-   display: none; 
-   color: #007bff; 
-   font-weight: bold; 
+#dlink {
+   display: none;
+   color: #007bff;
+   font-weight: bold;
    text-decoration: underline;
-   margin :10px auto;
+   margin: 10px auto;
 }
 
 #verifyBtn {
@@ -48,6 +49,8 @@ h1 {
    padding: 10px;
    margin-bottom: 10px;
    overflow: auto;
+   width: 100%;
+   box-sizing: border-box;
 }
 
 .view-container {
@@ -58,25 +61,15 @@ h1 {
    align-items: center;
    justify-content: center;
    width: 100%;
+   box-sizing: border-box;
+   flex-shrink: 0;
+   min-width: fit-content;
 }
 
-
-.processButton {
-   float: left;
-   padding: 5px 10px;
-   background: #007bff;
-   color: #fff;
-   border: none;
-   cursor: pointer;
-}
-
-.downloadButton {
-   margin : 5px auto;
-   padding: 5px 10px;
-   background: #007bff;
-   color: #fff;
-   border: none;
-   cursor: pointer;
+.right-nav-group {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
 }
 
 .nav-button {
@@ -88,18 +81,58 @@ h1 {
    visibility: hidden;
 }
 
+.nextQuick {
+   padding: 5px 10px;
+   background: #007bff;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+   visibility: hidden;
+}
+
+.prevQuick {
+   padding: 5px 10px;
+   background: #007bff;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+   visibility: hidden;
+}
+
+.processButton {
+   float: left;
+   padding: 5px 10px;
+   background: #007bff;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+}
+
+.downloadButton {
+   margin: 5px auto;
+   padding: 5px 10px;
+   background: #007bff;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+}
+
 .image-navigation {
    position: relative;
    margin: 20px auto;
    width: 624px;
 }
 
-.left-nav {
-   left: 0;
+.left-nav-group {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
 }
 
-.right-nav {
-   right: 0;
+.right-nav-group {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
 }
 
 
@@ -109,6 +142,7 @@ h1 {
    height: 888px;
    margin: 0 10px;
    display: inline-block;
+   flex-shrink: 0;
 }
 
 #resultImage {
@@ -144,7 +178,7 @@ h1 {
    position: relative;
    top: -300px;
    color: red;
-   font-size: 40px; 
+   font-size: 40px;
 }
 
 #scriptVersionSign {
@@ -153,7 +187,7 @@ h1 {
    position: relative;
    top: -300px;
    color: red;
-   font-size: 40px; 
+   font-size: 40px;
 }
 
 #progressBar {
@@ -173,28 +207,10 @@ h1 {
 }
 
 #studentIdCheck {
+   position: relative;
+   z-index: 20;
+   pointer-events: auto;
    color: red;
-}
-
-.page-jump-control {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   margin: 0;
-}
-
-#pageInput {
-   width: 40px;
-   text-align: center;
-   margin-right: 10px;
-}
-
-#jumpButton {
-   padding: 3px 8px;
-   background: #007bff;
-   color: #fff;
-   border: none;
-   cursor: pointer;
 }
 
 .progress-navigation {
@@ -204,4 +220,37 @@ h1 {
    justify-content: center;
    margin: 10px auto;
    gap: 10px;
+}
+
+#currentPageInput {
+   width: 55px;
+   font-weight: bold;
+   text-align: center;
+}
+
+#search-container {
+   display: none;
+   flex-direction: column;
+   gap: 10px;
+   margin-left: 20px;
+   align-items: center;
+   justify-content: center;
+   padding-top: 0px;
+}
+
+#searchInput {
+   padding: 5px;
+   border: 1px solid #ccc;
+   border-radius: 3px;
+}
+
+.main-layout {
+   display: flex;
+   justify-content: space-between;
+   align-items: flex-start;
+}
+
+#omr-verifier {
+   min-width: fit-content;
+   width: 100%; 
 }
