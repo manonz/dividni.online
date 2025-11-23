@@ -76,6 +76,13 @@
             marks.id = "marks" + questions;
             marks.size = "4";
             marks.value = "1";
+            marks.oninput = function () {
+               this.value = this.value.replace(/[^0-9]/g, '');
+               if (this.value !== "" && Number(this.value) < 1) {
+                  this.value = "1";
+               }
+            };
+
             li.appendChild(marks);
             list.appendChild(li);
             ++questions;
@@ -254,5 +261,6 @@
    </div>
 </body>
 </html>
+
 
 
