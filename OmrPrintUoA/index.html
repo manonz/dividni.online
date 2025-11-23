@@ -70,7 +70,9 @@
             }
             li.appendChild(document.createTextNode(" - Marks: "));
             let marks = document.createElement('input');
-            marks.type = 'text';
+            marks.type = 'number';            
+            marks.min = '1';
+            marks.step = '1';
             marks.id = "marks" + questions;
             marks.size = "4";
             marks.value = "1";
@@ -252,4 +254,5 @@
    </div>
 </body>
 </html>
+
 
