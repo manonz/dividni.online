@@ -1,27 +1,134 @@
-<!doctype html>
-<html>
-<head lang="en">
-   <meta charset="utf-8" />
-   <title>OMR Sheets: Generation, Processing, and Grading</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Paper-based MCQ Assessments</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --primary: #1f3a5f;
+            --secondary: #e9eef3;
+            --accent: #2c6bed;
+            --text: #2b2b2b;
+            --border: #dcdcdc;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: var(--secondary);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        header {
+            background: var(--primary);
+            color: #fff;
+            padding: 1.5rem 1rem;
+            text-align: center;
+        }
+
+            header h1 {
+                margin: 0;
+                font-size: 1.6rem;
+                font-weight: 600;
+            }
+
+            header p {
+                margin: 0.4rem 0 0;
+                opacity: 0.9;
+                font-size: 0.95rem;
+            }
+
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+            .card h2 {
+                margin-top: 0;
+                font-size: 1.2rem;
+                color: var(--primary);
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 0.5rem;
+            }
+
+        .links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        a.button {
+            display: block;
+            text-align: center;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            color: #fff;
+            background: var(--accent);
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+            a.button:hover {
+                background: #1f56c8;
+                transform: translateY(-1px);
+            }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+            footer a {
+                opacity: 0.5;
+            }
+    </style>
 </head>
-<body style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
-   <img src="https://dividni.com/images/Dividni-Letters-Logo-Sized.svg" style="width: 10%;" alt="logo" />
+<body>
 
-   <h1>OMR Sheets: Generation, Processing, and Grading</h1>
-   <h2>for limited (e.g., 4) version tests and exams</h2>
-   <h3>
-      (1) Generate OMR Sheets
-   </h3>
-   <a href="https://dividni.online/OmrPrintUoA/">https://dividni.online/OmrPrintUoA/</a>
+    <header>
+        <h1>Paper-based MCQ Assessments</h1>
+        <p>Generate, process, and grade OMR answer sheets</p>
+        <p style="font-size: small;">for limited (e.g., 4) version tests and exams</p>
+    </header>
 
-   <h3>
-      (2) Process Student Responses
-   </h3>
-   <a href="https://dividni.online/OmrProcessor/">https://dividni.online/OmrProcessor/</a>
-   <h3>
-      (3) Grade
-   </h3>
-   <a href="https://dividni.online/McqGrader/">https://dividni.online/McqGrader/</a><br/>
-   Always tick option "Use McqGraderLite".
+    <main>
+
+        <div class="card">
+            <h2>OMR Operations</h2>
+            <div class="links">
+                <a class="button" href="https://dividni.online/OmrPrintUoA/">Step 1: Generate OMR Sheet</a>
+                <a class="button" href="https://dividni.online/OmrProcessor/">Step 2: Process Student Responses</a>
+                <a class="button" href="https://dividni.online/McqGrader/">Step 3: Grade</a>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <a href="https://dividni.com/tutorial">
+            <img src="https://dividni.com/images/Dividni-Letters-Logo-Sized.svg" style="width: 10%;" alt="logo" />
+        </a>
+    </footer>
+
 </body>
 </html>
