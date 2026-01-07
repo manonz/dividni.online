@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" type="image/svg+xml" href="https://dividni.com/images/Dividni-Logo.svg" />
+  <link rel="mask-icon" href="https://dividni.com/images/Dividni-Logo-Black.svg" color="red">
+  <title>MCQ Exam Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   <div id="header">
+      <div id="resetSetup">
+         <button class="header-button btn-primary" onclick="resetSetup()">&larr; Reset Setup</button>
+      </div>
+      <div id="heading">
+         <img src="https://dividni.com/images/Dividni-Logo.svg" alt="Dividni Logo" id="logo" width="40" height="40">
+         <h1>MCQ Exam Generator</h1>
+      </div>
+      <div id="export">
+         <button id="exportBtn" class="btn-primary" type="button" onclick="openExportModal()">Generate Final Exam Scripts &rarr;</button>
+      </div>
+   </div>
+
+   <!-- Upload Modal -->
+   <div id="uploadModal" class="modal-overlay">
+      <div class="modal-box"> 
+         <header class="modal-header">
+            <h2>Exam Setup:</h2>
+         </header>
+         <div class="modal-content">
+            <div class="modal-form-grid">
+               <label for="courseName">Course Name:</label>
+               <input type="text" id="courseName" name="CourseName">
+            </div>
+
+            <div class="file-upload-wrapper">
+               <p class="instruction-text">Upload files to generate preview (a 5MB limit applies):</p>
+               <div class="modal-form-grid">
+                  <label for="prologueFile">Prologue (HTML):</label>
+                  <input type="file" id="prologueFile" name="PrologueFile" accept=".html">
+
+                  <label for="epilogueFile">Epilogue (HTML):</label>
+                  <input type="file" id="epilogueFile" name="EpilogueFile" accept=".html">
+
+                  <label for="answerSheetSvg">Answer Sheet (SVG):</label>
+                  <div>
+                     <input type="file" id="answerSheetSvg" name="AnswerSheetSvg" accept=".svg">
+                     <div class="checkbox-wrapper">
+                        <input type="checkbox" id="useDefaultAnswerSheet" name="UseDefaultAnswerSheet">
+                        <label for="useDefaultAnswerSheet">Use default answer sheet</label>
+                     </div>
+                  </div>
+
+                  <label for="questionsZip">Questions (ZIP):</label>
+                  <input type="file" id="questionsZip" name="QuestionsZip" accept=".zip">
+               </div>
+            </div>
+
+            <div class="modal-form-grid">
+               <label for="mathType">LaTeX Rendering:</label>
+               <select id="mathType" name="mathType">
+                  <option value="" selected>None (Standard text, no LaTeX)</option>
+                  <option value="katex">KaTeX (Faster, Recommended)</option>
+                  <option value="mathjax">MathJax (More features)</option>
+               </select>
+            </div>
+
+            <div class="checkbox-wrapper" style="margin-top: 15px;">
+               <input type="checkbox" id="proof" name="Proof">
+               <label for="proof">Proof copy (not for examination)</label>
+            </div>
+         </div>
+         <footer class="modal-footer">
+            <button id="setupCancelBtn" class="btn-secondary" type="button" onclick="closeUploadModal()" style="display: none;">Cancel</button>
+            <button type="button" class="btn-primary" onclick="upload()">Generate Preview</button>
+         </footer>
+      </div>
+   </div>
+
+   <!-- Confirm Modal -->
+   <div id="confirmModal" class="modal-overlay hidden">
+      <div class="modal-box">
+         <header class="modal-header">
+            <h2>Confirm Removal:</h2>
+         </header>
+         <div class="modal-content">
+            <p id="confirmMessage">Do you want remove this question?</p>
+         </div>
+         <footer class="modal-footer">
+            <button id="confirmYesBtn" class="btn-danger">Yes, delete</button>
+            <button id="confirmNoBtn" class="btn-secondary">Cancel</button>
+         </footer>
+      </div>
+   </div>
+   <!-- Export Modal -->
+   <div id="exportModal" class="modal-overlay hidden">
+      <div class="modal-box">
+         <header class="modal-header">
+            <h2>Generate final exam scripts:</h2>
+         </header>
+         <div class="modal-content">
+            <div class="modal-form-grid">
+               <label for="paperCount">Paper Count:</label>
+               <input type="number" id="paperCount" name="PaperCount" value="1" min="1">
+
+               <label for="startId">Start ID (no more than 12 digits):</label>
+               <input type="number" id="startId" name="StartId" value="0" min="0" max="999999999999">
+            </div>
+            
+            <div class="checkbox-wrapper" style="margin-top: 15px;">
+               <input type="checkbox" id="finalProof" name="Proof">
+               <label for="finalProof">Proof copy (not for examination)</label>
+            </div>
+
+            <div class="checkbox-wrapper" style="margin-top: 15px;">
+               <input type="checkbox" id="combineAll" name="CombineAllPapers">
+               <label for="combineAll">Single (large) PDF</label>
+            </div>
+            <img src="Loader.svg" alt="Loading..." id="finalLoader" width="60" height="60" style="display: none;">
+            <div id="finalResult" style="display: none;"></div>
+         </div>
+
+         <footer class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="closeExportModal()">Cancel / Back</button>
+            <button type="button" class="btn-primary" onclick="generateFinalExam()">Generate final exam scripts</button>
+         </footer>
+      </div>
+   </div>
+
+   <div id="main-container">
+      <div id="left-container">
+         <div id="left-container-header">
+            <h2>Questions:</h2>
+            <div class="header-actions">
+               <button type="button" class="btn-secondary" onclick="openHintModal()" title="Hints">Hints</button>
+               <button id="reorderBtn" class="btn-primary" onclick="reorderPreview()" title="Regenerate Preview"><b>Regenerate Preview</b></button>
+            </div>
+         </div>
+         <ul id="sortable-list"></ul>
+         <button type="button" class="btn-primary" onclick="addPageBreak()" style="margin-bottom: 5px;">+ Add Page Break</button>
+         <button type="button" class="btn-primary" onclick="openAddQuestionModal()" title="Add New Question">+ Add New Question</button>
+      </div>
+      <div id="right-container">
+         <div id="a4PreviewContainer" class="a4-page">
+            <img src="Loader.svg" alt="Loading..." id="loader" width="40" height="40">
+            <iframe id="a4PreviewEmbed" src="" style="display:none;"></iframe>
+         </div>
+      </div>
+   </div>
+
+   <!-- Add Question Modal -->
+   <div id="addQuestionModal" class="modal-overlay hidden">
+      <div class="modal-box">
+         <header class="modal-header">
+            <h2>Upload New Question:</h2>
+         </header>
+         <div class="modal-content">
+            <div class="modal-form-stack">
+               <label for="newQuestionFiles">Question File (.cs):</label>
+               <input type="file" id="newQuestionFiles" name="newQuestionFiles" accept=".cs">
+            </div>
+         </div>
+         <footer class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="closeAddQuestionModal()">Cancel</button>
+            <button type="button" class="btn-primary" onclick="uploadNewQuestions()">Upload</button>
+         </footer>
+      </div>
+   </div>
+
+   <!-- Hint Modal -->
+   <div id="hintModal" class="modal-overlay hidden">
+      <div class="modal-box">
+         <header class="modal-header">
+            <h2>Hints:</h2>
+         </header>
+         <div class="modal-content">
+            <p>Drag and drop to reorder questions.</p>
+            <p>Right-click on the question to remove the questions.</p>
+         </div>
+         <footer class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="closeHintModal()">Close</button>
+         </footer>
+      </div>
+   </div>
+   
+   <footer id="version" class="footer">v25.01.18</footer>
+   <script src="app.js"></script>
+</body>
+</html>
