@@ -1,0 +1,1463 @@
+//script for OMR Response Reader
+
+// api Configuration
+//const apiUrl = "https://redsox.uoa.auckland.ac.nz/omr/api";
+const apiUrl = "https://academicintegrity.cs.auckland.ac.nz/omr/api";
+
+async function fetchVersion() {
+   const versionElement = document.getElementById("version");
+   try {
+      const response = await fetch(apiUrl + "/Version");
+      if (!response.ok) {
+         throw new Error("Failed to load version." + response.statusText);
+      }
+      const version = (await response.text()).trim();
+
+      versionElement.textContent = "v" + version;
+
+   } catch (error) {
+      versionElement.textContent = "Server not responding. You can still use the Verification feature.";
+   }
+}
+
+async function uploadPdf() {
+   document.getElementById('verifyCurrentSection').style.display = 'none';
+   document.getElementById('omr-verifier').style.display = 'none';
+   document.getElementById('dlink').style.display = 'none';
+   document.getElementById('have_result').style.display = 'none';
+
+   const input = document.getElementById("fid");
+   const filename = getFilename(input.value);
+
+   if (input.files && input.files[0]) {
+      document.getElementById("loader").style.display = "block";
+      const formData = new FormData();
+      formData.append("PdFfile", input.files[0]);
+      const postUrl = apiUrl + "/Upload";
+
+      try {
+         const response = await fetch(postUrl, {
+            method: "POST",
+            body: formData
+         });
+
+         if (!response.ok) {
+            throw new Error("Failed to upload PDF file: " + response.statusText);
+         }
+
+         const blob = await response.blob();
+
+         document.getElementById("pdfUpload").style.display = "none";
+         const res_url = URL.createObjectURL(blob);
+         const lnk = document.getElementById("dlink");
+         lnk.href = res_url;
+         lnk.download = filename + "_results.zip";
+         lnk.style.display = "none";
+         lastZip = blob;
+         document.getElementById('verifyCurrentSection').style.display = 'block';
+         document.getElementById("fid").value = "";
+      } catch (error) {
+         console.error("Upload Error:", error);
+         alert(error.message);
+      } finally {
+         document.getElementById("loader").style.display = "none";
+      }
+   }
+}
+
+function getFilename(input) {
+   let filename = "File";
+   if (input) {
+      const startIndex = (input.indexOf('\\') >= 0 ? input.lastIndexOf('\\') : input.lastIndexOf('/'));
+      filename = input.substring(startIndex);
+      if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+         filename = filename.substring(1);
+      }
+   }
+   filename = filename.substring(0, filename.length - 4);
+   return filename;
+}
+
+//omr verfier start from here 
+const dom = {
+   zipInput: document.getElementById('zipInput'),
+   processButton: document.getElementById('process'),
+   prevButton: document.getElementById('prev'),
+   nextButton: document.getElementById('next'),
+   nextQuick: document.getElementById('nextQuick'),
+   prevQuick: document.getElementById('prevQuick'),
+   currentPageInput: document.getElementById('currentPageInput'),
+   download: document.getElementById('download'),
+   imageContainer: document.getElementById('image'),
+   resultImage: document.getElementById('resultImage'),
+   markerCanvas: document.getElementById('markerCanvas'),
+   progressBar: document.getElementById('progressBar'),
+   verification: document.getElementById('verification'),
+   studentIdCheck: document.getElementById('studentIdCheck'),
+   studentIDInput: document.getElementById('studentIDInput'),
+   studentIDInputCurrent: document.getElementById('studentIDInputCurrent'),
+   searchInput: document.getElementById('searchInput'),
+   searchResults: document.getElementById('searchResults'),
+   problemQuestions: document.getElementById("problem_questions")
+};
+
+dom.prevButton.addEventListener('click', () => handleNavigation(-1));
+dom.nextButton.addEventListener('click', () => handleNavigation(1));
+dom.currentPageInput.addEventListener('keypress', function (event) {
+   if (event.key === 'Enter') {
+      handleProgressJump();
+   }
+});
+
+dom.currentPageInput.addEventListener('blur', function () {
+   handleProgressJump();
+});
+
+function handleProgressJump() {
+   const pageNumber = parseInt(dom.currentPageInput.value);
+   const totalSheets = items.length;
+
+   if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > totalSheets) {
+      dom.currentPageInput.value = currentIndex + 1;
+      alert(`Please enter a valid page number: (1-${totalSheets})`);
+      return;
+   }
+
+   currentIndex = pageNumber - 1;
+   updateUI();
+}
+
+//global variables
+let currentIndex = 0;
+let items = [];
+let txtData = [];
+let isProcessing = false;
+let txtFileName = "";
+let lastZip = null;
+let studentIDList = [];
+let mostFrequentAnswerCount = null;
+let studentInfoList = [];
+let majorMin = null;
+let majorMax = null;
+let majorOptMin = null;
+let majorOptMax = null;
+let sheetIssues = [];
+
+
+function optionLetterToIdx(ch) {
+   const letters = ["A", "B", "C", "D", "E", "F"];
+   const i = letters.indexOf((ch || "").toUpperCase());
+   return i >= 0 ? i : null;
+}
+
+function analyzeOptionRangeForLine(rowDataLine, optMinLetter, optMaxLetter) {
+   const totalQuestions = 80;
+   const ans = (rowDataLine || "").substring(32, 192).padEnd(160, "0");
+
+   const minIdx = optionLetterToIdx(optMinLetter);
+   const maxIdx = optionLetterToIdx(optMaxLetter);
+
+   if (minIdx == null || maxIdx == null) {
+      return { optOutOfRange: [] };
+   }
+
+   const bad = new Set();
+
+   for (let i = 0; i < totalQuestions; i++) {
+      const code2 = ans.substr(i * 2, 2);
+      if (code2 === "00") continue;
+
+      const num = parseInt(code2, 10);
+      if (!Number.isFinite(num) || num <= 0) continue;
+
+      const bits = num & 0b111111;
+      for (let opt = 0; opt < 6; opt++) {
+         if (bits & (1 << opt)) {
+            if (opt < minIdx || opt > maxIdx) {
+               bad.add(i + 1);
+               break;
+            }
+         }
+      }
+   }
+
+   return { optOutOfRange: Array.from(bad).sort((a, b) => a - b) };
+}
+
+function recomputeSheetIssues(pageIndex) {
+   const line = txtData[pageIndex] || "";
+   const qRange = analyzeRangeForLine(line, majorMin, majorMax);
+   const optRange = analyzeOptionRangeForLine(line, majorOptMin, majorOptMax);
+
+   const issueList = Array.from(new Set([
+      ...(qRange.outOfRange || []),
+      ...(qRange.missingInRange || []),
+      ...(optRange.optOutOfRange || []),
+   ])).sort((a, b) => a - b);
+
+   sheetIssues[pageIndex] = issueList;
+   return issueList;
+}
+
+
+function analyzeRangeForLine(rowDataLine, rangeMin, rangeMax) {
+   const totalQuestions = 80;
+   const ans = (rowDataLine || "").substring(32, 192).padEnd(160, "0");
+
+   const answered = new Set();
+   for (let i = 0; i < totalQuestions; i++) {
+      const code2 = ans.substr(i * 2, 2);
+      if (code2 !== "00") answered.add(i + 1);
+   }
+
+   const outOfRange = [];
+   const answeredInRange = [];
+   const missingInRange = [];
+
+   if (rangeMin != null && rangeMax != null) {
+      for (let q = rangeMin; q <= rangeMax; q++) {
+         if (answered.has(q)) answeredInRange.push(q);
+         else missingInRange.push(q);
+      }
+   }
+
+   for (const q of answered) {
+      if (rangeMin != null && rangeMax != null) {
+         if (q < rangeMin || q > rangeMax) outOfRange.push(q);
+      }
+   }
+
+   outOfRange.sort((a, b) => a - b);
+
+   return { outOfRange, missingInRange, answeredInRange };
+}
+
+
+
+function getMinMaxFromLine(rowDataLine) {
+   const totalQuestions = 80;
+   const s = (rowDataLine || "").substring(32, 192).padEnd(160, "0");
+
+   let min = null, max = null;
+   for (let i = 0; i < totalQuestions; i++) {
+      if (s.substr(i * 2, 2) !== "00") {
+         const q = i + 1;
+         if (min === null) min = q;
+         max = q;
+      }
+   }
+   return { min, max };
+}
+
+
+function computeMajorMinMax(lines) {
+   const freq = new Map();
+   let bestKey = null;
+   let bestCount = 0;
+
+   for (const line of (lines || [])) {
+      const { min, max } = getMinMaxFromLine(line);
+      if (min == null || max == null) continue;
+
+      const key = `${min}-${max}`;
+      const count = (freq.get(key) || 0) + 1;
+      freq.set(key, count);
+
+      if (count > bestCount) {
+         bestCount = count;
+         bestKey = key;
+      }
+   }
+
+   if (!bestKey) {
+      majorMin = null;
+      majorMax = null;
+      return;
+   }
+
+   const [L, R] = bestKey.split("-").map(n => parseInt(n, 10));
+   majorMin = L;
+   majorMax = R;
+}
+
+function getOptionMinMaxFromLine(rowDataLine) {
+   const totalQuestions = 80;
+   const ans = (rowDataLine || "").substring(32, 192).padEnd(160, "0");
+
+   const letters = ["A", "B", "C", "D", "E", "F"];
+   let minIdx = null;
+   let maxIdx = null;
+
+   for (let i = 0; i < totalQuestions; i++) {
+      const code2 = ans.substr(i * 2, 2);
+      if (code2 === "00") continue;
+
+      const num = parseInt(code2, 10);
+      if (!Number.isFinite(num) || num <= 0) continue;
+
+      const bits = num & 0b111111;
+      if (bits === 0) continue;
+
+      for (let opt = 0; opt < 6; opt++) {
+         if (bits & (1 << opt)) {
+            if (minIdx === null || opt < minIdx) minIdx = opt;
+            if (maxIdx === null || opt > maxIdx) maxIdx = opt;
+         }
+      }
+   }
+
+   if (minIdx === null || maxIdx === null) return { min: null, max: null };
+   return { min: letters[minIdx], max: letters[maxIdx] };
+}
+
+function computeMajorOptionMinMax(lines) {
+   const freq = new Map();
+   let bestKey = null;
+   let bestCount = 0;
+
+   for (const line of (lines || [])) {
+      const { min, max } = getOptionMinMaxFromLine(line);
+      if (!min || !max) continue;
+
+      const key = `${min}-${max}`;
+      const count = (freq.get(key) || 0) + 1;
+      freq.set(key, count);
+
+      if (count > bestCount) {
+         bestCount = count;
+         bestKey = key;
+      }
+   }
+
+   if (!bestKey) {
+      majorOptMin = null;
+      majorOptMax = null;
+      return;
+   }
+
+   const [L, R] = bestKey.split("-");
+   majorOptMin = L;
+   majorOptMax = R;
+}
+
+function renderProblemQuestions(pageIndex) {
+   const pq = dom.problemQuestions;
+   if (!pq) return;
+
+   const issues = recomputeSheetIssues(pageIndex);
+
+   if (!issues || issues.length === 0) {
+      pq.style.display = "none";
+      pq.textContent = "";
+   } else {
+      pq.style.display = "block";
+      pq.textContent = `Potentially problematic questions: ${issues.join(", ")}`;
+   }
+}
+
+
+
+async function runVerifier(file) {
+   isProcessing = true;
+   txtFileName = "";
+   document.getElementById('scriptVersionSign').style.visibility = 'hidden';
+   document.getElementById('studentIDSign').style.visibility = 'hidden';
+   txtData = [];
+   items = [];
+
+   if (!file) {
+      alert("You need upload a ZIP file.");
+      isProcessing = false;
+      return;
+   }
+
+   document.getElementById('omr-verifier').style.display = 'block';
+   dom.resultImage.src = "Loader.svg";
+   try {
+      const zip = new JSZip();
+      const arrayBuffer = await file.arrayBuffer();
+      const outerZipFile = await zip.loadAsync(arrayBuffer);
+
+      for (const filename of Object.keys(outerZipFile.files)) {
+         const entry = outerZipFile.files[filename];
+
+         if (filename.toLowerCase().endsWith(".zip")) {
+            const imageBlob = await entry.async("blob");
+            items = await processZipFile(imageBlob);
+         }
+         else if (filename.toLowerCase().endsWith(".txt")) {
+            txtFileName = filename.split('/').pop();
+            const txtBlob = await entry.async("blob");
+            txtData = await processTXTfile(txtBlob);
+         }
+      }
+
+      if (items.length === 0) {
+         items.push({
+            index: 0,
+            image: createImageMessage(`No usable OMR sheets exist.`),
+            placeholder: true
+         });
+      }
+
+      const firstErr = findFirstErrorPage();
+      if (firstErr !== -1) {
+         currentIndex = firstErr;
+      } else {
+         currentIndex = 0;
+         alert('Did not find any erroneous scripts needing correction');
+      }
+      updateUI();
+      isProcessing = false;
+   } catch (error) {
+      alert(`error: ${error.message}`);
+      isProcessing = false;
+   }
+};
+
+//use JSZip to process the zip file, return ImageURL Array
+async function processZipFile(zipFile) {
+   const zip = new JSZip();
+   const arrayBuffer = await zipFile.arrayBuffer();
+   const content = await zip.loadAsync(arrayBuffer);
+   const itemsArray = [];
+   const imageNames = Object.keys(content.files);
+
+   await Promise.all(imageNames.map(async (image) => {
+      const entry = content.files[image];
+      if (entry.dir) {
+         return;
+      }
+
+      if (image.toLocaleLowerCase().endsWith(".jpg") || image.toLocaleLowerCase().endsWith(".jpeg")) {
+         const baseName = image.split('/').pop();
+         const num = baseName.split(".")[0];
+         const index = parseInt(num, 10);
+         const blob = await entry.async('blob');
+         const imageUrl = URL.createObjectURL(blob);
+         itemsArray.push({
+            index: index,
+            image: imageUrl
+         });
+      }
+   }));
+   itemsArray.sort((a, b) => a.index - b.index);
+   fillMissingImages(itemsArray);
+   return itemsArray;
+}
+
+function fillMissingImages(itemsArray) {
+   let expectedIndex = 0;
+
+   itemsArray.forEach(item => {
+      while (expectedIndex < item.index) {
+         itemsArray.push({
+            index: expectedIndex,
+            image: createImageMessage(`OMR sheet ${expectedIndex + 1} may be damaged.`),
+            placeholder: true
+         });
+         expectedIndex++;
+      }
+
+      expectedIndex = item.index + 1;
+   });
+
+   itemsArray.sort((a, b) => a.index - b.index);
+}
+
+function createImageMessage(mesg) {
+   const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+        <rect width="100%" height="100%" fill="none" stroke="red"/>
+        <text x="50%" y="50%" style="font-family: Arial, sans-serif; font-size: small;" fill="red" text-anchor="middle">
+            ${mesg}
+        </text>
+    </svg>`;
+   const blob = new Blob([svg], { type: "image/svg+xml" });
+   return URL.createObjectURL(blob);
+}
+
+async function processTXTfile(txtFile) {
+   return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+         const text = event.target.result;
+         const splitText = text.split(/\r?\n/).map(l => l.replace(/\r$/, '')).filter(line => line.trim() !== '');
+
+         const mostCommonCount = getMostFrequentAnswerCount(splitText);
+         mostFrequentAnswerCount = mostCommonCount;
+
+         //console.log(`Most students answered ${mostFrequentAnswerCount} questions.`);
+         computeMajorMinMax(splitText);
+
+         computeMajorOptionMinMax(splitText);
+
+         resolve(splitText);
+      };
+      reader.readAsText(txtFile);
+   });
+}
+
+
+const studentIdArea = {
+   startX: 22,
+   startY: 141,
+   totalWidth: 328,
+   totalHeight: 175,
+   columns: 18,
+   rows: 10
+};
+
+//current student ID set to undefined
+let currentStudentID = new Array(studentIdArea.columns).fill(undefined);
+
+const scriptVersionArea = {
+   startX: 371,
+   startY: 141,
+   totalWidth: 218,
+   totalHeight: 175,
+   columns: 12,
+   rows: 10
+};
+
+//current script version set to undefined
+let currentScriptVersion = new Array(scriptVersionArea.columns).fill(undefined);
+
+const answerArea = {
+   startY: 443,
+   totalHeight: 345,
+   columns:
+      [
+         //row1
+         { startX: 52, totalWidth: 109 },
+         //row2
+         { startX: 191, totalWidth: 109 },
+         //row3
+         { startX: 330, totalWidth: 109 },
+         //row4
+         { startX: 469, totalWidth: 109 }
+      ],
+   questionsPerColumn: 20,
+   optionsPerQuestion: 6
+};
+
+//current answer, set 2 false 
+let currentAnswer = [];
+for (let i = 0; i < answerArea.columns.length; i++) {
+   currentAnswer[i] = [];
+   for (let q = 0; q < answerArea.questionsPerColumn; q++) {
+      currentAnswer[i][q] = new Array(answerArea.optionsPerQuestion).fill(false);
+   }
+}
+
+
+//get data;
+function updateUIFromRowData(rowDataLine) {
+   const studentIDLength = 18;
+   const sep1 = 1;
+   const scriptVersionLength = 12;
+   const sep2 = 1;
+   const answerDataLength = 160;
+
+   let studentIDStr = rowDataLine.substring(0, 18).padEnd(studentIDLength, " ");
+   let scriptVersionStr = rowDataLine.substring(studentIDLength + sep1, studentIDLength + sep1 + scriptVersionLength).padEnd(scriptVersionLength, " ");
+   let answerStr = rowDataLine.substring(studentIDLength + sep1 + scriptVersionLength + sep2, studentIDLength + sep1 + scriptVersionLength + sep2 + answerDataLength);
+
+   for (let i = 0; i < studentIdArea.columns; i++) {
+      let ch = studentIDStr[i];
+      if (ch === ' ') {
+         currentStudentID[i] = undefined;
+      } else {
+         currentStudentID[i] = parseInt(ch, 10);
+      }
+   }
+
+
+   for (let i = 0; i < scriptVersionArea.columns; i++) {
+      let ch = scriptVersionStr[i];
+      if (ch === ' ') {
+         currentScriptVersion[i] = undefined;
+      } else {
+         currentScriptVersion[i] = parseInt(ch, 10);
+      }
+   }
+
+
+   const totalQuestions = 80;
+   if (answerStr.length < totalQuestions * 2) {
+      for (let col = 0; col < answerArea.columns.length; col++) {
+         for (let q = 0; q < answerArea.questionsPerColumn; q++) {
+            currentAnswer[col][q] = new Array(answerArea.optionsPerQuestion).fill(false);
+         }
+      }
+   } else {
+      for (let i = 0; i < totalQuestions; i++) {
+         let code = answerStr.substr(i * 2, 2);
+         let num = parseInt(code, 10);
+         let binaryStr = num.toString(2).padStart(6, '0');
+         let colIndex = Math.floor(i / answerArea.questionsPerColumn);
+         let questionIndex = i % answerArea.questionsPerColumn;
+         for (let opt = 0; opt < answerArea.optionsPerQuestion; opt++) {
+            let bit = binaryStr[5 - opt];
+            currentAnswer[colIndex][questionIndex][opt] = (bit === '1');
+         }
+      }
+   }
+}
+
+const markerCtx = dom.markerCanvas.getContext('2d');
+function drawAllGrids() {
+   markerCtx.clearRect(0, 0, dom.markerCanvas.width, dom.markerCanvas.height);
+
+   //student ID
+   {
+      const cellWidth = studentIdArea.totalWidth / studentIdArea.columns;
+      const cellHeight = studentIdArea.totalHeight / studentIdArea.rows;
+      markerCtx.strokeStyle = 'blue';
+      markerCtx.lineWidth = 1;
+      currentStudentID.forEach((selectedRow, col) => {
+         if (selectedRow !== undefined) {
+            const x = studentIdArea.startX + col * cellWidth;
+            const y = studentIdArea.startY + selectedRow * cellHeight;
+            markerCtx.strokeRect(x, y, cellWidth, cellHeight);
+         }
+      });
+   }
+
+   //Script Version
+   {
+      const cellWidth = scriptVersionArea.totalWidth / scriptVersionArea.columns;
+      const cellHeight = scriptVersionArea.totalHeight / scriptVersionArea.rows;
+      markerCtx.strokeStyle = 'blue';
+      markerCtx.lineWidth = 1;
+      currentScriptVersion.forEach((selectedRow, col) => {
+         if (selectedRow !== undefined) {
+            const x = scriptVersionArea.startX + col * cellWidth;
+            const y = scriptVersionArea.startY + selectedRow * cellHeight;
+            markerCtx.strokeRect(x, y, cellWidth, cellHeight);
+         }
+      });
+   }
+
+   //anwsers
+   {
+      markerCtx.lineWidth = 1;
+      answerArea.columns.forEach((colDef, colIndex) => {
+         const cellWidth = colDef.totalWidth / answerArea.optionsPerQuestion;
+         const cellHeight = answerArea.totalHeight / answerArea.questionsPerColumn;
+         for (let q = 0; q < answerArea.questionsPerColumn; q++) {
+            const selectedIndices = [];
+            for (let opt = 0; opt < answerArea.optionsPerQuestion; opt++) {
+               if (currentAnswer[colIndex][q][opt]) {
+                  selectedIndices.push(opt);
+               }
+            }
+            if (selectedIndices.length === 1) {
+               markerCtx.strokeStyle = 'blue';
+               const onlyOpt = selectedIndices[0];
+               const x = colDef.startX + onlyOpt * cellWidth;
+               const y = answerArea.startY + q * cellHeight;
+               markerCtx.strokeRect(x, y, cellWidth, cellHeight);
+
+            } else if (selectedIndices.length > 1) {
+               markerCtx.strokeStyle = 'red';
+               for (const optIndex of selectedIndices) {
+                  const x = colDef.startX + optIndex * cellWidth;
+                  const y = answerArea.startY + q * cellHeight;
+                  markerCtx.strokeRect(x, y, cellWidth, cellHeight);
+               }
+            }
+         }
+      });
+   }
+}
+
+//build new line
+function generateNewLine() {
+   let studentIDStr = currentStudentID
+      .map(val => (val === undefined ? " " : String(val)))
+      .join("")
+      .padEnd(18, " ");
+   let scriptVersionStr = currentScriptVersion
+      .map(val => (val === undefined ? " " : String(val)))
+      .join("")
+      .padEnd(12, " ");
+
+   let totalQuestions = answerArea.questionsPerColumn * answerArea.columns.length;
+   let answerParts = [];
+   for (let i = 0; i < totalQuestions; i++) {
+      let colIndex = Math.floor(i / answerArea.questionsPerColumn);
+      let questionIndex = i % answerArea.questionsPerColumn;
+      let boolArr = currentAnswer[colIndex][questionIndex];
+      let binaryStr = boolArr.slice().reverse().map(b => (b ? "1" : "0")).join("");
+      let dec = parseInt(binaryStr, 2);
+      let format = dec.toString().padStart(2, "0");
+      answerParts.push(format);
+   }
+   let answerStr = answerParts.join("").padEnd(160, "0");
+   return studentIDStr + " " + scriptVersionStr + " " + answerStr;
+}
+
+//for download 
+dom.download.addEventListener('click', function () {
+   const orininFileName = txtFileName;
+   const pureName = orininFileName.split('.').slice(0, -1).join('.');
+   const newFileName = pureName + '_updated.txt';
+   const page = items[currentIndex].index;
+   const item = items[currentIndex];
+   if (!item.placeholder) {
+      txtData[page] = generateNewLine();
+   }
+   let content = txtData.join("\r\n");
+   let blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+   let url = URL.createObjectURL(blob);
+   let a = document.createElement('a');
+   a.href = url;
+   a.download = newFileName;
+   document.body.appendChild(a);
+   a.click();
+   document.body.removeChild(a);
+});
+
+
+
+function updateUI() {
+   const item = items[currentIndex];
+   dom.resultImage.src = item.image;
+
+   dom.resultImage.onload = function () {
+      dom.resultImage.style.pointerEvents = 'auto';
+      dom.markerCanvas.width = 624;
+      dom.markerCanvas.height = 888;
+
+      if (item.placeholder) {
+         currentStudentID.fill(undefined);
+         currentScriptVersion.fill(undefined);
+         for (let c = 0; c < answerArea.columns.length; c++) {
+            for (let q = 0; q < answerArea.questionsPerColumn; q++) {
+               currentAnswer[c][q].fill(false);
+            }
+         }
+
+         markerCtx.clearRect(0, 0, dom.markerCanvas.width, dom.markerCanvas.height);
+
+         dom.verification.textContent = "";
+         dom.verification.style.visibility = "hidden";
+         document.getElementById('studentIDSign').style.visibility = 'hidden';
+         document.getElementById('scriptVersionSign').style.visibility = 'hidden';
+         dom.studentIdCheck.style.display = 'none';
+
+         const totalSheets = items.length;
+         const currentSheet = currentIndex + 1;
+         const percent = ((currentSheet / totalSheets) * 100).toFixed(0);
+         dom.currentPageInput.value = currentSheet;
+         dom.currentPageInput.max = totalSheets;
+         document.getElementById('totalPages').textContent = totalSheets;
+         document.getElementById('percentage').textContent = `${percent}%`;
+
+         if (currentIndex === 0) {
+            dom.prevButton.style.visibility = 'hidden';
+            dom.prevQuick.style.visibility = 'hidden';
+         } else {
+            dom.prevButton.style.visibility = 'visible';
+            dom.prevQuick.style.visibility = findPrevErrorPage() !== -1 ? 'visible' : 'hidden';
+         }
+         if (currentIndex === totalSheets - 1) {
+            dom.nextButton.style.visibility = 'hidden';
+            dom.nextQuick.style.visibility = 'hidden';
+         } else {
+            dom.nextButton.style.visibility = 'visible';
+            dom.nextQuick.style.visibility = findNextErrorPage() !== -1 ? 'visible' : 'hidden';
+         }
+         if (dom.problemQuestions) dom.problemQuestions.textContent = "";
+         return;
+      }
+
+
+
+      const page = item.index;
+      const txtLine = txtData[page] || "";
+      updateUIFromRowData(txtLine);
+      drawAllGrids();
+      renderProblemQuestions(page);
+      isValidStudentId();
+      isValidScriptVersion();
+      checkStudentId();
+
+      updateVerification();
+
+      const totalSheets = items.length;
+      const currentSheet = currentIndex + 1;
+      const precent = ((currentSheet / totalSheets) * 100).toFixed(0);
+
+      dom.currentPageInput.value = currentSheet;
+      dom.currentPageInput.max = totalSheets;
+      document.getElementById('totalPages').textContent = totalSheets;
+      document.getElementById('percentage').textContent = `${precent}%`;
+
+      if (currentIndex === 0) {
+         dom.prevButton.style.visibility = 'hidden';
+         dom.prevQuick.style.visibility = 'hidden';
+      } else {
+         dom.prevButton.style.visibility = 'visible';
+         dom.prevQuick.style.visibility = findPrevErrorPage() !== -1 ? 'visible' : 'hidden';
+      }
+      if (currentIndex === totalSheets - 1) {
+         dom.nextButton.style.visibility = 'hidden';
+         dom.nextQuick.style.visibility = 'hidden';
+      } else {
+         dom.nextButton.style.visibility = 'visible';
+         dom.nextQuick.style.visibility = findNextErrorPage() !== -1 ? 'visible' : 'hidden';
+      }
+   };
+   dom.resultImage.style.pointerEvents = 'none';
+}
+
+
+function handleNavigation(direction) {
+   let newIndex = currentIndex + direction;
+   if (newIndex < 0) {
+      newIndex = 0;
+   }
+   if (newIndex > items.length - 1) {
+      newIndex = items.length - 1;
+   }
+   currentIndex = newIndex;
+
+   const page = items[currentIndex].index;
+   updateUI();
+}
+
+
+dom.markerCanvas.addEventListener('click', function (event) {
+   const rect = dom.markerCanvas.getBoundingClientRect();
+   const clickX = event.clientX - rect.left;
+   const clickY = event.clientY - rect.top;
+
+   let handled = false;
+
+   //student ID area
+   if (clickX >= studentIdArea.startX && clickX <= studentIdArea.startX + studentIdArea.totalWidth &&
+      clickY >= studentIdArea.startY && clickY <= studentIdArea.startY + studentIdArea.totalHeight) {
+      const cellWidth = studentIdArea.totalWidth / studentIdArea.columns;
+      const cellHeight = studentIdArea.totalHeight / studentIdArea.rows;
+      const col = Math.floor((clickX - studentIdArea.startX) / cellWidth);
+      const row = Math.floor((clickY - studentIdArea.startY) / cellHeight);
+
+      if (currentStudentID[col] === row) {
+         currentStudentID[col] = undefined;
+      } else {
+         currentStudentID[col] = row;
+      }
+      handled = true;
+   }
+
+   //script version area
+   if (!handled && clickX >= scriptVersionArea.startX && clickX <= scriptVersionArea.startX + scriptVersionArea.totalWidth &&
+      clickY >= scriptVersionArea.startY && clickY <= scriptVersionArea.startY + scriptVersionArea.totalHeight) {
+      const cellWidth = scriptVersionArea.totalWidth / scriptVersionArea.columns;
+      const cellHeight = scriptVersionArea.totalHeight / scriptVersionArea.rows;
+      const col = Math.floor((clickX - scriptVersionArea.startX) / cellWidth);
+      const row = Math.floor((clickY - scriptVersionArea.startY) / cellHeight);
+
+      if (currentScriptVersion[col] === row) {
+         currentScriptVersion[col] = undefined;
+      } else {
+         currentScriptVersion[col] = row;
+      }
+      handled = true;
+   }
+
+   //anwser area
+   if (!handled && clickY >= answerArea.startY && clickY <= answerArea.startY + answerArea.totalHeight) {
+      let answerColIndex = -1;
+      answerArea.columns.forEach((colDef, idx) => {
+         if (clickX >= colDef.startX && clickX <= colDef.startX + colDef.totalWidth) {
+            answerColIndex = idx;
+         }
+      });
+      if (answerColIndex !== -1) {
+         const colDef = answerArea.columns[answerColIndex];
+         const cellWidth = colDef.totalWidth / answerArea.optionsPerQuestion;
+         const cellHeight = answerArea.totalHeight / answerArea.questionsPerColumn;
+         const questionIndex = Math.floor((clickY - answerArea.startY) / cellHeight);
+         const optionIndex = Math.floor((clickX - colDef.startX) / cellWidth);
+
+         currentAnswer[answerColIndex][questionIndex][optionIndex] =
+            !currentAnswer[answerColIndex][questionIndex][optionIndex];
+         handled = true;
+      }
+   }
+   if (handled) {
+      drawAllGrids();
+      const page = items[currentIndex].index;
+      txtData[page] = generateNewLine();
+      isValidStudentId();
+      isValidScriptVersion();
+      updateVerification();
+      checkStudentId();
+      renderProblemQuestions(page);
+   }
+});
+
+function isValidStudentId() {
+   if (isProcessing) return;
+   let str = "";
+
+   for (let i = 0; i < currentStudentID.length; i++) {
+      str += (currentStudentID[i] === undefined) ? " " : String(currentStudentID[i]);
+   }
+
+   let allIDParts = str.trim().split(" ");
+
+   allIDParts = allIDParts.filter(part => part !== "");
+
+   let isValid;
+
+   if (allIDParts.length === 1) {
+      isValid = true;
+   } else {
+      isValid = false;
+   }
+
+
+   if (!isValid) {
+      document.getElementById('studentIDSign').style.visibility = 'visible';
+   } else {
+      document.getElementById('studentIDSign').style.visibility = 'hidden';
+   }
+}
+
+function isValidScriptVersion() {
+   if (isProcessing) return;
+   let str = "";
+
+   for (let i = 0; i < currentScriptVersion.length; i++) {
+      if (currentScriptVersion[i] === undefined) {
+         str += " ";
+      } else {
+         str += String(currentScriptVersion[i]);
+      }
+   }
+
+   let numString = "";
+
+   for (let i = 0; i < str.length; i++) {
+      if (str[i] !== " ") {
+         numString += str[i];
+      }
+   }
+
+   let num = parseInt(numString, 10);
+
+   let isValid;
+   if (numString === "" || isNaN(num) || numString.length < 12) {
+      isValid = false;
+   } else {
+      isValid = true;
+   }
+
+
+   if (!isValid) {
+      document.getElementById('scriptVersionSign').style.visibility = 'visible';
+   } else {
+      document.getElementById('scriptVersionSign').style.visibility = 'hidden';
+   }
+}
+
+function updateVerification() {
+   const studentIdCount = currentStudentID.filter(val => val !== undefined).length;
+   let answersCount = 0;
+   for (let col = 0; col < answerArea.columns.length; col++) {
+      for (let q = 0; q < answerArea.questionsPerColumn; q++) {
+         let options = currentAnswer[col][q];
+         let selected = false;
+         for (let i = 0; i < options.length; i++) {
+            if (options[i] === true) {
+               selected = true;
+               break;
+            }
+         }
+         if (selected) {
+            answersCount++;
+         }
+      }
+   }
+   if (mostFrequentAnswerCount != null && answersCount !== mostFrequentAnswerCount) {
+      dom.verification.innerHTML = `${studentIdCount} ID digits, <span style="color: red; font-weight: bold;">${answersCount} questions answered</span>`;
+   } else {
+      dom.verification.textContent = `${studentIdCount} ID digits, ${answersCount} questions answered`;
+   }
+   dom.verification.style.visibility = 'visible';
+}
+
+
+
+document.getElementById('VerifyButton').addEventListener('click', () => {
+   const inputZip = document.getElementById('zipInput');
+   const file = inputZip.files[0];
+   runVerifier(file);
+});
+
+document.getElementById('verifyCurrentZip').addEventListener('click', () => {
+   document.getElementById('have_result').style.display = 'none';
+   document.getElementById('verifyCurrentSection').style.display = 'none';
+   runVerifier(lastZip);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+   document.getElementById('fid').value = '';
+   document.getElementById('zipInput').value = '';
+   document.getElementById('studentIDInputCurrent').value = '';
+   document.getElementById('studentIDInput').value = '';
+   fetchVersion();
+});
+
+
+//checkStudentId
+
+function matchStudentId(s, list) {
+   const normalized = s.replace(/ /g, '');
+
+   const zeroStripped = normalized.replace(/^0+/, '');
+   if (list.includes(zeroStripped)) {
+      return zeroStripped;
+   }
+
+   const zeroTrimmedEnd = normalized.replace(/0+$/, '');
+   if (list.includes(zeroTrimmedEnd)) {
+      return zeroTrimmedEnd;
+   }
+
+   // Step 1: Exact match
+   if (list.includes(normalized)) {
+      return normalized;
+   }
+
+   // Step 2: Hamming distance check (1 char different by ±1)
+   const hammingMatches = [];
+   for (const candidate of list) {
+      if (candidate.length !== normalized.length) continue;
+
+      let diffCount = 0;
+      let validDiff = true;
+
+      for (let i = 0; i < candidate.length; i++) {
+         if (candidate[i] !== normalized[i]) {
+            diffCount++;
+            if (
+               diffCount > 1 ||
+               Math.abs(candidate.charCodeAt(i) - normalized.charCodeAt(i)) !== 1
+            ) {
+               validDiff = false;
+               break;
+            }
+         }
+      }
+
+      if (validDiff && diffCount === 1) {
+         hammingMatches.push(candidate);
+      }
+   }
+
+   if (hammingMatches.length === 1) {
+      return hammingMatches[0];
+   } else if (hammingMatches.length > 1) {
+      return '';
+   }
+
+   // Step 3(a): Check if inserting one digit results in a match
+   for (const candidate of list) {
+      if (candidate.length !== normalized.length + 1) continue;
+
+      for (let i = 0; i <= normalized.length; i++) {
+         const withInsert =
+            normalized.slice(0, i) + candidate[i] + normalized.slice(i);
+         if (withInsert === candidate) {
+            return candidate;
+         }
+      }
+   }
+
+   // Step 3(b): Check if removing one digit results in a match
+
+   for (const candidate of list) {
+      if (candidate.length !== normalized.length - 1) continue;
+
+      for (let i = 0; i < normalized.length; i++) {
+         const withInsert = normalized.slice(0, i) + normalized.slice(i + 1);
+         if (withInsert === candidate) {
+            return candidate;
+         }
+      }
+   }
+
+
+   // Step 4: Check for removing spaces in original string (again)
+   const noSpaces = s.replace(/ /g, '');
+   if (list.includes(noSpaces)) {
+      return noSpaces;
+   }
+
+   // Step 5: Adjacent digit swap
+   const chars = normalized.split('');
+   for (let i = 0; i < chars.length - 1; i++) {
+      // Swap
+      [chars[i], chars[i + 1]] = [chars[i + 1], chars[i]];
+      const swapped = chars.join('');
+      if (list.includes(swapped)) {
+         return swapped;
+      }
+      // Swap back
+      [chars[i], chars[i + 1]] = [chars[i + 1], chars[i]];
+   }
+
+   // Step 6: No match found
+   return '';
+}
+
+function checkStudentId() {
+   if (isProcessing) return;
+
+   if (!studentIDList || studentIDList.length === 0) {
+      dom.studentIdCheck.style.display = "none";
+      return;
+   }
+
+   let rawId = "";
+   for (let i = 0; i < currentStudentID.length; i++) {
+      rawId += currentStudentID[i] === undefined ? " " : String(currentStudentID[i]);
+   }
+   rawId = rawId.trim();
+
+   const match = matchStudentId(rawId, studentIDList);
+   const sign = document.getElementById('studentIDSign');
+
+   let html = "";
+   if (match === rawId) {
+      html = "";
+   } else if (match) {
+      const entry = studentInfoList.find(s => s.id === match);
+      const hasName = entry && entry.name !== undefined && entry.name !== "";
+      const namePart = hasName ? ` (${entry.name})` : "";
+      html = `<div class="apply-id-text" data-id="${match}" style="cursor:pointer; font-weight:bold;" title="Click to apply">
+                 Student ID ${rawId} does not exist, but ${match}${namePart} does.
+              </div>`;
+      sign.style.visibility = 'visible';
+   } else if (rawId.length > 0) {
+      html = `Student ID ${rawId} does not exist`;
+      sign.style.visibility = 'visible';
+   }
+
+   dom.studentIdCheck.innerHTML = html;
+   dom.studentIdCheck.style.display = html ? "block" : "none";
+   dom.studentIdCheck.style.fontWeight = "bold";
+}
+
+function parseStudentID(s) {
+   const Alllines = s.split(/\r?\n/);
+   const result = [];
+   for (let i = 0; i < Alllines.length; i++) {
+      const line = Alllines[i].trim();
+      if (line.length > 0) {
+         const parts = line.split(/\s+/);
+         result.push(parts[0]);
+      }
+   }
+   return result;
+}
+
+function parseStudentInfo(s) {
+   const Alllines = s.split(/\r?\n/);
+   const result = [];
+   for (let i = 0; i < Alllines.length; i++) {
+      const line = Alllines[i].trim();
+      if (line.length > 0) {
+         const parts = line.split(/\s+/);
+         if (parts.length === 1) {
+            result.push({ id: parts[0], name: '' });
+         } else {
+            result.push({ id: parts[0], name: parts.slice(1).join(' ') });
+         }
+      }
+   }
+   return result;
+}
+
+dom.studentIDInput.addEventListener('change', e => {
+   const file = e.target.files[0];
+   if (file) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+         const text = event.target.result;
+         studentIDList = parseStudentID(text);
+         studentInfoList = parseStudentInfo(text);
+         const hasNames = studentInfoList.some(s => s.name && s.name.trim() !== "");
+         const searchContainer = document.getElementById('search-container');
+         searchContainer.style.display = hasNames ? 'flex' : 'none';
+      };
+      reader.readAsText(file);
+   }
+});
+
+dom.studentIDInputCurrent.addEventListener('change', e => {
+   const file = e.target.files[0];
+   if (file) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+         const text = event.target.result;
+         studentIDList = parseStudentID(text);
+         studentInfoList = parseStudentInfo(text);
+
+         const hasNames = studentInfoList.some(s => s.name && s.name.trim() !== "");
+         const searchContainer = document.getElementById('search-container');
+         searchContainer.style.display = hasNames ? 'flex' : 'none';
+      };
+      reader.readAsText(file);
+   }
+});
+
+function getMostFrequentAnswerCount(lines) {
+   if (!lines || lines.length === 0) {
+      return null;
+   }
+
+   const answerCounts = lines.map(line => {
+      const answerString = line.substring(32, 192).trim();
+      let answeredCount = 0;
+      for (let i = 0; i < answerString.length; i += 2) {
+         if (answerString.substring(i, i + 2) !== '00') {
+            answeredCount++;
+         }
+      }
+      return answeredCount;
+   });
+
+   const frequencyMap = {};
+   let maxFrequency = 0;
+   let mode = null;
+
+   answerCounts.forEach(count => {
+      frequencyMap[count] = (frequencyMap[count] || 0) + 1;
+      if (frequencyMap[count] > maxFrequency) {
+         maxFrequency = frequencyMap[count];
+         mode = count;
+      }
+   });
+
+   return mode;
+}
+
+function getAnsweredCountFromLine(rowDataLine) {
+   const answerString = (rowDataLine || '').substring(32, 192).trim();
+   let answeredCount = 0;
+   for (let i = 0; i + 2 <= answerString.length; i += 2) {
+      if (answerString.substring(i, i + 2) !== '00') {
+         answeredCount++;
+      }
+   }
+   return answeredCount;
+}
+
+function hasQuestionWithMultipleSelections(rowDataLine) {
+   const answerString = (rowDataLine || '').substring(32, 192).trim();
+   for (let i = 0; i + 2 <= answerString.length; i += 2) {
+      const code = answerString.substring(i, i + 2);
+      if (code === '00') continue;
+      const num = parseInt(code, 10);
+      if (isNaN(num)) continue;
+      const bits = num & 0b111111;
+      let x = bits, cnt = 0;
+      while (x) { x &= (x - 1); cnt++; }
+      if (cnt > 1) return true;
+   }
+   return false;
+}
+
+function findNextErrorPage() {
+   for (let i = currentIndex + 1; i < items.length; i++) {
+      const pageIndex = items[i].index;
+      const rowDataLine = txtData[pageIndex] || "";
+
+      const studentIDStr = rowDataLine.substring(0, 18).padEnd(18, " ");
+      const tempStudentID = Array.from(studentIDStr).map(ch => {
+         return (ch === ' ' || isNaN(parseInt(ch, 10))) ? undefined : parseInt(ch, 10);
+      });
+
+      const idForValidation = tempStudentID.map(val => (val === undefined ? " " : String(val))).join("").trim();
+      const hasGeneralError = idForValidation.length === 0 || (idForValidation.split(" ").filter(part => part !== "").length !== 1);
+
+      let idNotInListError = false;
+      if (studentIDList && studentIDList.length > 0 && idForValidation.length > 0) {
+         idNotInListError = !studentIDList.includes(idForValidation);
+      }
+
+      let answerCountMismatch = false;
+      if (mostFrequentAnswerCount != null) {
+         const answeredCount = getAnsweredCountFromLine(rowDataLine);
+         answerCountMismatch = (answeredCount !== mostFrequentAnswerCount);
+      }
+
+      const multiSelectError = hasQuestionWithMultipleSelections(rowDataLine);
+      const scriptVersionError = hasScriptVersionError(rowDataLine);
+
+      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError) {
+         return i;
+      }
+   }
+   return -1;
+}
+
+function findPrevErrorPage() {
+   for (let i = currentIndex - 1; i >= 0; i--) {
+      const pageIndex = items[i].index;
+      const rowDataLine = txtData[pageIndex] || "";
+
+      const studentIDStr = rowDataLine.substring(0, 18).padEnd(18, " ");
+      const tempStudentID = Array.from(studentIDStr).map(ch => {
+         return (ch === ' ' || isNaN(parseInt(ch, 10))) ? undefined : parseInt(ch, 10);
+      });
+
+      const idForValidation = tempStudentID.map(val => (val === undefined ? " " : String(val))).join("").trim();
+      const hasGeneralError = idForValidation.length === 0 || (idForValidation.split(" ").filter(part => part !== "").length !== 1);
+
+      let idNotInListError = false;
+      if (studentIDList && studentIDList.length > 0 && idForValidation.length > 0) {
+         idNotInListError = !studentIDList.includes(idForValidation);
+      }
+
+      let answerCountMismatch = false;
+      if (mostFrequentAnswerCount != null) {
+         const answeredCount = getAnsweredCountFromLine(rowDataLine);
+         answerCountMismatch = (answeredCount !== mostFrequentAnswerCount);
+      }
+
+      const multiSelectError = hasQuestionWithMultipleSelections(rowDataLine);
+      const scriptVersionError = hasScriptVersionError(rowDataLine);
+
+      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError) {
+         return i;
+      }
+   }
+   return -1;
+}
+
+function findFirstErrorPage() {
+   for (let i = 0; i < items.length; i++) {
+      const pageIndex = items[i].index;
+      const rowDataLine = txtData[pageIndex] || "";
+
+      const studentIDStr = rowDataLine.substring(0, 18).padEnd(18, " ");
+      const tempStudentID = Array.from(studentIDStr).map(ch => {
+         return (ch === ' ' || isNaN(parseInt(ch, 10))) ? undefined : parseInt(ch, 10);
+      });
+
+      const idForValidation = tempStudentID.map(val => (val === undefined ? " " : String(val))).join("").trim();
+      const hasGeneralError = idForValidation.length === 0 || (idForValidation.split(" ").filter(part => part !== "").length !== 1);
+
+      let idNotInListError = false;
+      if (studentIDList && studentIDList.length > 0 && idForValidation.length > 0) {
+         idNotInListError = !studentIDList.includes(idForValidation);
+      }
+
+      let answerCountMismatch = false;
+      if (mostFrequentAnswerCount != null) {
+         const answeredCount = getAnsweredCountFromLine(rowDataLine);
+         answerCountMismatch = (answeredCount !== mostFrequentAnswerCount);
+      }
+
+      const multiSelectError = hasQuestionWithMultipleSelections(rowDataLine);
+      const scriptVersionError = hasScriptVersionError(rowDataLine);
+
+      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError) {
+         return i;
+      }
+   }
+   return -1;
+}
+
+dom.nextQuick.addEventListener('click', () => {
+   const nextErrorIndex = findNextErrorPage();
+
+   if (nextErrorIndex !== -1) {
+      currentIndex = nextErrorIndex;
+      updateUI();
+   }
+});
+
+dom.prevQuick.addEventListener('click', () => {
+   const prevErrorIndex = findPrevErrorPage();
+
+   if (prevErrorIndex !== -1) {
+      currentIndex = prevErrorIndex;
+      updateUI();
+   }
+});
+
+dom.searchInput.addEventListener('input', function () {
+   const searchTerm = this.value.trim().toLowerCase();
+
+   if (!searchTerm) {
+      dom.searchResults.style.display = 'none';
+      return;
+   }
+
+   const matches = [];
+
+   for (let i = 0; i < studentInfoList.length; i++) {
+      const student = studentInfoList[i];
+
+      if (student.id.toLowerCase().includes(searchTerm) ||
+         student.name.toLowerCase().includes(searchTerm)) {
+         matches.push(student);
+      }
+   }
+
+   if (matches.length > 0) {
+      dom.searchResults.innerHTML = matches.map(m => {
+         const display = m.name ? `${m.id} - ${m.name}` : m.id;
+         return `<div class="search-result-item">${display}</div>`;
+      }).join('');
+      dom.searchResults.style.display = 'block';
+   } else {
+      dom.searchResults.innerHTML = '<div style="padding:5px;">No Matches Found</div>';
+      dom.searchResults.style.display = 'block';
+   }
+});
+
+
+function applyStudentId(idStr) {
+   const digits = (idStr || '').replace(/\D/g, '');
+   currentStudentID = new Array(studentIdArea.columns).fill(undefined);
+   for (let i = 0; i < Math.min(digits.length, studentIdArea.columns); i++) {
+      const d = parseInt(digits[i], 10);
+      if (!Number.isNaN(d)) currentStudentID[i] = d;
+   }
+   const page = items[currentIndex].index;
+   txtData[page] = generateNewLine();
+   drawAllGrids();
+   isValidStudentId();
+   checkStudentId();
+   updateVerification();
+   updateUI();
+}
+
+dom.studentIdCheck.addEventListener('click', (e) => {
+   const target = e.target.closest('.apply-id-text');
+   if (!target) return;
+   const corrected = target.getAttribute('data-id');
+   if (corrected) applyStudentId(corrected);
+});
+
+
+function hasScriptVersionError(rowDataLine) {
+   const scriptVersionStr = rowDataLine.substring(19, 31).padEnd(12, " ");
+   let numString = "";
+   for (let j = 0; j < scriptVersionStr.length; j++) {
+      if (scriptVersionStr[j] !== " ") {
+         numString += scriptVersionStr[j];
+      }
+   }
+   const scriptVersionNum = parseInt(numString, 10);
+   return numString === "" || isNaN(scriptVersionNum) || numString.length < 12;
+}
