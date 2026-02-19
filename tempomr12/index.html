@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="utf-8" />
+   <meta name="mobile-web-app-capable" content="yes" />
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+   <link rel="icon" type="image/svg+xml" href="https://dividni.com/images/Dividni-Logo.svg" />
+   <link rel="mask-icon" href="https://dividni.com/images/Dividni-Logo-Black.svg" color="red">
+   <title>OMR Processor</title>
+   <link rel="stylesheet" href="style.css" />
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+</head>
+
+<body>
+   <h1 style="text-align: center;">OMR Processor</h1>
+   <div id="omr-reader" class="container">
+      <div id="pdfUpload">
+         <p>Upload the pdf here (a 500MB limit applies):</p>
+
+         <input id="fid" name="fid" type="file" accept=".pdf" />
+
+         <button type="submit" onclick="uploadPdf()">Upload</button>
+
+         <hr />
+      </div>
+      <div id="loader" style="display: none;"> <img src="Loader.svg" alt="Loading..." /></div>
+      <p>
+         <a id="dlink" href="#" download="result.zip" style="display: none;">Save scan results ZIP for later
+            verification</a>
+      </p>
+
+      <div id="verifyCurrentSection" style="display: none;">
+         <p>
+            (Optional) Upload student ID txt file here for verification:
+            <input type="file" id="studentIDInput" accept=".txt">
+         </p>
+         <p>
+            <button id="verifyCurrentZip">Verify results</button>
+         </p>
+      </div>
+
+      <fieldset id="have_result" style="display: none;">
+         <legend>Already have scan results?</legend>
+         <p>
+            Upload the scan results ZIP file here for verification:
+            <input type="file" id="zipInput" accept=".zip">
+         </p>
+         <p>
+            (Optional) Upload student ID txt file here for verification:
+            <input type="file" id="studentIDInputCurrent" accept=".txt">
+         </p>
+         <button id="VerifyButton">Verify results</button>
+      </fieldset>
+
+   </div>
+
+   <!-- Omr verfier-->
+   <div id="omr-verifier" class="container" style="display: none;">
+      <div class="upload-section">
+         <button id="download" class="downloadButton">Save Verified Results</button>
+      </div>
+
+      <div class="progress-navigation">
+         <div id="progressBar">Sheet <input type="number" id="currentPageInput" min="1" value="0"> out of <span
+               id="totalPages">0</span> (<span id="percentage">0%</span>)</div>
+      </div>
+
+      <div class="main-layout">
+
+         <div class="view-container">
+            <span id="studentIDSign"><b>&#9888;</b></span>
+            <div class="left-nav-group">
+               <button id="prevQuick" class="prevQuick">&laquo;</button>
+               <button id="prev" class="nav-button left-nav">&lt;</button>
+            </div>
+            <div id="image">
+               <img id="resultImage" />
+               <canvas id="markerCanvas"></canvas>
+               <div id="verification">0 ID digits, 0 questions answered</div>
+               <div id="studentIdCheck" style="display: none;"></div>
+               <div id="image-loading-message" style="display: none;">Loading images...</div>
+            </div>
+            <div class="right-nav-group">
+               <button id="nextQuick" class="nextQuick">&raquo;</button>
+               <button id="next" class="nav-button right-nav">&gt;</button>
+            </div>
+            <span id="scriptVersionSign"><b>&#9888;</b></span>
+         </div>
+
+         <div id="search-container">
+            <input type="text" id="searchInput" placeholder="Search by ID or Name...">
+            <div id="searchResults" class="search-results"></div>
+         </div>
+
+      </div>
+   </div>
+
+   <footer id="version" class="footer" style="text-align: center;"></footer>
+   <script src="app.js"></script>
+</body>
+
+</html>
