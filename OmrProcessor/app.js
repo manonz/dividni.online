@@ -98,6 +98,7 @@ const dom = {
    studentIDInputCurrent: document.getElementById('studentIDInputCurrent'),
    searchInput: document.getElementById('searchInput'),
    searchResults: document.getElementById('searchResults'),
+   problemQuestions: document.getElementById("problem_questions")
 };
 
 dom.prevButton.addEventListener('click', () => handleNavigation(-1));
@@ -136,6 +137,224 @@ let lastZip = null;
 let studentIDList = [];
 let mostFrequentAnswerCount = null;
 let studentInfoList = [];
+let majorMin = null;
+let majorMax = null;
+let majorOptMin = null;
+let majorOptMax = null;
+let sheetIssues = [];
+
+
+function optionLetterToIdx(ch) {
+   const letters = ["A", "B", "C", "D", "E", "F"];
+   const i = letters.indexOf((ch || "").toUpperCase());
+   return i >= 0 ? i : null;
+}
+
+function analyzeOptionRangeForLine(rowDataLine, optMinLetter, optMaxLetter) {
+   const totalQuestions = 80;
+   const ans = (rowDataLine || "").substring(32, 192).padEnd(160, "0");
+
+   const minIdx = optionLetterToIdx(optMinLetter);
+   const maxIdx = optionLetterToIdx(optMaxLetter);
+
+   if (minIdx == null || maxIdx == null) {
+      return { optOutOfRange: [] };
+   }
+
+   const bad = new Set();
+
+   for (let i = 0; i < totalQuestions; i++) {
+      const code2 = ans.substr(i * 2, 2);
+      if (code2 === "00") continue;
+
+      const num = parseInt(code2, 10);
+      if (!Number.isFinite(num) || num <= 0) continue;
+
+      const bits = num & 0b111111;
+      for (let opt = 0; opt < 6; opt++) {
+         if (bits & (1 << opt)) {
+            if (opt < minIdx || opt > maxIdx) {
+               bad.add(i + 1);
+               break;
+            }
+         }
+      }
+   }
+
+   return { optOutOfRange: Array.from(bad).sort((a, b) => a - b) };
+}
+
+function recomputeSheetIssues(pageIndex) {
+   const line = txtData[pageIndex] || "";
+   const qRange = analyzeRangeForLine(line, majorMin, majorMax);
+   const optRange = analyzeOptionRangeForLine(line, majorOptMin, majorOptMax);
+
+   const issueList = Array.from(new Set([
+      ...(qRange.outOfRange || []),
+      ...(qRange.missingInRange || []),
+      ...(optRange.optOutOfRange || []),
+   ])).sort((a, b) => a - b);
+
+   sheetIssues[pageIndex] = issueList;
+   return issueList;
+}
+
+
+function analyzeRangeForLine(rowDataLine, rangeMin, rangeMax) {
+   const totalQuestions = 80;
+   const ans = (rowDataLine || "").substring(32, 192).padEnd(160, "0");
+
+   const answered = new Set();
+   for (let i = 0; i < totalQuestions; i++) {
+      const code2 = ans.substr(i * 2, 2);
+      if (code2 !== "00") answered.add(i + 1);
+   }
+
+   const outOfRange = [];
+   const answeredInRange = [];
+   const missingInRange = [];
+
+   if (rangeMin != null && rangeMax != null) {
+      for (let q = rangeMin; q <= rangeMax; q++) {
+         if (answered.has(q)) answeredInRange.push(q);
+         else missingInRange.push(q);
+      }
+   }
+
+   for (const q of answered) {
+      if (rangeMin != null && rangeMax != null) {
+         if (q < rangeMin || q > rangeMax) outOfRange.push(q);
+      }
+   }
+
+   outOfRange.sort((a, b) => a - b);
+
+   return { outOfRange, missingInRange, answeredInRange };
+}
+
+
+
+function getMinMaxFromLine(rowDataLine) {
+   const totalQuestions = 80;
+   const s = (rowDataLine || "").substring(32, 192).padEnd(160, "0");
+
+   let min = null, max = null;
+   for (let i = 0; i < totalQuestions; i++) {
+      if (s.substr(i * 2, 2) !== "00") {
+         const q = i + 1;
+         if (min === null) min = q;
+         max = q;
+      }
+   }
+   return { min, max };
+}
+
+
+function computeMajorMinMax(lines) {
+   const freq = new Map();
+   let bestKey = null;
+   let bestCount = 0;
+
+   for (const line of (lines || [])) {
+      const { min, max } = getMinMaxFromLine(line);
+      if (min == null || max == null) continue;
+
+      const key = `${min}-${max}`;
+      const count = (freq.get(key) || 0) + 1;
+      freq.set(key, count);
+
+      if (count > bestCount) {
+         bestCount = count;
+         bestKey = key;
+      }
+   }
+
+   if (!bestKey) {
+      majorMin = null;
+      majorMax = null;
+      return;
+   }
+
+   const [L, R] = bestKey.split("-").map(n => parseInt(n, 10));
+   majorMin = L;
+   majorMax = R;
+}
+
+function getOptionMinMaxFromLine(rowDataLine) {
+   const totalQuestions = 80;
+   const ans = (rowDataLine || "").substring(32, 192).padEnd(160, "0");
+
+   const letters = ["A", "B", "C", "D", "E", "F"];
+   let minIdx = null;
+   let maxIdx = null;
+
+   for (let i = 0; i < totalQuestions; i++) {
+      const code2 = ans.substr(i * 2, 2);
+      if (code2 === "00") continue;
+
+      const num = parseInt(code2, 10);
+      if (!Number.isFinite(num) || num <= 0) continue;
+
+      const bits = num & 0b111111;
+      if (bits === 0) continue;
+
+      for (let opt = 0; opt < 6; opt++) {
+         if (bits & (1 << opt)) {
+            if (minIdx === null || opt < minIdx) minIdx = opt;
+            if (maxIdx === null || opt > maxIdx) maxIdx = opt;
+         }
+      }
+   }
+
+   if (minIdx === null || maxIdx === null) return { min: null, max: null };
+   return { min: letters[minIdx], max: letters[maxIdx] };
+}
+
+function computeMajorOptionMinMax(lines) {
+   const freq = new Map();
+   let bestKey = null;
+   let bestCount = 0;
+
+   for (const line of (lines || [])) {
+      const { min, max } = getOptionMinMaxFromLine(line);
+      if (!min || !max) continue;
+
+      const key = `${min}-${max}`;
+      const count = (freq.get(key) || 0) + 1;
+      freq.set(key, count);
+
+      if (count > bestCount) {
+         bestCount = count;
+         bestKey = key;
+      }
+   }
+
+   if (!bestKey) {
+      majorOptMin = null;
+      majorOptMax = null;
+      return;
+   }
+
+   const [L, R] = bestKey.split("-");
+   majorOptMin = L;
+   majorOptMax = R;
+}
+
+function renderProblemQuestions(pageIndex) {
+   const pq = dom.problemQuestions;
+   if (!pq) return;
+
+   const issues = recomputeSheetIssues(pageIndex);
+
+   if (!issues || issues.length === 0) {
+      pq.style.display = "none";
+      pq.textContent = "";
+   } else {
+      pq.style.display = "block";
+      pq.textContent = `Potentially problematic questions: ${issues.join(", ")}`;
+   }
+}
+
 
 
 async function runVerifier(file) {
@@ -269,6 +488,9 @@ async function processTXTfile(txtFile) {
          mostFrequentAnswerCount = mostCommonCount;
 
          //console.log(`Most students answered ${mostFrequentAnswerCount} questions.`);
+         computeMajorMinMax(splitText);
+
+         computeMajorOptionMinMax(splitText);
 
          resolve(splitText);
       };
@@ -547,7 +769,7 @@ function updateUI() {
             dom.nextButton.style.visibility = 'visible';
             dom.nextQuick.style.visibility = findNextErrorPage() !== -1 ? 'visible' : 'hidden';
          }
-
+         if (dom.problemQuestions) dom.problemQuestions.textContent = "";
          return;
       }
 
@@ -557,6 +779,7 @@ function updateUI() {
       const txtLine = txtData[page] || "";
       updateUIFromRowData(txtLine);
       drawAllGrids();
+      renderProblemQuestions(page);
       isValidStudentId();
       isValidScriptVersion();
       checkStudentId();
@@ -673,6 +896,7 @@ dom.markerCanvas.addEventListener('click', function (event) {
       isValidScriptVersion();
       updateVerification();
       checkStudentId();
+      renderProblemQuestions(page);
    }
 });
 
