@@ -188,11 +188,13 @@ function recomputeSheetIssues(pageIndex) {
    const line = txtData[pageIndex] || "";
    const qRange = analyzeRangeForLine(line, majorMin, majorMax);
    const optRange = analyzeOptionRangeForLine(line, majorOptMin, majorOptMax);
+   const multiSelect = getQuestionsWithMultipleSelections(line);
 
    const issueList = Array.from(new Set([
       ...(qRange.outOfRange || []),
       ...(qRange.missingInRange || []),
       ...(optRange.optOutOfRange || []),
+      ...(multiSelect || []),
    ])).sort((a, b) => a - b);
 
    sheetIssues[pageIndex] = issueList;
@@ -1272,6 +1274,35 @@ function hasQuestionWithMultipleSelections(rowDataLine) {
       if (cnt > 1) return true;
    }
    return false;
+}
+
+function getQuestionsWithMultipleSelections(rowDataLine) {
+   const totalQuestions = 80;
+   const ans = (rowDataLine || "").substring(32, 192).padEnd(160, "0");
+   const bad = [];
+
+   for (let i = 0; i < totalQuestions; i++) {
+      const code2 = ans.substr(i * 2, 2);
+      if (code2 === "00") continue;
+
+      const num = parseInt(code2, 10);
+      if (!Number.isFinite(num) || num <= 0) continue;
+
+      const bits = num & 0b111111;
+
+      let cnt = 0;
+      let x = bits;
+      while (x) {
+         x &= (x - 1);
+         cnt++;
+      }
+
+      if (cnt > 1) {
+         bad.push(i + 1);
+      }
+   }
+
+   return bad;
 }
 
 function findNextErrorPage() {
