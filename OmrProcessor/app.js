@@ -608,10 +608,10 @@ function updateUIFromRowData(rowDataLine) {
 }
 
 const markerCtx = dom.markerCanvas.getContext('2d');
+
 function drawAllGrids() {
    markerCtx.clearRect(0, 0, dom.markerCanvas.width, dom.markerCanvas.height);
 
-   //student ID
    {
       const cellWidth = studentIdArea.totalWidth / studentIdArea.columns;
       const cellHeight = studentIdArea.totalHeight / studentIdArea.rows;
@@ -626,7 +626,6 @@ function drawAllGrids() {
       });
    }
 
-   //Script Version
    {
       const cellWidth = scriptVersionArea.totalWidth / scriptVersionArea.columns;
       const cellHeight = scriptVersionArea.totalHeight / scriptVersionArea.rows;
@@ -641,19 +640,40 @@ function drawAllGrids() {
       });
    }
 
-   //anwsers
    {
+      const page = items[currentIndex].index;
+      const currentIssues = sheetIssues[page] || [];
+
       markerCtx.lineWidth = 1;
       answerArea.columns.forEach((colDef, colIndex) => {
          const cellWidth = colDef.totalWidth / answerArea.optionsPerQuestion;
          const cellHeight = answerArea.totalHeight / answerArea.questionsPerColumn;
+
          for (let q = 0; q < answerArea.questionsPerColumn; q++) {
+            const questionNum = colIndex * answerArea.questionsPerColumn + q + 1;
+
+            if (currentIssues.includes(questionNum)) {
+               const centerX = colDef.startX - 18;
+               const centerY = answerArea.startY + (q * cellHeight) + (cellHeight / 2);
+
+               markerCtx.globalAlpha = 1.0;
+
+               markerCtx.beginPath();
+               markerCtx.arc(centerX, centerY, 9, 0, Math.PI * 2);
+               markerCtx.strokeStyle = '#FF00FF';
+               markerCtx.lineWidth = 1;
+               markerCtx.stroke();
+            }
+
             const selectedIndices = [];
             for (let opt = 0; opt < answerArea.optionsPerQuestion; opt++) {
                if (currentAnswer[colIndex][q][opt]) {
                   selectedIndices.push(opt);
                }
             }
+
+            markerCtx.lineWidth = 1;
+
             if (selectedIndices.length === 1) {
                markerCtx.strokeStyle = 'blue';
                const onlyOpt = selectedIndices[0];
@@ -780,8 +800,8 @@ function updateUI() {
       const page = item.index;
       const txtLine = txtData[page] || "";
       updateUIFromRowData(txtLine);
-      drawAllGrids();
       renderProblemQuestions(page);
+      drawAllGrids();
       isValidStudentId();
       isValidScriptVersion();
       checkStudentId();
@@ -891,14 +911,14 @@ dom.markerCanvas.addEventListener('click', function (event) {
       }
    }
    if (handled) {
-      drawAllGrids();
       const page = items[currentIndex].index;
       txtData[page] = generateNewLine();
+      renderProblemQuestions(page);
       isValidStudentId();
       isValidScriptVersion();
       updateVerification();
       checkStudentId();
-      renderProblemQuestions(page);
+      drawAllGrids();
    }
 });
 
@@ -1447,12 +1467,24 @@ dom.searchInput.addEventListener('input', function () {
    if (matches.length > 0) {
       dom.searchResults.innerHTML = matches.map(m => {
          const display = m.name ? `${m.id} - ${m.name}` : m.id;
-         return `<div class="search-result-item">${display}</div>`;
+         return `<div class="search-result-item" data-id="${m.id}" style="cursor: pointer;">${display}</div>`;
       }).join('');
       dom.searchResults.style.display = 'block';
    } else {
       dom.searchResults.innerHTML = '<div style="padding:5px;">No Matches Found</div>';
       dom.searchResults.style.display = 'block';
+   }
+});
+
+dom.searchResults.addEventListener('click', function (e) {
+   const target = e.target.closest('.search-result-item');
+   if (!target) return;
+   const selectedId = target.getAttribute('data-id');
+
+   if (selectedId) {
+      applyStudentId(selectedId);
+      dom.searchInput.value = '';
+      dom.searchResults.style.display = 'none';
    }
 });
 
