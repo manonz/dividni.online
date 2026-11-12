@@ -16,7 +16,7 @@ async function fetchVersion() {
       versionElement.textContent = "v" + version;
 
    } catch (error) {
-      versionElement.textContent = "Server not responding. Please try using UoA VPN.";
+      versionElement.textContent = "Server not responding. Please re-try after connecting to UoA VPN.";
    }
 }
 
