@@ -4,6 +4,7 @@
 //const apiUrl = "https://redsox.uoa.auckland.ac.nz/omr/api";
 const apiUrl = "https://academicintegrity.cs.auckland.ac.nz/omr/api";
 
+
 async function fetchVersion() {
    const versionElement = document.getElementById("version");
    try {
@@ -16,7 +17,7 @@ async function fetchVersion() {
       versionElement.textContent = "v" + version;
 
    } catch (error) {
-      versionElement.textContent = "Server not responding. Please re-try after connecting to UoA VPN.";
+      versionElement.textContent = "Server not responding. Is the server running?";
    }
 }
 
@@ -1328,6 +1329,7 @@ function getQuestionsWithMultipleSelections(rowDataLine) {
 function findNextErrorPage() {
    for (let i = currentIndex + 1; i < items.length; i++) {
       const pageIndex = items[i].index;
+      const questionIssues = recomputeSheetIssues(pageIndex);
       const rowDataLine = txtData[pageIndex] || "";
 
       const studentIDStr = rowDataLine.substring(0, 18).padEnd(18, " ");
@@ -1352,7 +1354,7 @@ function findNextErrorPage() {
       const multiSelectError = hasQuestionWithMultipleSelections(rowDataLine);
       const scriptVersionError = hasScriptVersionError(rowDataLine);
 
-      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError) {
+      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError || questionIssues.length > 0) {
          return i;
       }
    }
@@ -1362,6 +1364,7 @@ function findNextErrorPage() {
 function findPrevErrorPage() {
    for (let i = currentIndex - 1; i >= 0; i--) {
       const pageIndex = items[i].index;
+      const questionIssues = recomputeSheetIssues(pageIndex);
       const rowDataLine = txtData[pageIndex] || "";
 
       const studentIDStr = rowDataLine.substring(0, 18).padEnd(18, " ");
@@ -1386,7 +1389,7 @@ function findPrevErrorPage() {
       const multiSelectError = hasQuestionWithMultipleSelections(rowDataLine);
       const scriptVersionError = hasScriptVersionError(rowDataLine);
 
-      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError) {
+      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError || questionIssues.length > 0) {
          return i;
       }
    }
@@ -1396,6 +1399,7 @@ function findPrevErrorPage() {
 function findFirstErrorPage() {
    for (let i = 0; i < items.length; i++) {
       const pageIndex = items[i].index;
+      const questionIssues = recomputeSheetIssues(pageIndex);
       const rowDataLine = txtData[pageIndex] || "";
 
       const studentIDStr = rowDataLine.substring(0, 18).padEnd(18, " ");
@@ -1420,7 +1424,7 @@ function findFirstErrorPage() {
       const multiSelectError = hasQuestionWithMultipleSelections(rowDataLine);
       const scriptVersionError = hasScriptVersionError(rowDataLine);
 
-      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError) {
+      if (hasGeneralError || idNotInListError || answerCountMismatch || multiSelectError || scriptVersionError || questionIssues.length > 0) {
          return i;
       }
    }
@@ -1523,4 +1527,27 @@ function hasScriptVersionError(rowDataLine) {
    }
    const scriptVersionNum = parseInt(numString, 10);
    return numString === "" || isNaN(scriptVersionNum) || numString.length < 12;
+}
+
+// ------------------------------------------------------------
+// Service worker registration
+// ------------------------------------------------------------
+
+if ("serviceWorker" in navigator) {
+
+   window.addEventListener("load", () => {
+
+      navigator.serviceWorker
+         .register("sw.js")
+         .catch(error => {
+
+            console.error(
+               "Service worker registration failed:",
+               error
+            );
+
+         });
+
+   });
+
 }
